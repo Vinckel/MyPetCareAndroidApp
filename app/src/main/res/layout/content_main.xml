@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="petcare.com.mypetcare.MainActivity"
+    tools:showIn="@layout/app_bar_main">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="34dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="34dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="27dp"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toRightOf="@+id/centerReport"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rightFuneral">
+
+        <ImageButton
+            android:id="@+id/btnNoti"
+            android:layout_width="81dp"
+            android:layout_height="81dp" />
+
+        <TextView
+            android:id="@+id/tvNoti"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/main_noti"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="25dp"
+        android:layout_marginLeft="34dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginStart="34dp"
+        android:layout_marginTop="27dp"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/centerReport"
+        app:layout_constraintTop_toBottomOf="@+id/leftTool">
+
+        <ImageButton
+            android:id="@+id/btnAdopt"
+            android:layout_width="81dp"
+            android:layout_height="81dp" />
+
+        <TextView
+            android:id="@+id/tvAdopt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/main_adopt"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/centerReport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="27dp"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/centerCafe">
+
+        <ImageButton
+            android:id="@+id/btnReport"
+            android:layout_width="81dp"
+            android:layout_height="81dp" />
+
+        <TextView
+            android:id="@+id/tvReport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/main_report"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="27dp"
+        android:layout_marginEnd="34dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="34dp"
+        android:layout_marginStart="25dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/rightFuneral"
+        app:layout_constraintLeft_toRightOf="@+id/centerBeauty"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnHotel"
+            android:layout_width="81dp"
+            android:layout_height="81dp" />
+
+        <TextView
+            android:id="@+id/tvHotel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/main_hotel"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="27dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginLeft="34dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginStart="34dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/leftTool"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/centerBeauty">
+
+        <ImageButton
+            android:id="@+id/btnHospital"
+            android:layout_width="81dp"
+            android:layout_height="81dp" />
+
+        <TextView
+            android:id="@+id/tvHospital"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/main_hospital"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/centerBeauty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="27dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/centerCafe"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnBeauty"
+            android:layout_width="81dp"
+            android:layout_height="81dp" />
+
+        <TextView
+            android:id="@+id/tvBeauty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/main_beauty"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rightFuneral"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="33dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="33dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="176dp"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toRightOf="@+id/centerCafe"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnFuneral"
+            android:layout_width="81dp"
+            android:layout_height="81dp" />
+
+        <TextView
+            android:id="@+id/tvFuneral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/main_funeral"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/leftTool"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="25dp"
+        android:layout_marginLeft="34dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginStart="34dp"
+        android:layout_marginTop="176dp"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/centerCafe"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnTool"
+            android:layout_width="81dp"
+            android:layout_height="81dp" />
+
+        <TextView
+            android:id="@+id/tvTool"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/main_tool"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/centerCafe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="176dp"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnCafe"
+            android:layout_width="81dp"
+            android:layout_height="81dp" />
+
+        <TextView
+            android:id="@+id/tvCafe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/main_cafe"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivLine"
+        android:layout_width="286dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/centerReport" />
+
+    <LinearLayout
+        android:id="@+id/llInsure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivLine">
+
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp" />
+
+        <TextView
+            android:id="@+id/tvInsure"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/main_insure"
+            android:layout_gravity="center"
+            android:layout_marginLeft="9dp"
+            android:textAlignment="center" />
+        </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

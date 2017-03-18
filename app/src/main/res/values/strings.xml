@@ -5,4 +5,22 @@
     <string name="register_species">반려동물 종류</string>
     <string name="register_birth">반려동물 생일</string>
     <string name="register_complete">완료</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+
+    <string name="main_hospital">병원</string>
+    <string name="main_beauty">미용</string>
+    <string name="main_hotel">호텔</string>
+    <string name="main_tool">용품</string>
+    <string name="main_cafe">카페</string>
+    <string name="main_funeral">장례</string>
+    <string name="main_adopt">분양</string>
+    <string name="main_report">신고</string>
+    <string name="main_noti">공고</string>
+    <string name="main_insure">펫 보험 접수</string>
 </resources>
