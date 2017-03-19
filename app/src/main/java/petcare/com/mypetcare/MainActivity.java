@@ -19,14 +19,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    ImageView iv;
-    ViewTreeObserver viewTreeObserver;
+    DrawerLayout drawer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,19 +34,21 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        toggle.setDrawerIndicatorEnabled(false);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         setCustomActionBar();
-        setLogo();
+//        setLogo();
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -65,63 +67,28 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar parent = (Toolbar) actionbar.getParent();
         parent.setContentInsetsAbsolute(0, 0);
-    }
 
-    private void setLogo() {
-        iv = (ImageView) findViewById(R.id.ivHeaderLogo);
-        viewTreeObserver = iv.getViewTreeObserver();
-        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        ImageButton ibHamburger = (ImageButton) findViewById(R.id.ibHeaderHamburger);
+        ibHamburger.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onGlobalLayout() {
-                RelativeLayout rl = (RelativeLayout) findViewById(R.id.actionBarRL);
-                int actionbarWidth = rl.getMeasuredWidth();
-                int deviceWidth = getApplicationContext().getResources().getDisplayMetrics().widthPixels;
-//                int actionbarWidth = ScreenUtil.convertPixelsToDp(rl.getMeasuredWidth(), getApplicationContext());
-//                int deviceWidth = ScreenUtil.convertPixelsToDp(getApplicationContext().getResources().getDisplayMetrics().widthPixels, getApplicationContext());
-                if (deviceWidth > actionbarWidth) {
-                    int differ = deviceWidth - actionbarWidth;
-                    double slice = differ / 2;
-                    ImageView iv = (ImageView) findViewById(R.id.ivHeaderLogo);
-                    int measuredWidth = iv.getMeasuredWidth() / 2;
-                    ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) iv.getLayoutParams();
-                    lp.setMargins((deviceWidth / 2) - differ - measuredWidth, 0, 0, 0);
-//                    lp.setMargins(ScreenUtil.convertDpToPixel((deviceWidth / 2) - differ - measuredWidth, getApplicationContext()), 0, 0, 0);
+            public void onClick(View v) {
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                } else {
+                    drawer.openDrawer(GravityCompat.START);
                 }
-
-                viewTreeObserver.removeGlobalOnLayoutListener(this);
             }
         });
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        return true;
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
