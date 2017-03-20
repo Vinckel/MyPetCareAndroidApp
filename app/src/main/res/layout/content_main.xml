@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/mainBg"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="petcare.com.mypetcare.MainActivity"
+    tools:context="petcare.com.mypetcare.Activity.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
     <LinearLayout
@@ -24,16 +24,17 @@
 
         <ImageButton
             android:id="@+id/btnNoti"
-            android:background="@drawable/ic_notice_n"
             android:layout_width="81dp"
-            android:layout_height="81dp" />
+            android:layout_height="81dp"
+            android:background="@drawable/ic_notice_n" />
 
         <TextView
             android:id="@+id/tvNoti"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/main_noti"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -52,15 +53,16 @@
         <ImageButton
             android:id="@+id/btnAdopt"
             android:layout_width="81dp"
-            android:background="@drawable/ic_pet_n"
-            android:layout_height="81dp" />
+            android:layout_height="81dp"
+            android:background="@drawable/ic_pet_n" />
 
         <TextView
             android:id="@+id/tvAdopt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/main_adopt"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -76,15 +78,16 @@
         <ImageButton
             android:id="@+id/btnReport"
             android:layout_width="81dp"
-            android:background="@drawable/ic_report_n"
-            android:layout_height="81dp" />
+            android:layout_height="81dp"
+            android:background="@drawable/ic_report_n" />
 
         <TextView
             android:id="@+id/tvReport"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/main_report"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -103,15 +106,16 @@
         <ImageButton
             android:id="@+id/btnHotel"
             android:layout_width="81dp"
-            android:background="@drawable/ic_hotel_n"
-            android:layout_height="81dp" />
+            android:layout_height="81dp"
+            android:background="@drawable/ic_hotel_n" />
 
         <TextView
             android:id="@+id/tvHotel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/main_hotel"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -130,15 +134,16 @@
         <ImageButton
             android:id="@+id/btnHospital"
             android:layout_width="81dp"
-            android:background="@drawable/ic_hospital_n"
-            android:layout_height="81dp" />
+            android:layout_height="81dp"
+            android:background="@drawable/ic_hospital_n" />
 
         <TextView
             android:id="@+id/tvHospital"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/main_hospital"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -154,15 +159,16 @@
         <ImageButton
             android:id="@+id/btnBeauty"
             android:layout_width="81dp"
-            android:background="@drawable/ic_beauty_shop_n"
-            android:layout_height="81dp" />
+            android:layout_height="81dp"
+            android:background="@drawable/ic_beauty_shop_n" />
 
         <TextView
             android:id="@+id/tvBeauty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/main_beauty"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -182,15 +188,16 @@
         <ImageButton
             android:id="@+id/btnFuneral"
             android:layout_width="81dp"
-            android:background="@drawable/ic_funeral_n"
-            android:layout_height="81dp" />
+            android:layout_height="81dp"
+            android:background="@drawable/ic_funeral_n" />
 
         <TextView
             android:id="@+id/tvFuneral"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/main_funeral"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -210,15 +217,16 @@
         <ImageButton
             android:id="@+id/btnTool"
             android:layout_width="81dp"
-            android:background="@drawable/ic_product_n"
-            android:layout_height="81dp" />
+            android:layout_height="81dp"
+            android:background="@drawable/ic_product_n" />
 
         <TextView
             android:id="@+id/tvTool"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/main_tool"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -234,15 +242,16 @@
         <ImageButton
             android:id="@+id/btnCafe"
             android:layout_width="81dp"
-            android:background="@drawable/ic_cafe_n"
-            android:layout_height="81dp" />
+            android:layout_height="81dp"
+            android:background="@drawable/ic_cafe_n" />
 
         <TextView
             android:id="@+id/tvCafe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/main_cafe"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <ImageView
@@ -268,17 +277,18 @@
         <ImageView
             android:id="@+id/btnInsure"
             android:layout_width="42dp"
-            android:background="@drawable/ic_insurance_n"
-            android:layout_height="42dp" />
+            android:layout_height="42dp"
+            android:background="@drawable/ic_insurance_n" />
 
         <TextView
             android:id="@+id/tvInsure"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/main_insure"
             android:layout_gravity="center"
             android:layout_marginLeft="9dp"
-            android:textAlignment="center" />
-        </LinearLayout>
+            android:text="@string/main_insure"
+            android:textAlignment="center"
+            android:textSize="16sp" />
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

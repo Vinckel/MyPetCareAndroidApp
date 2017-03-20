@@ -1,4 +1,4 @@
-package petcare.com.mypetcare;
+package petcare.com.mypetcare.Util;
 
 import android.content.Context;
 import android.content.res.Resources;

@@ -1,4 +1,4 @@
-package petcare.com.mypetcare;
+package petcare.com.mypetcare.Activity;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -13,7 +13,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import petcare.com.mypetcare.Adapter.NavigationListViewAdapter;
+import petcare.com.mypetcare.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -71,6 +76,17 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+
+        ListView lv = (ListView) findViewById(R.id.nav_lst);
+        NavigationListViewAdapter adapter = new NavigationListViewAdapter(this);
+        lv.setAdapter(adapter);
+
+        adapter.addItem(R.drawable.ic_list, R.string.nav_diary, null);
+        adapter.addItem(R.drawable.ic_add_info, R.string.nav_info, null);
+        adapter.addItem(R.drawable.ic_share, R.string.nav_share, null);
+        adapter.addItem(R.drawable.ic_info, R.string.nav_inquiry, null);
+        adapter.addItem(R.drawable.ic_event_notice, R.string.nav_notice, R.drawable.ic_event_notice);
+        adapter.addItem(R.drawable.ic_setting_t, R.string.nav_setting, null);
     }
 
     @Override

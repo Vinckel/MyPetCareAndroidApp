@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="141dp"
     android:background="@color/colorPrimary"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    android:theme="@style/CustomActionBar">
 
     <ImageView
         android:id="@+id/iv_nav_top_arrow"
@@ -43,7 +43,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
-            android:text="김마펫"
+            android:text="알 수 없음"
+            android:textSize="18sp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         <TextView
@@ -52,7 +53,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
             android:layout_marginTop="7dp"
-            android:text="마이펫 1" />
+            android:textSize="11sp"
+            android:text="알 수 없음" />
 
     </LinearLayout>
     <!--<android.support.constraint.ConstraintLayout

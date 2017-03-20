@@ -3,6 +3,11 @@
     <color name="colorPrimary">#f9493a</color>
     <color name="colorPrimaryDark">#dc3527</color>
     <color name="colorAccent">#FF4081</color>
+
     <color name="mainBg">#FFFFFF</color>
     <color name="naviBg">#FFFFFF</color>
+    <color name="naviDivider">#00000000</color>
+
+    <color name="normalFont">#626262</color>
+    <color name="naviTopFont">#FFFFFF</color>
 </resources>
