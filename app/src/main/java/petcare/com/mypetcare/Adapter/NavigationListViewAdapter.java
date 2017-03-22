@@ -1,7 +1,8 @@
 package petcare.com.mypetcare.Adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,7 +84,7 @@ public class NavigationListViewAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void addItem(Integer icon, Integer title, Integer badge) {
+    public void addItem(@DrawableRes Integer icon, @StringRes Integer title, @DrawableRes Integer badge) {
         NavigationListData data = new NavigationListData();
 
         data.setIcon(icon != null ? context.getResources().getDrawable(icon) : null);

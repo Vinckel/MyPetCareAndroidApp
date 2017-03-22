@@ -1,5 +1,6 @@
 package petcare.com.mypetcare.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,10 +13,14 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.apache.commons.lang3.StringUtils;
 
 import petcare.com.mypetcare.Adapter.NavigationListViewAdapter;
 import petcare.com.mypetcare.R;
@@ -57,12 +62,12 @@ public class MainActivity extends AppCompatActivity
         actionBar.setDisplayShowHomeEnabled(false);
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View actionbar = inflater.inflate(R.layout.main_custom_actionbar, null);
+        View actionbarView = inflater.inflate(R.layout.main_custom_actionbar, null);
 
         ActionBar.LayoutParams lp1 = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
-        actionBar.setCustomView(actionbar, lp1);
+        actionBar.setCustomView(actionbarView, lp1);
 
-        Toolbar parent = (Toolbar) actionbar.getParent();
+        Toolbar parent = (Toolbar) actionbarView.getParent();
         parent.setContentInsetsAbsolute(0, 0);
 
         ImageButton ibHamburger = (ImageButton) findViewById(R.id.ibHeaderHamburger);
@@ -77,7 +82,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        ListView lv = (ListView) findViewById(R.id.nav_lst);
+        final ListView lv = (ListView) findViewById(R.id.nav_lst);
         NavigationListViewAdapter adapter = new NavigationListViewAdapter(this);
         lv.setAdapter(adapter);
 
@@ -87,6 +92,19 @@ public class MainActivity extends AppCompatActivity
         adapter.addItem(R.drawable.ic_info, R.string.nav_inquiry, null);
         adapter.addItem(R.drawable.ic_event_notice, R.string.nav_notice, R.drawable.ic_event_notice);
         adapter.addItem(R.drawable.ic_setting_t, R.string.nav_setting, null);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView tv = (TextView) view.findViewById(R.id.tv_nav_list_title);
+                String title = getApplicationContext().getResources().getString(R.string.nav_info);
+                if (StringUtils.equals(title, tv.getText())) {
+                    drawer.closeDrawer(GravityCompat.START);
+                    Intent intent = new Intent(getApplicationContext(), JoinActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     @Override
@@ -105,7 +123,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_addinfo) {
-            Toast.makeText(getApplicationContext(), "test", Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(), "test", Toast.LENGTH_SHORT).show();
         }
 
 //        if (id == R.id.nav_camera) {

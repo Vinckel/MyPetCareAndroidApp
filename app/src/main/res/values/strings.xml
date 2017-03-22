@@ -12,6 +12,8 @@
 
     <string name="action_settings">Settings</string>
 
+    <string name="join_select_species">반려동물 종류를 선택해주세요</string>
+    <string name="join_select_birth">반려동물 생일을 선택해주세요</string>
 
     <string name="main_hospital">병원</string>
     <string name="main_beauty">미용</string>
@@ -24,10 +26,14 @@
     <string name="main_noti">공고</string>
     <string name="main_insure">펫 보험 접수</string>
 
+    <string name="join_title">추가정보</string>
+    <string name="join_done">완료</string>
+
     <string name="nav_diary">반려동물 일지</string>
     <string name="nav_info">추가정보 작성</string>
     <string name="nav_share">마이펫+ 추천하기</string>
     <string name="nav_inquiry">문의하기</string>
     <string name="nav_notice">이벤트 및 공지사항</string>
     <string name="nav_setting">설정</string>
+    <string name="title_activity_join">JoinActivity</string>
 </resources>

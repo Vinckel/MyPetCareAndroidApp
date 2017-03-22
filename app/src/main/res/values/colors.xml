@@ -6,8 +6,14 @@
 
     <color name="mainBg">#FFFFFF</color>
     <color name="naviBg">#FFFFFF</color>
+    <color name="joinBg">#FFFFFF</color>
     <color name="naviDivider">#00000000</color>
+    <color name="joinNaviBg">#FFFFFF</color>
 
+    <color name="joinDoneBtnFont">#FFFFFF</color>
     <color name="normalFont">#626262</color>
+    <color name="joinDefaultFont">#9B9B9B</color>
+    <color name="optionFont">#9B9B9B</color>
+    <color name="spinnerFont">#CACACA</color>
     <color name="naviTopFont">#FFFFFF</color>
 </resources>
