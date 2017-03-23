@@ -141,7 +141,7 @@
     <Button
         android:id="@+id/btPetBirth"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="45dp"
         android:layout_marginTop="10dp"
         android:text="@string/join_select_birth"
         android:textColor="@color/spinnerFont"

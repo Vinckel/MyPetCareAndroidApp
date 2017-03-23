@@ -14,5 +14,4 @@
         android:minHeight="47dp"
         android:textColor="@color/optionFont"
         android:textSize="16sp" />
-    android:text="qwer" />
 </LinearLayout>

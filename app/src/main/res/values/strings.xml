@@ -28,6 +28,7 @@
 
     <string name="join_title">추가정보</string>
     <string name="join_done">완료</string>
+    <string name="join_age_done">완료</string>
 
     <string name="nav_diary">반려동물 일지</string>
     <string name="nav_info">추가정보 작성</string>
@@ -36,4 +37,8 @@
     <string name="nav_notice">이벤트 및 공지사항</string>
     <string name="nav_setting">설정</string>
     <string name="title_activity_join">JoinActivity</string>
+
+    <string name="year">년</string>
+    <string name="month">월</string>
+    <string name="date">일</string>
 </resources>

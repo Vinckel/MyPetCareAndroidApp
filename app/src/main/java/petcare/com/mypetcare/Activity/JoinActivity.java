@@ -1,6 +1,10 @@
 package petcare.com.mypetcare.Activity;
 
 import android.app.Dialog;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -10,17 +14,34 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 import petcare.com.mypetcare.Adapter.JoinPopupListViewAdapter;
 import petcare.com.mypetcare.R;
 
 public class JoinActivity extends AppCompatActivity {
-    private Dialog dialog;
+    private Dialog speciesDialog;
+    private Dialog ageDialog;
+
     private ListView lvPopup;
     private Integer speciesPosition;
     private Button btSpecies;
+    private Button btBirth;
+
+    private ArrayList<String> dateList;
+
+    private NumberPicker npYear;
+    private NumberPicker npMonth;
+    private NumberPicker npDate;
+
+    private Calendar cal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +55,8 @@ public class JoinActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(false);
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayShowHomeEnabled(false);
+
+        cal = Calendar.getInstance();
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View actionBarView = inflater.inflate(R.layout.join_custom_actionbar, null);
@@ -55,24 +78,91 @@ public class JoinActivity extends AppCompatActivity {
                 adapter.addItem("대형견");
                 adapter.addItem("고양이");
                 adapter.addItem("기타");
-                dialog.show();
+                speciesDialog.show();
             }
         });
 
-        dialog = new Dialog(JoinActivity.this, R.style.Theme_AppCompat_DayNight_Dialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.popup_species);
+        speciesDialog = new Dialog(JoinActivity.this, R.style.Theme_AppCompat_DayNight_Dialog);
+        speciesDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        speciesDialog.setContentView(R.layout.popup_species);
 
-        lvPopup = (ListView) dialog.findViewById(R.id.lv_popup_species);
+        lvPopup = (ListView) speciesDialog.findViewById(R.id.lv_popup_species);
         lvPopup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 speciesPosition = position;
                 TextView tv = (TextView) view.findViewById(R.id.tv_join_inner);
                 btSpecies.setText(tv.getText());
-                dialog.dismiss();
+                speciesDialog.dismiss();
             }
         });
+
+        btBirth = (Button) findViewById(R.id.btPetBirth);
+        btBirth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ageDialog.show();
+            }
+        });
+
+        ageDialog = new Dialog(JoinActivity.this, R.style.Theme_AppCompat_DayNight_Dialog);
+        ageDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        ageDialog.setContentView(R.layout.popup_age);
+
+        npDate = (NumberPicker) ageDialog.findViewById(R.id.np_popup_age_date);
+        npYear = (NumberPicker) ageDialog.findViewById(R.id.np_popup_age_year);
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int date = cal.get(Calendar.DAY_OF_MONTH);
+        int maxDate = cal.getMaximum(Calendar.DAY_OF_MONTH);
+
+        npYear.setMinValue(1980);
+        npYear.setMaxValue(year);
+        npYear.setValue(year - 1);
+        npYear.setWrapSelectorWheel(true);
+        npYear.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        setDividerColor(npYear, Color.parseColor("#00000000"));
+        setNumberPickerTextColor(npYear, (getResources().getColor(R.color.colorPrimary)));
+        npYear.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                cal.set(Calendar.YEAR, newVal);
+                int maxDate = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                npDate.setMaxValue(maxDate + 1);
+            }
+        });
+
+        npMonth = (NumberPicker) ageDialog.findViewById(R.id.np_popup_age_month);
+        npMonth.setMinValue(1);
+        npMonth.setMaxValue(12);
+        npMonth.setValue(month);
+        npMonth.setWrapSelectorWheel(true);
+        npMonth.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        setDividerColor(npMonth, Color.parseColor("#00000000"));
+        setNumberPickerTextColor(npMonth, (getResources().getColor(R.color.colorPrimary)));
+        npMonth.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                cal.set(Calendar.MONTH, newVal - 1);
+                int maxDate = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                npDate.setMaxValue(maxDate + 1);
+            }
+        });
+
+        dateList = new ArrayList<>();
+        dateList.add("-");
+        for (int i = 1; i < (maxDate + 1); i++) {
+            dateList.add(String.valueOf(i));
+        }
+        String[] dateArr = new String[dateList.size()];
+        dateArr = dateList.toArray(dateArr);
+        npDate.setMinValue(1);
+        npDate.setMaxValue(maxDate + 1);
+        npDate.setDisplayedValues(dateArr);
+        npDate.setWrapSelectorWheel(true);
+        npDate.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        setNumberPickerTextColor(npDate, (getResources().getColor(R.color.colorPrimary)));
+        setDividerColor(npDate, Color.parseColor("#00000000"));
     }
 
     public View getViewByPosition(int pos, ListView listView) {
@@ -84,6 +174,47 @@ public class JoinActivity extends AppCompatActivity {
         } else {
             final int childIndex = pos - firstListItemPosition;
             return listView.getChildAt(childIndex);
+        }
+    }
+    public static boolean setNumberPickerTextColor(NumberPicker numberPicker, int color) {
+        final int count = numberPicker.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View child = numberPicker.getChildAt(i);
+            if (child instanceof EditText) {
+                try {
+                    Field selectorWheelPaintField = numberPicker.getClass()
+                            .getDeclaredField("mSelectorWheelPaint");
+                    selectorWheelPaintField.setAccessible(true);
+                    ((Paint) selectorWheelPaintField.get(numberPicker)).setColor(color);
+                    ((EditText) child).setTextColor(color);
+                    numberPicker.invalidate();
+                    return true;
+                } catch (NoSuchFieldException e) {
+                } catch (IllegalAccessException e) {
+                } catch (IllegalArgumentException e) {
+                }
+            }
+        }
+        return false;
+    }
+    private void setDividerColor(NumberPicker picker, int color) {
+        java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
+        for (java.lang.reflect.Field pf : pickerFields) {
+            if (pf.getName().equals("mSelectionDivider")) {
+                pf.setAccessible(true);
+                try {
+                    ColorDrawable colorDrawable = new ColorDrawable(color);
+                    pf.set(picker, colorDrawable);
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (Resources.NotFoundException e) {
+                    e.printStackTrace();
+                }
+                catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
         }
     }
 }

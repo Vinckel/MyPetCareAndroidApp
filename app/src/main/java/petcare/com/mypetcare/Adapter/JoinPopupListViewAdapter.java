@@ -1,9 +1,6 @@
 package petcare.com.mypetcare.Adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +9,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import petcare.com.mypetcare.Model.NavigationListData;
 import petcare.com.mypetcare.R;
 
 /**

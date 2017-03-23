@@ -16,4 +16,6 @@
     <color name="optionFont">#9B9B9B</color>
     <color name="spinnerFont">#CACACA</color>
     <color name="naviTopFont">#FFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="silverLine">#EAEAEA</color>
 </resources>
