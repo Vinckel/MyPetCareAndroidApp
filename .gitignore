@@ -9,8 +9,6 @@
 .externalNativeBuild
 .idea/
 app/.gitignore
-app/libs/
-app/proguard-rules.pro
 app/src/main/res/drawable/
 gradle.properties
 gradle/

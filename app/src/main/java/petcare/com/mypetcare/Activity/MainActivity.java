@@ -1,6 +1,7 @@
 package petcare.com.mypetcare.Activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,20 +16,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Calendar;
+
 import petcare.com.mypetcare.Adapter.NavigationListViewAdapter;
 import petcare.com.mypetcare.R;
+import petcare.com.mypetcare.Util.AuthHttpConn;
+import petcare.com.mypetcare.Util.Global;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
+    private static final long DAY_TO_MILLISECONDS = 86400000;
+    private static final long HOUR_TO_MILLISECONDS = 3600000;
     DrawerLayout drawer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +51,16 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        SharedPreferences pref = getSharedPreferences("local_auth", MODE_PRIVATE);
+        long tokenDate = pref.getLong("date", 0);
+        long now = Calendar.getInstance().getTimeInMillis();
+
+        if (now - tokenDate > DAY_TO_MILLISECONDS - HOUR_TO_MILLISECONDS) {
+            AuthHttpConn test = new AuthHttpConn();
+            test.setContext((Global) getApplicationContext());
+            test.execute("test@test.com");
+        }
     }
 
     @Override

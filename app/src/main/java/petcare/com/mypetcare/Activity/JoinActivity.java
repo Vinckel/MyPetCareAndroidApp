@@ -18,10 +18,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import petcare.com.mypetcare.Adapter.JoinPopupListViewAdapter;
 import petcare.com.mypetcare.R;
@@ -41,7 +44,12 @@ public class JoinActivity extends AppCompatActivity {
     private NumberPicker npMonth;
     private NumberPicker npDate;
 
+    private Button btAgeDone;
+
     private Calendar cal;
+
+    private static final SimpleDateFormat SDF_YYYYMMDD = new SimpleDateFormat("yyyy년 MM월 dd일");
+    private static final SimpleDateFormat SDF_YYYYMM = new SimpleDateFormat("yyyy년 MM월");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +171,33 @@ public class JoinActivity extends AppCompatActivity {
         npDate.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         setNumberPickerTextColor(npDate, (getResources().getColor(R.color.colorPrimary)));
         setDividerColor(npDate, Color.parseColor("#00000000"));
+
+        btAgeDone = (Button) ageDialog.findViewById(R.id.bt_popup_age_done);
+        btAgeDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int year = npYear.getValue();
+                int month = npMonth.getValue();
+                int date = npDate.getValue() - 1;
+
+                cal.set(Calendar.YEAR, year);
+                cal.set(Calendar.MONTH, month - 1);
+
+                String format;
+                if (date <= 0 || date > 31) {
+                    cal.set(Calendar.DAY_OF_MONTH, 1);
+                    format = SDF_YYYYMMDD.format(new Date(cal.getTimeInMillis()));
+                } else {
+                    cal.set(Calendar.DAY_OF_MONTH, year);
+                    format = SDF_YYYYMM.format(new Date(cal.getTimeInMillis()));
+                }
+
+                Toast.makeText(getApplicationContext(), year + ". " + month + ". " + date, Toast.LENGTH_SHORT).show();
+//                String
+//                btBirth.setText()
+                ageDialog.dismiss();
+            }
+        });
     }
 
     public View getViewByPosition(int pos, ListView listView) {
