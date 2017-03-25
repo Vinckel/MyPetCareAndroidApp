@@ -1,7 +1,8 @@
 package petcare.com.mypetcare.Util;
 
-import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
@@ -14,20 +15,22 @@ import com.google.api.client.http.json.JsonHttpContent;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.Key;
 
 import org.apache.commons.collections4.MapUtils;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import petcare.com.mypetcare.Model.AuthResultVO;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class AuthHttpConn extends AsyncTask<String, Void, String> {
-    private static final int CONNECTION_TIMEOUT = 1500;
+    private static final int CONNECTION_TIMEOUT = 2500;
     private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private static final JsonFactory JSON_FACTORY = new JacksonFactory();
     private static Global global = null;
@@ -41,6 +44,13 @@ public class AuthHttpConn extends AsyncTask<String, Void, String> {
         if (global == null) {
             return null;
         }
+
+        Boolean calling = MapUtils.getBoolean(global.getMap(), "calling");
+        if (calling) {
+            return null;
+        }
+
+        global.set("calling", true);
 
         List<String> paramList = Arrays.asList(params);
 
@@ -81,6 +91,15 @@ public class AuthHttpConn extends AsyncTask<String, Void, String> {
 
         if (result != null && global != null) {
             global.set("token", result);
+
+            SharedPreferences pref = global.getSharedPreferences("local_auth", MODE_PRIVATE);
+            SharedPreferences.Editor edit = pref.edit();
+            edit.putString("token", result);
+            edit.putLong("auth_date", Calendar.getInstance().getTimeInMillis());
+            edit.commit();
+            Log.d("token", result);
         }
+
+        global.set("calling", false);
     }
 }

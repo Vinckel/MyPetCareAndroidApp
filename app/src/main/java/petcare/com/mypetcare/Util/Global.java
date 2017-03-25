@@ -16,6 +16,11 @@ public class Global extends Application {
     public void onCreate() {
         super.onCreate();
         data = new HashMap<>();
+        data.put("calling", false);
+    }
+
+    public Map<String, Object> getMap() {
+        return data;
     }
 
     public void set(String key, Object value) {

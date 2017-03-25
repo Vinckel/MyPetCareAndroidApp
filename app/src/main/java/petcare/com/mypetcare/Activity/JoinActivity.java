@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +14,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -29,7 +29,7 @@ import java.util.Date;
 import petcare.com.mypetcare.Adapter.JoinPopupListViewAdapter;
 import petcare.com.mypetcare.R;
 
-public class JoinActivity extends AppCompatActivity {
+public class JoinActivity extends BaseActivity {
     private Dialog speciesDialog;
     private Dialog ageDialog;
 
@@ -45,6 +45,7 @@ public class JoinActivity extends AppCompatActivity {
     private NumberPicker npDate;
 
     private Button btAgeDone;
+    private ImageButton ibBack;
 
     private Calendar cal;
 
@@ -196,6 +197,14 @@ public class JoinActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), format, Toast.LENGTH_SHORT).show();
                 btBirth.setText(format);
                 ageDialog.dismiss();
+            }
+        });
+
+        ibBack = (ImageButton) findViewById(R.id.ib_join_back);
+        ibBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
