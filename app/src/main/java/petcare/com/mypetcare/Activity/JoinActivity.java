@@ -180,21 +180,21 @@ public class JoinActivity extends AppCompatActivity {
                 int month = npMonth.getValue();
                 int date = npDate.getValue() - 1;
 
-                cal.set(Calendar.YEAR, year);
-                cal.set(Calendar.MONTH, month - 1);
+                Calendar tmpCal = Calendar.getInstance();
+                tmpCal.set(Calendar.YEAR, year);
+                tmpCal.set(Calendar.MONTH, month - 1);
 
                 String format;
                 if (date <= 0 || date > 31) {
-                    cal.set(Calendar.DAY_OF_MONTH, 1);
-                    format = SDF_YYYYMMDD.format(new Date(cal.getTimeInMillis()));
+                    tmpCal.set(Calendar.DAY_OF_MONTH, 1);
+                    format = SDF_YYYYMM.format(new Date(tmpCal.getTimeInMillis()));
                 } else {
-                    cal.set(Calendar.DAY_OF_MONTH, year);
-                    format = SDF_YYYYMM.format(new Date(cal.getTimeInMillis()));
+                    tmpCal.set(Calendar.DAY_OF_MONTH, date);
+                    format = SDF_YYYYMMDD.format(new Date(tmpCal.getTimeInMillis()));
                 }
 
-                Toast.makeText(getApplicationContext(), year + ". " + month + ". " + date, Toast.LENGTH_SHORT).show();
-//                String
-//                btBirth.setText()
+                Toast.makeText(getApplicationContext(), format, Toast.LENGTH_SHORT).show();
+                btBirth.setText(format);
                 ageDialog.dismiss();
             }
         });
