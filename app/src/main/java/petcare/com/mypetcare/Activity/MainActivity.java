@@ -25,8 +25,6 @@ import petcare.com.mypetcare.R;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private static final long DAY_TO_MILLISECONDS = 86400000;
-    private static final long HOUR_TO_MILLISECONDS = 3600000;
     DrawerLayout drawer;
 
     @Override

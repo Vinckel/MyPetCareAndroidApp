@@ -1,6 +1,8 @@
 package petcare.com.mypetcare.Activity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -37,15 +39,16 @@ public class JoinActivity extends BaseActivity {
     private Integer speciesPosition;
     private Button btSpecies;
     private Button btBirth;
+    private Button btAgeDone;
+    private ImageButton ibBack;
+    private TextView tvDone;
+    private Button btDone;
 
     private ArrayList<String> dateList;
 
     private NumberPicker npYear;
     private NumberPicker npMonth;
     private NumberPicker npDate;
-
-    private Button btAgeDone;
-    private ImageButton ibBack;
 
     private Calendar cal;
 
@@ -199,6 +202,33 @@ public class JoinActivity extends BaseActivity {
                 ageDialog.dismiss();
             }
         });
+
+        View.OnClickListener doneClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(JoinActivity.this);
+                alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        finish();
+                    }
+                });
+                alert.setMessage("회원가입이 완료되었습니다.");
+                alert.setCancelable(false);
+                AlertDialog alertDialog = alert.create();
+                alertDialog.show();
+                Button btDone = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                btDone.setTextColor(getResources().getColor(R.color.normalFont));
+
+            }
+        };
+
+        tvDone = (TextView) findViewById(R.id.tv_join_done);
+        tvDone.setOnClickListener(doneClickListener);
+
+        btDone = (Button) findViewById(R.id.btnOk);
+        btDone.setOnClickListener(doneClickListener);
 
         ibBack = (ImageButton) findViewById(R.id.ib_join_back);
         ibBack.setOnClickListener(new View.OnClickListener() {
