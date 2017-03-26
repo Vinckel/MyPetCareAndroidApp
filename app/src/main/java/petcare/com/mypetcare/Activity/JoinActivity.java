@@ -3,11 +3,18 @@ package petcare.com.mypetcare.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -17,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -50,6 +58,11 @@ public class JoinActivity extends BaseActivity {
     private ImageButton ibBack;
     private TextView tvDone;
     private Button btDone;
+
+//    private ImageButton ibPic1;
+    private ImageView ivPic1;
+    private ImageView ivPic2;
+    private ImageView ivPic3;
 
     private ArrayList<String> dateList;
 
@@ -88,6 +101,35 @@ public class JoinActivity extends BaseActivity {
 
         Toolbar parent = (Toolbar) actionBarView.getParent();
         parent.setContentInsetsAbsolute(0, 0);
+
+        ivPic1 = (ImageView) findViewById(R.id.ivPic1);
+        ivPic2 = (ImageView) findViewById(R.id.ivPic2);
+        ivPic3 = (ImageView) findViewById(R.id.ivPic3);
+
+        ivPic1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, 1);
+            }
+        });
+        ivPic2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, 2);
+            }
+        });
+        ivPic3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, 3);
+            }
+        });
 
         btSpecies = (Button) findViewById(R.id.btPetSpecies);
         btSpecies.setOnClickListener(new View.OnClickListener() {
@@ -278,6 +320,35 @@ public class JoinActivity extends BaseActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), getPicture(data.getData()));
+
+            switch (requestCode) {
+                case 1:
+                    ivPic1.setImageDrawable(bitmapDrawable);
+                    break;
+                case 2:
+                    ivPic2.setImageDrawable(bitmapDrawable);
+                    break;
+                case 3:
+                    ivPic3.setImageDrawable(bitmapDrawable);
+                    break;
+            }
+        }
+    }
+
+    public Bitmap getPicture(Uri selectedImage) {
+        String[] filePathColumn = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+        cursor.moveToFirst();
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        String picturePath = cursor.getString(columnIndex);
+        cursor.close();
+        return BitmapFactory.decodeFile(picturePath);
     }
 
     public View getViewByPosition(int pos, ListView listView) {

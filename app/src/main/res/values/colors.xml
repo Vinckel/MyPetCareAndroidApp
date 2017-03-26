@@ -9,6 +9,7 @@
     <color name="joinBg">#FFFFFF</color>
     <color name="naviDivider">#00000000</color>
     <color name="joinNaviBg">#FFFFFF</color>
+    <color name="joinImageBorder">#E1E1E1</color>
 
     <color name="joinDoneBtnFont">#FFFFFF</color>
     <color name="normalFont">#626262</color>

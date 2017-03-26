@@ -35,25 +35,28 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btnPic1"
+            <ImageView
+                android:id="@+id/ivPic1"
                 android:layout_width="106dp"
                 android:layout_height="106dp"
-                android:text="Button" />
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop" />
 
-            <Button
-                android:id="@+id/btnPic2"
+            <ImageView
+                android:id="@+id/ivPic2"
                 android:layout_width="106dp"
                 android:layout_height="106dp"
                 android:layout_marginLeft="5dp"
-                android:text="Button" />
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop" />
 
-            <Button
-                android:id="@+id/btnPic3"
+            <ImageView
+                android:id="@+id/ivPic3"
                 android:layout_width="106dp"
                 android:layout_height="106dp"
                 android:layout_marginLeft="5dp"
-                android:text="Button" />
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop" />
         </LinearLayout>
     </HorizontalScrollView>
 
