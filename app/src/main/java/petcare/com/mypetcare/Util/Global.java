@@ -2,6 +2,8 @@ package petcare.com.mypetcare.Util;
 
 import android.app.Application;
 
+import org.apache.commons.collections4.MapUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,5 +31,9 @@ public class Global extends Application {
 
     public Object get(String key) {
         return data.get(key);
+    }
+
+    public String getToken() {
+        return data.containsKey("token") ? MapUtils.getString(data, "token") : null;
     }
 }

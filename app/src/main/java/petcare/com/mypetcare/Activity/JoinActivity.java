@@ -206,6 +206,9 @@ public class JoinActivity extends BaseActivity {
         View.OnClickListener doneClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+
                 AlertDialog.Builder alert = new AlertDialog.Builder(JoinActivity.this);
                 alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override

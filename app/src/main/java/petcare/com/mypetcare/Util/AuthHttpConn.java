@@ -17,6 +17,7 @@ import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
 
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -29,7 +30,7 @@ import petcare.com.mypetcare.Model.AuthResultVO;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class AuthHttpConn extends AsyncTask<String, Void, String> {
+public class AuthHttpConn extends AsyncTask<Object, Void, String> {
     private static final int CONNECTION_TIMEOUT = 2500;
     private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private static final JsonFactory JSON_FACTORY = new JacksonFactory();
@@ -40,7 +41,15 @@ public class AuthHttpConn extends AsyncTask<String, Void, String> {
     }
 
     @Override
-    protected String doInBackground(String... params) {
+    protected String doInBackground(Object... params) {
+        if (params.length != 4) {
+            return null;
+        }
+
+        if (!(params[0] instanceof String) || !(params[1] instanceof String) || !(params[2] instanceof String) || !(params[3] instanceof Map)) {
+            return null;
+        }
+
         if (global == null) {
             return null;
         }
@@ -50,9 +59,19 @@ public class AuthHttpConn extends AsyncTask<String, Void, String> {
             return null;
         }
 
+        String token = global.getToken();
+        String contentType = String.valueOf(params[0]);
+        String urlStr = String.valueOf(params[1]);
+        String serviceName = String.valueOf(params[2]);
+        Map<String, Object> paramMap = (Map<String, Object>) params[1];
+
+        if (StringUtils.isAnyBlank(contentType, urlStr) || MapUtils.isEmpty(paramMap)) {
+            return null;
+        }
+
         global.set("calling", true);
 
-        List<String> paramList = Arrays.asList(params);
+//        List<String> paramList = Arrays.asList(params);
 
         HttpRequestFactory requestFactory =
                 HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
@@ -62,20 +81,24 @@ public class AuthHttpConn extends AsyncTask<String, Void, String> {
                     }
                 });
 
-        GenericUrl url = new GenericUrl("http://220.73.175.100:8080/MPMS/mob/auth.service");
+        GenericUrl url = new GenericUrl(urlStr);
 
-        HttpRequest request = null;
+        HttpRequest request;
 
         try {
-            Map<String, String> json = new HashMap<>();
-            json.put("USER_EMAIL", "test@test.com");
-
-            HttpContent content = new JsonHttpContent(new JacksonFactory(), json);
+            HttpContent content = new JsonHttpContent(new JacksonFactory(), paramMap);
             request = requestFactory.buildPostRequest(url, content);
-            request.getHeaders().setContentType("application/json");
+            request.getHeaders().setContentType(contentType);
+
+            if (StringUtils.isNotBlank(token)) {
+                request.getHeaders().setAuthorization(token);
+            }
+            if (StringUtils.isNotBlank(serviceName)) {
+                request.getHeaders().set("SERVICE_NAME", serviceName);
+            }
+
             request.setConnectTimeout(CONNECTION_TIMEOUT);
             AuthResultVO authResult = request.execute().parseAs(AuthResultVO.class);
-            String token = MapUtils.getString((Map) authResult.getData().get(0), "TOKEN");
 
             return token;
         } catch (IOException e) {
