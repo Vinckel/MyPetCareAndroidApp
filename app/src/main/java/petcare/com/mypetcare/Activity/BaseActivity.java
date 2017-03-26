@@ -40,7 +40,7 @@ public class BaseActivity extends AppCompatActivity {
             long tokenDate = pref.getLong("auth_date", 0L);
             long now = Calendar.getInstance().getTimeInMillis();
 
-            String email = pref.getString("email", null);
+            String email = pref.getString("email", "test@test.com");
             String token = pref.getString("token", null);
 
             global.set("email", email);

@@ -11,6 +11,8 @@
     <color name="joinNaviBg">#FFFFFF</color>
     <color name="joinImageBorder">#E1E1E1</color>
 
+    <color name="diaryListLeftBg">#FAFAFA</color>
+
     <color name="joinDoneBtnFont">#FFFFFF</color>
     <color name="normalFont">#626262</color>
     <color name="joinDefaultFont">#9B9B9B</color>
@@ -20,4 +22,9 @@
     <color name="splashFont">#FFFFFF</color>
     <color name="transparent">#00000000</color>
     <color name="silverLine">#EAEAEA</color>
+
+    <color name="diaryListDateFont">#717171</color>
+    <color name="diaryListDateLittleFont">#9B9B9B</color>
+    <color name="diaryListContentFont">#717171</color>
+    <color name="diaryWriteContentFont">#717171</color>
 </resources>

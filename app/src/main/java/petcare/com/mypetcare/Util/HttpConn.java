@@ -97,7 +97,7 @@ public class HttpConn extends AsyncTask<Object, Void, HttpResultVO> {
             }
 
             request.setConnectTimeout(CONNECTION_TIMEOUT);
-            Log.d("http call auth: ", request.getHeaders().getAuthorization());
+//            Log.d("http call auth: ", request.getHeaders().getAuthorization());
             HttpResultVO authResult = request.execute().parseAs(HttpResultVO.class);
 
             return authResult;

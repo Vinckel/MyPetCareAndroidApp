@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -30,7 +31,14 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.commons.lang3.StringUtils;
+import com.android.volley.NetworkResponse;
+import com.android.volley.NoConnectionError;
+import com.android.volley.Response;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
@@ -39,12 +47,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import petcare.com.mypetcare.Adapter.JoinPopupListViewAdapter;
-import petcare.com.mypetcare.Model.HttpResultVO;
 import petcare.com.mypetcare.R;
-import petcare.com.mypetcare.Util.HttpConn;
+import petcare.com.mypetcare.Util.PicUtil;
+import petcare.com.mypetcare.Util.VolleyMultipartRequest;
+import petcare.com.mypetcare.Util.VolleySingleton;
 
 public class JoinActivity extends BaseActivity {
     private Dialog speciesDialog;
@@ -260,34 +268,37 @@ public class JoinActivity extends BaseActivity {
         View.OnClickListener doneClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String token = global.getToken();
-                String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-                Map params = new HashMap<>();
-                params.put("USER_EMAIL", "test@test.com");
+                save();
 
-                if (StringUtils.isNotEmpty(petCode)) {
-                    params.put("PET_KND_CD", petCode);
-                }
-                if (StringUtils.isNotEmpty(birth)) {
-                    params.put("PET_BIRTH", birth);
-                }
 
-                String contentType = "application/json";
-                String serviceId = "MPMS_01002";
 
-                HttpConn saveApi = new HttpConn();
-                saveApi.setContext(global);
-//                HttpResultVO resultVO = null;
-
-                try {
-                    saveApi.execute(contentType, url, serviceId, params, token).get();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "다시 시도해주세요.", Toast.LENGTH_SHORT).show();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "다시 시도해주세요.", Toast.LENGTH_SHORT).show();
-                }
+//                String token = global.getToken();
+//                String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+//                Map params = new HashMap<>();
+//                params.put("USER_EMAIL", "test@test.com");
+//
+//                if (StringUtils.isNotEmpty(petCode)) {
+//                    params.put("PET_KND_CD", petCode);
+//                }
+//                if (StringUtils.isNotEmpty(birth)) {
+//                    params.put("PET_BIRTH", birth);
+//                }
+//
+//                String contentType = "application/json";
+//                String serviceId = "MPMS_01002";
+//
+//                HttpConn saveApi = new HttpConn();
+//                saveApi.setContext(global);
+//
+//                try {
+//                    saveApi.execute(contentType, url, serviceId, params, token).get();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                    Toast.makeText(getApplicationContext(), "다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+//                } catch (ExecutionException e) {
+//                    e.printStackTrace();
+//                    Toast.makeText(getApplicationContext(), "다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+//                }
 
                 AlertDialog.Builder alert = new AlertDialog.Builder(JoinActivity.this);
                 alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
@@ -303,7 +314,6 @@ public class JoinActivity extends BaseActivity {
                 alertDialog.show();
                 Button btDone = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
                 btDone.setTextColor(getResources().getColor(R.color.normalFont));
-
             }
         };
 
@@ -321,6 +331,104 @@ public class JoinActivity extends BaseActivity {
             }
         });
     }
+
+    private void save() {
+        String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", global.getToken());
+        headers.put("Content-Type", "multipart/form-data");
+        headers.put("SERVICE_NAME", "MPMS_01002");
+
+        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(url, headers, new Response.Listener<NetworkResponse>() {
+            @Override
+            public void onResponse(NetworkResponse response) {
+                String resultResponse = new String(response.data);
+//                try {
+//                    JSONObject result = new JSONObject(resultResponse);
+//                    String status = result.getString("status");
+//                    String message = result.getString("message");
+//
+//                    if (status.equals("0")) {
+//                        Log.i("Messsage", message);
+//                    } else {
+//                        Log.i("Unexpected", message);
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                String errorMessage = "Unknown error";
+                if (networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        errorMessage = "Request timeout";
+                    } else if (error.getClass().equals(NoConnectionError.class)) {
+                        errorMessage = "Failed to connect server";
+                    }
+                } else {
+                    String result = new String(networkResponse.data);
+                    try {
+                        JSONObject response = new JSONObject(result);
+                        String status = response.getString("status");
+                        String message = response.getString("message");
+
+                        Log.e("Error Status", status);
+                        Log.e("Error Message", message);
+
+                        if (networkResponse.statusCode == 404) {
+                            errorMessage = "Resource not found";
+                        } else if (networkResponse.statusCode == 401) {
+                            errorMessage = message+" Please login again";
+                        } else if (networkResponse.statusCode == 400) {
+                            errorMessage = message+ " Check your inputs";
+                        } else if (networkResponse.statusCode == 500) {
+                            errorMessage = message+" Something is getting wrong";
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Log.i("Error", errorMessage);
+                error.printStackTrace();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("USER_EMAIL", "test@test.com");
+                params.put("PET_KND_CD", "001");
+                params.put("PET_BIRTH", "20170101");
+                params.put("name", "1");
+                params.put("filename", "q1");
+//                params.put("api_token", "gh659gjhvdyudo973823tt9gvjf7i6ric75r76");
+//                params.put("name", mNameInput.getText().toString());
+//                params.put("location", mLocationInput.getText().toString());
+//                params.put("about", mAvatarInput.getText().toString());
+//                params.put("contact", mContactInput.getText().toString());
+                return params;
+            }
+
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                // file name could found file base or direct access from real path
+                // for now just get bitmap data from ImageView
+                params.put("multipart", new DataPart("file_avatar.jpg", PicUtil.getFileDataFromDrawable(getBaseContext(), ivPic1.getDrawable()), "image/jpeg"));
+
+                return params;
+            }
+        };
+
+        VolleySingleton.getInstance(getBaseContext()).addToRequestQueue(multipartRequest);
+    }
+
+
+
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
