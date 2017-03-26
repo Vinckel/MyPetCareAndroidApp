@@ -22,14 +22,21 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import petcare.com.mypetcare.Adapter.JoinPopupListViewAdapter;
+import petcare.com.mypetcare.Model.HttpResultVO;
 import petcare.com.mypetcare.R;
+import petcare.com.mypetcare.Util.HttpConn;
 
 public class JoinActivity extends BaseActivity {
     private Dialog speciesDialog;
@@ -54,6 +61,9 @@ public class JoinActivity extends BaseActivity {
 
     private static final SimpleDateFormat SDF_YYYYMMDD = new SimpleDateFormat("yyyy년 MM월 dd일");
     private static final SimpleDateFormat SDF_YYYYMM = new SimpleDateFormat("yyyy년 MM월");
+
+    private String petCode = null;
+    private String birth = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +115,7 @@ public class JoinActivity extends BaseActivity {
                 speciesPosition = position;
                 TextView tv = (TextView) view.findViewById(R.id.tv_join_inner);
                 btSpecies.setText(tv.getText());
+                petCode = "00" + (position + 1);
                 speciesDialog.dismiss();
             }
         });
@@ -199,6 +210,7 @@ public class JoinActivity extends BaseActivity {
 
                 Toast.makeText(getApplicationContext(), format, Toast.LENGTH_SHORT).show();
                 btBirth.setText(format);
+                birth = format;
                 ageDialog.dismiss();
             }
         });
@@ -206,8 +218,34 @@ public class JoinActivity extends BaseActivity {
         View.OnClickListener doneClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String token = global.getToken();
+                String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+                Map params = new HashMap<>();
+                params.put("USER_EMAIL", "test@test.com");
 
+                if (StringUtils.isNotEmpty(petCode)) {
+                    params.put("PET_KND_CD", petCode);
+                }
+                if (StringUtils.isNotEmpty(birth)) {
+                    params.put("PET_BIRTH", birth);
+                }
 
+                String contentType = "application/json";
+                String serviceId = "MPMS_01002";
+
+                HttpConn saveApi = new HttpConn();
+                saveApi.setContext(global);
+//                HttpResultVO resultVO = null;
+
+                try {
+                    saveApi.execute(contentType, url, serviceId, params, token).get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                }
 
                 AlertDialog.Builder alert = new AlertDialog.Builder(JoinActivity.this);
                 alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {

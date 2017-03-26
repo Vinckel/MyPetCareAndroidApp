@@ -14,23 +14,22 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.http.json.JsonHttpContent;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
+import com.google.api.client.json.JsonParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.gson.JsonObject;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import petcare.com.mypetcare.Model.AuthResultVO;
+import petcare.com.mypetcare.Model.HttpResultVO;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class HttpConn extends AsyncTask<Object, Void, AuthResultVO> {
+public class HttpConn extends AsyncTask<Object, Void, HttpResultVO> {
     private static final int CONNECTION_TIMEOUT = 2500;
     private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private static final JsonFactory JSON_FACTORY = new JacksonFactory();
@@ -42,12 +41,12 @@ public class HttpConn extends AsyncTask<Object, Void, AuthResultVO> {
     }
 
     @Override
-    protected AuthResultVO doInBackground(Object... params) {
-        if (params.length != 4) {
+    protected HttpResultVO doInBackground(Object... params) {
+        if (params.length != 5) {
             return null;
         }
 
-        if (!(params[0] instanceof String) || !(params[1] instanceof String) || !(params[2] instanceof String) || !(params[3] instanceof Map)) {
+        if (!(params[0] instanceof String) || !(params[1] instanceof String) || !(params[2] instanceof String) || !(params[3] instanceof Map) || !(params[4] instanceof String)) {
             return null;
         }
 
@@ -55,14 +54,13 @@ public class HttpConn extends AsyncTask<Object, Void, AuthResultVO> {
             return null;
         }
 
-        Boolean calling = MapUtils.getBoolean(global.getMap(), "token_api_calling");
-        if (calling) {
-            return null;
-        }
+//        Boolean calling = MapUtils.getBoolean(global.getMap(), "token_api_calling");
+//        if (calling) {
+//            return null;
+//        }
+//        global.set("token_api_calling", true);
 
-        global.set("token_api_calling", true);
-
-        String token = global.getToken();
+        String token = String.valueOf(params[4]);
         String contentType = String.valueOf(params[0]);
         String urlStr = String.valueOf(params[1]);
         String serviceName = String.valueOf(params[2]);
@@ -99,7 +97,8 @@ public class HttpConn extends AsyncTask<Object, Void, AuthResultVO> {
             }
 
             request.setConnectTimeout(CONNECTION_TIMEOUT);
-            AuthResultVO authResult = request.execute().parseAs(AuthResultVO.class);
+            Log.d("http call auth: ", request.getHeaders().getAuthorization());
+            HttpResultVO authResult = request.execute().parseAs(HttpResultVO.class);
 
             return authResult;
         } catch (IOException e) {
@@ -110,7 +109,7 @@ public class HttpConn extends AsyncTask<Object, Void, AuthResultVO> {
     }
 
     @Override
-    protected void onPostExecute(AuthResultVO result) {
+    protected void onPostExecute(HttpResultVO result) {
         super.onPostExecute(result);
 
         if (isToken && result != null && global != null) {

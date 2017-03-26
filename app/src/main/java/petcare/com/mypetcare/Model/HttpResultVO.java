@@ -8,7 +8,7 @@ import java.util.List;
  * Created by KS on 2017-03-25.
  */
 
-public class AuthResultVO {
+public class HttpResultVO {
 
     @Key("RESULT_CODE")
     private String resultCode;
