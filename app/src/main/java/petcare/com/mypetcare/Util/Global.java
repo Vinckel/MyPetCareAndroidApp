@@ -18,7 +18,7 @@ public class Global extends Application {
     public void onCreate() {
         super.onCreate();
         data = new HashMap<>();
-        data.put("calling", false);
+        data.put("token_api_calling", false);
     }
 
     public Map<String, Object> getMap() {

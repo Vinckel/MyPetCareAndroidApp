@@ -10,7 +10,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import petcare.com.mypetcare.Util.AuthHttpConn;
+import petcare.com.mypetcare.Util.HttpConn;
 import petcare.com.mypetcare.Util.Global;
 
 /**
@@ -27,7 +27,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onResume();
 
         global = (Global) getApplicationContext();
-        Boolean calling = MapUtils.getBoolean(global.getMap(), "calling");
+        Boolean calling = MapUtils.getBoolean(global.getMap(), "token_api_calling");
 
         if (calling) {
             return ;
@@ -45,7 +45,7 @@ public class BaseActivity extends AppCompatActivity {
 
         if (now - tokenDate > DAY_TO_MILLISECONDS - HOUR_TO_MILLISECONDS || StringUtils.isBlank(token)) {
             global.set("token", null);
-            AuthHttpConn test = new AuthHttpConn();
+            HttpConn test = new HttpConn();
             test.setContext(global);
             test.execute(contentType, url, serviceId, params);
         } else {

@@ -30,18 +30,19 @@ import petcare.com.mypetcare.Model.AuthResultVO;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class AuthHttpConn extends AsyncTask<Object, Void, String> {
+public class HttpConn extends AsyncTask<Object, Void, AuthResultVO> {
     private static final int CONNECTION_TIMEOUT = 2500;
     private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private static final JsonFactory JSON_FACTORY = new JacksonFactory();
     private static Global global = null;
+    private boolean isToken = false;
 
     public void setContext(Global global) {
         this.global = global;
     }
 
     @Override
-    protected String doInBackground(Object... params) {
+    protected AuthResultVO doInBackground(Object... params) {
         if (params.length != 4) {
             return null;
         }
@@ -54,24 +55,22 @@ public class AuthHttpConn extends AsyncTask<Object, Void, String> {
             return null;
         }
 
-        Boolean calling = MapUtils.getBoolean(global.getMap(), "calling");
+        Boolean calling = MapUtils.getBoolean(global.getMap(), "token_api_calling");
         if (calling) {
             return null;
         }
+
+        global.set("token_api_calling", true);
 
         String token = global.getToken();
         String contentType = String.valueOf(params[0]);
         String urlStr = String.valueOf(params[1]);
         String serviceName = String.valueOf(params[2]);
-        Map<String, Object> paramMap = (Map<String, Object>) params[1];
+        Map<String, Object> paramMap = (Map<String, Object>) params[3];
 
         if (StringUtils.isAnyBlank(contentType, urlStr) || MapUtils.isEmpty(paramMap)) {
             return null;
         }
-
-        global.set("calling", true);
-
-//        List<String> paramList = Arrays.asList(params);
 
         HttpRequestFactory requestFactory =
                 HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
@@ -82,7 +81,6 @@ public class AuthHttpConn extends AsyncTask<Object, Void, String> {
                 });
 
         GenericUrl url = new GenericUrl(urlStr);
-
         HttpRequest request;
 
         try {
@@ -90,9 +88,12 @@ public class AuthHttpConn extends AsyncTask<Object, Void, String> {
             request = requestFactory.buildPostRequest(url, content);
             request.getHeaders().setContentType(contentType);
 
-            if (StringUtils.isNotBlank(token)) {
+            if (StringUtils.isBlank(token)) {
+                isToken = true;
+            } else {
                 request.getHeaders().setAuthorization(token);
             }
+
             if (StringUtils.isNotBlank(serviceName)) {
                 request.getHeaders().set("SERVICE_NAME", serviceName);
             }
@@ -100,7 +101,7 @@ public class AuthHttpConn extends AsyncTask<Object, Void, String> {
             request.setConnectTimeout(CONNECTION_TIMEOUT);
             AuthResultVO authResult = request.execute().parseAs(AuthResultVO.class);
 
-            return token;
+            return authResult;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -109,20 +110,25 @@ public class AuthHttpConn extends AsyncTask<Object, Void, String> {
     }
 
     @Override
-    protected void onPostExecute(String result) {
+    protected void onPostExecute(AuthResultVO result) {
         super.onPostExecute(result);
 
-        if (result != null && global != null) {
-            global.set("token", result);
+        if (isToken && result != null && global != null) {
+            try {
+                String token = MapUtils.getString((Map) result.getData().get(0), "TOKEN");
+                global.set("token", token);
 
-            SharedPreferences pref = global.getSharedPreferences("local_auth", MODE_PRIVATE);
-            SharedPreferences.Editor edit = pref.edit();
-            edit.putString("token", result);
-            edit.putLong("auth_date", Calendar.getInstance().getTimeInMillis());
-            edit.commit();
-            Log.d("token", result);
+                SharedPreferences pref = global.getSharedPreferences("local_auth", MODE_PRIVATE);
+                SharedPreferences.Editor edit = pref.edit();
+                edit.putString("token", token);
+                edit.putLong("auth_date", Calendar.getInstance().getTimeInMillis());
+                edit.commit();
+                Log.d("token", token);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            global.set("token_api_calling", false);
         }
-
-        global.set("calling", false);
     }
 }
