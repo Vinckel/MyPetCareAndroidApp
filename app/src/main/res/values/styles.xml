@@ -14,6 +14,11 @@
         <item name="android:textColor">@color/normalFont</item>
     </style>
 
+    <style name="MyPopupMenu" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:popupBackground">#0F213F</item>
+        <item name="android:disabledAlpha">0.5</item>
+    </style>
+
     <style name="CustomActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:textColor">@color/naviTopFont</item>
     </style>

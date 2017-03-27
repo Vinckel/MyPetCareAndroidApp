@@ -6,6 +6,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.api.client.repackaged.org.apache.commons.codec.Encoder;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -36,13 +40,21 @@ public class DiaryWriteActivity extends BaseActivity {
     private TextView tvDone;
     private Button btDone;
     private EditText etContent;
+
+    boolean isNew = true;
+    Integer no = -1;
+
+    private int lastSpecialRequestsCursorPosition = 0;
+    private String specialRequests = StringUtils.EMPTY;
+
     private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy.MM.dd");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        final boolean isNew = intent.getBooleanExtra("isNew", true);
+        isNew = intent.getBooleanExtra("isNew", true);
+
 //        final int writeTargetNo = intent.getIntExtra("writeTargetNo", 1);
 
         setContentView(R.layout.activity_diary_write);
@@ -74,6 +86,30 @@ public class DiaryWriteActivity extends BaseActivity {
 
         etContent = (EditText) findViewById(R.id.et_diary_write);
         etContent.requestFocus();
+        etContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                lastSpecialRequestsCursorPosition = etContent.getSelectionStart();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                etContent.removeTextChangedListener(this);
+
+                if (etContent.getLineCount() > 3) {
+                    etContent.setText(specialRequests);
+                    etContent.setSelection(lastSpecialRequestsCursorPosition);
+                }
+                else
+                    specialRequests = etContent.getText().toString();
+
+                etContent.addTextChangedListener(this);
+            }
+        });
 
 //        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 //        imm.showSoftInput(etContent, InputMethodManager.SHOW_FORCED);
@@ -98,14 +134,21 @@ public class DiaryWriteActivity extends BaseActivity {
                 diaryWriteApi.setContext(global);
 
                 String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-                String serviceId = "MPMS_02002";
+                String serviceId;
+
+                if (isNew) {
+                    serviceId = "MPMS_02002";
+                } else {
+                    serviceId = "MPMS_02003";
+                }
+
                 String contentType = "application/json";
 
                 Map params = new HashMap<>();
                 params.put("USER_EMAIL", global.get("email"));
-//                params.put("PET_JOURNAL_SN", writeTargetNo);
-
-
+                if (!isNew) {
+                    params.put("PET_JOURNAL_SN", no);
+                }
                 params.put("PET_JOURNAL_CN", encContent);
                 HttpResultVO httpResultVO = null;
                 try {
@@ -125,5 +168,11 @@ public class DiaryWriteActivity extends BaseActivity {
 
         btDone = (Button) findViewById(R.id.bt_diary_write_done);
         btDone.setOnClickListener(listener);
+
+        if (!isNew) {
+            etContent.setText(intent.getStringExtra("content"));
+            no = intent.getIntExtra("no", -1);
+            tvDate.setText(intent.getStringExtra("date"));
+        }
     }
 }

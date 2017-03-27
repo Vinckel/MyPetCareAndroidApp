@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import petcare.com.mypetcare.Model.DiaryListData;
 import petcare.com.mypetcare.Model.DiaryListViewHolder;
@@ -62,22 +63,40 @@ public class DiaryListViewAdapter extends BaseAdapter {
 
         DiaryListData data = list.get(position);
 
-        holder.year.setText(data.getYear());
+        if (data.getVisibleYear()) {
+            holder.year.setVisibility(View.VISIBLE);
+        } else {
+            holder.year.setVisibility(View.INVISIBLE);
+        }
+
         holder.date.setText(data.getDate());
         holder.content.setText(data.getContent());
 
         return convertView;
     }
 
-    public void addItem(String date, String content) {
+    public void markYearAtPosition(boolean isViewYear, int position) {
+        list.get(position).setVisibleYear(isViewYear);
+    }
+
+    public void addItem(Date date, String content, Integer no) {
         DiaryListData data = new DiaryListData();
-        data.setDate(date);
+
+        data.setVisibleYear(false);
+        data.setYearAndDate(date);
         data.setContent(content);
+        data.setNo(no);
+
         list.add(data);
     }
 
     public void remove(int position) {
         list.remove(position);
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        list.clear();
         notifyDataSetChanged();
     }
 }
