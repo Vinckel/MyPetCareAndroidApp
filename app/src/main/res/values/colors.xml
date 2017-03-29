@@ -23,6 +23,9 @@
     <color name="transparent">#00000000</color>
     <color name="silverLine">#EAEAEA</color>
 
+    <color name="indicator">#FFFFFF</color>
+    <color name="indicatorSelectedFont">#FF8278</color>
+
     <color name="diaryListDateFont">#717171</color>
     <color name="diaryListDateLittleFont">#9B9B9B</color>
     <color name="diaryListContentFont">#717171</color>
