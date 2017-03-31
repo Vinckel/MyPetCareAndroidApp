@@ -135,19 +135,26 @@ public class SlidingTabsBasicFragment extends Fragment {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             // Inflate a new layout from our resources
-            View view = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
-                    container, false);
-            // Add the newly created View to the ViewPager
-            container.addView(view);
+            View v = null;
 
-            // Retrieve a TextView from the inflated View, and update its text
-            TextView title = (TextView) view.findViewById(R.id.item_title);
-            title.setText(String.valueOf(position + 1));
+            if (position == 7) {
+                v = getActivity().getLayoutInflater().inflate(R.layout.fragment_hospital, container, false);
+                container.addView(v);
+            } else {
+                v = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
+                        container, false);
+                // Add the newly created View to the ViewPager
+                container.addView(v);
 
+                // Retrieve a TextView from the inflated View, and update its text
+                TextView title = (TextView) v.findViewById(R.id.item_title);
+                title.setText(String.valueOf(position + 1));
+
+            }
 //            Log.i(LOG_TAG, "instantiateItem() [position: " + position + "]");
 
             // Return the View
-            return view;
+            return v;
         }
 
         /**
