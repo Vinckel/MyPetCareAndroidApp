@@ -24,7 +24,9 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 class SlidingTabStrip extends LinearLayout {
 
@@ -49,6 +51,7 @@ class SlidingTabStrip extends LinearLayout {
     private final float mDividerHeight;
 
     private int mSelectedPosition;
+    private int mBeforeSelectedPosition;
     private float mSelectionOffset;
 
     private SlidingTabLayout.TabColorizer mCustomTabColorizer;
@@ -109,6 +112,7 @@ class SlidingTabStrip extends LinearLayout {
     }
 
     void onViewPagerPageChanged(int position, float positionOffset) {
+        mBeforeSelectedPosition = mSelectedPosition;
         mSelectedPosition = position;
         mSelectionOffset = positionOffset;
         invalidate();
@@ -126,6 +130,9 @@ class SlidingTabStrip extends LinearLayout {
         // Thick colored underline below the current selection
         if (childCount > 0) {
             View selectedTitle = getChildAt(mSelectedPosition);
+            ((TextView) getChildAt(mBeforeSelectedPosition)).setTextColor(getResources().getColor(petcare.com.mypetcare.R.color.indicator));
+            ((TextView) selectedTitle).setTextColor(getResources().getColor(petcare.com.mypetcare.R.color.indicatorSelectedFont));
+
             int left = selectedTitle.getLeft();
             int right = selectedTitle.getRight();
             int color = tabColorizer.getIndicatorColor(mSelectedPosition);
@@ -145,6 +152,7 @@ class SlidingTabStrip extends LinearLayout {
             }
 
             mSelectedIndicatorPaint.setColor(color);
+//            mSelectedIndicatorPaint.setColor(getResources().getColor(petcare.com.mypetcare.R.color.colorPrimary));
 
 //            canvas.drawRect(left, height - mSelectedIndicatorThickness, right,
 //                    height, mSelectedIndicatorPaint);

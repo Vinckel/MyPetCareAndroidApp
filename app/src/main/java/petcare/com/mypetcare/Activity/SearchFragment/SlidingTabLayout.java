@@ -240,6 +240,22 @@ public class SlidingTabLayout extends HorizontalScrollView {
     }
 
     private void scrollToTab(int tabIndex, int positionOffset) {
+//        final int tabStripChildCount = mTabStrip.getChildCount();
+//        if (tabStripChildCount == 0 || tabIndex < 0 || tabIndex >= tabStripChildCount) {
+//            return;
+//        }
+//
+//        View selectedChild = mTabStrip.getChildAt(tabIndex);
+//        if (selectedChild != null) {
+//            int targetScrollX = selectedChild.getLeft() + positionOffset;
+//
+//            if (tabIndex > 0 || positionOffset > 0) {
+//                // If we're not at the first child and are mid-scroll, make sure we obey the offset
+//                targetScrollX -= mTitleOffset;
+//            }
+//
+//            scrollTo(targetScrollX, 0);
+//        }
         final int tabStripChildCount = mTabStrip.getChildCount();
         if (tabStripChildCount == 0 || tabIndex < 0 || tabIndex >= tabStripChildCount) {
             return;
@@ -247,12 +263,10 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
         View selectedChild = mTabStrip.getChildAt(tabIndex);
         if (selectedChild != null) {
-            int targetScrollX = selectedChild.getLeft() + positionOffset;
-
-            if (tabIndex > 0 || positionOffset > 0) {
-                // If we're not at the first child and are mid-scroll, make sure we obey the offset
-                targetScrollX -= mTitleOffset;
-            }
+            int viewWidth = getWidth();
+            int tabWidth = selectedChild.getWidth();
+            int tabPosition = selectedChild.getLeft() + positionOffset;
+            int targetScrollX = tabPosition - viewWidth / 2 + tabWidth / 2;
 
             scrollTo(targetScrollX, 0);
         }
