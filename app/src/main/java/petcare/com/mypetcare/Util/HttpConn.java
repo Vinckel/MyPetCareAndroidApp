@@ -14,9 +14,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.http.json.JsonHttpContent;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
-import com.google.api.client.json.JsonParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.gson.JsonObject;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,6 +36,17 @@ public class HttpConn extends AsyncTask<Object, Void, HttpResultVO> {
 
     public void setContext(Global global) {
         this.global = global;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        if (!global.isTokenApiCalling() && !global.isValidToken()) {
+            String email = global.getEmail();
+            TokenApi tokenApi = new TokenApi();
+            tokenApi.setContext(global);
+            tokenApi.execute(email);
+        }
     }
 
     @Override

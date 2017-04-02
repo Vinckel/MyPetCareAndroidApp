@@ -24,9 +24,16 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import petcare.com.mypetcare.Adapter.HospitalListViewAdapter;
 import petcare.com.mypetcare.R;
+import petcare.com.mypetcare.Util.GeneralApi;
 
 /**
  * A basic sample which shows how to use {@link com.example.android.common.view.SlidingTabLayout}
@@ -34,6 +41,8 @@ import petcare.com.mypetcare.R;
  * when scrolling.
  */
 public class SlidingTabsBasicFragment extends Fragment {
+    private int hospitalCurrentPosition = 1;
+    private static final int SEARCH_COUNT = 20;
 
     static final String LOG_TAG = "SlidingTabsBasicFragment";
 
@@ -124,9 +133,43 @@ public class SlidingTabsBasicFragment extends Fragment {
          */
         @Override
         public CharSequence getPageTitle(int position) {
-            return "Item " + (position + 1);
+            String title = null;
+
+            switch (position) {
+//                case 1:
+//                    break;
+//                case 2:
+//                    break;
+//                case 3:
+//                    break;
+//                case 4:
+//                    break;
+//                case 5:
+//                    break;
+//                case 6:
+//                    break;
+                case 7:
+                    title = "병원";
+                    break;
+//                case 8:
+//                    break;
+//                case 9:
+//                    break;
+                default:
+                    title = "Item " + (position + 1);
+                    break;
+            }
+
+            return title;
         }
         // END_INCLUDE (pageradapter_getpagetitle)
+
+        public class HospitalApi extends GeneralApi {
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+            }
+        }
 
         /**
          * Instantiate the {@link View} which should be displayed at {@code position}. Here we
@@ -137,21 +180,79 @@ public class SlidingTabsBasicFragment extends Fragment {
             // Inflate a new layout from our resources
             View v = null;
 
-            if (position == 7) {
-                v = getActivity().getLayoutInflater().inflate(R.layout.fragment_hospital, container, false);
-                container.addView(v);
-            } else {
-                v = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
-                        container, false);
-                // Add the newly created View to the ViewPager
-                container.addView(v);
+            switch (position) {
+//                case 1:
+//                    break;
+//                case 2:
+//                    break;
+//                case 3:
+//                    break;
+//                case 4:
+//                    break;
+//                case 5:
+//                    break;
+//                case 6:
+//                    break;
+                case 7:
+                    v = getActivity().getLayoutInflater().inflate(R.layout.fragment_hospital, container, false);
+                    container.addView(v);
+                    ListView lvHospitalList = (ListView) v.findViewById(R.id.lv_hospital_list);
+                    HospitalListViewAdapter adapter = new HospitalListViewAdapter(v.getContext());
+                    HospitalApi hospitalApi = new HospitalApi();
 
-                // Retrieve a TextView from the inflated View, and update its text
-                TextView title = (TextView) v.findViewById(R.id.item_title);
-                title.setText(String.valueOf(position + 1));
+                    Map headers = new HashMap<>();
+                    String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+                    String serviceId = "MPMS_02001";
+                    String contentType = "application/json";
+                    headers.put("url", url);
+                    headers.put("serviceName", serviceId);
 
+                    Map params = new HashMap<>();
+//                    params.put("USER_EMAIL", global.get("email"));
+                    params.put("SEARCH_COUNT", SEARCH_COUNT);
+                    params.put("SEARCH_PAGE", hospitalCurrentPosition++);
+
+//                    hospitalApi.execute(headers, params);
+
+                    adapter.addItem("test", "testdesc", "testdesc", R.drawable.ic_menu_camera, Arrays.asList(new String[]{"d", "b"}));
+                    adapter.addItem("test", "testdesc", "testdesc", R.drawable.ic_menu_camera, Arrays.asList(new String[]{"d", "b"}));
+                    adapter.addItem("test", "testdesc", "testdesc", R.drawable.ic_menu_camera, Arrays.asList(new String[]{"d", "b"}));
+                    adapter.addItem("test", "testdesc", "testdesc", R.drawable.ic_menu_camera, Arrays.asList(new String[]{"d", "b"}));
+                    adapter.addItem("test", "testdesc", "testdesc", R.drawable.ic_menu_camera, Arrays.asList(new String[]{"d", "b"}));
+                    adapter.addItem("test", "testdesc", "testdesc", R.drawable.ic_menu_camera, Arrays.asList(new String[]{"d", "b"}));
+                    adapter.addItem("test", "testdesc", "testdesc", R.drawable.ic_menu_camera, Arrays.asList(new String[]{"d", "b"}));
+                    adapter.addItem("test", "testdesc", "testdesc", R.drawable.ic_menu_camera, Arrays.asList(new String[]{"d", "b"}));
+                    lvHospitalList.setAdapter(adapter);
+                    break;
+//                case 8:
+//                    break;
+//                case 9:
+//                    break;
+                default:
+                    v = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
+                            container, false);
+                    // Add the newly created View to the ViewPager
+                    container.addView(v);
+
+                    // Retrieve a TextView from the inflated View, and update its text
+                    TextView title = (TextView) v.findViewById(R.id.item_title);
+                    title.setText(String.valueOf(position + 1));
+                    break;
             }
-//            Log.i(LOG_TAG, "instantiateItem() [position: " + position + "]");
+
+//            if (position == 7) {
+//                v = getActivity().getLayoutInflater().inflate(R.layout.fragment_hospital, container, false);
+//                container.addView(v);
+//            } else {
+//                v = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
+//                        container, false);
+//                // Add the newly created View to the ViewPager
+//                container.addView(v);
+//
+//                // Retrieve a TextView from the inflated View, and update its text
+//                TextView title = (TextView) v.findViewById(R.id.item_title);
+//                title.setText(String.valueOf(position + 1));
+//            }
 
             // Return the View
             return v;
@@ -166,6 +267,5 @@ public class SlidingTabsBasicFragment extends Fragment {
             container.removeView((View) object);
 //            Log.i(LOG_TAG, "destroyItem() [position: " + position + "]");
         }
-
     }
 }

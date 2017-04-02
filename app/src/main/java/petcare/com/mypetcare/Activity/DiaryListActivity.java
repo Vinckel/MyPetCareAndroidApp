@@ -21,7 +21,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -36,8 +37,12 @@ import java.util.Map;
 
 import petcare.com.mypetcare.Adapter.DiaryListViewAdapter;
 import petcare.com.mypetcare.Model.DiaryListData;
+import petcare.com.mypetcare.Model.DiaryListVO;
 import petcare.com.mypetcare.Model.HttpResultVO;
 import petcare.com.mypetcare.R;
+import petcare.com.mypetcare.Util.GeneralApi;
+import petcare.com.mypetcare.Util.Global;
+import petcare.com.mypetcare.Util.GsonUtil;
 import petcare.com.mypetcare.Util.HttpConn;
 
 public class DiaryListActivity extends BaseActivity {
@@ -230,33 +235,65 @@ public class DiaryListActivity extends BaseActivity {
 
     @Override
     public void onResume() {
+        moreLoading = false;
         super.onResume();
         adapter.clear();
         currentPosition = 1;
         moreItems();
     }
 
-    private void parseAndShow(HttpResultVO httpResultVO) {
-        if (httpResultVO != null && httpResultVO.getData() != null && httpResultVO.getData().size() > 0) {
-            List<DiaryListData> parseData = new ArrayList<>();
-            List<Object> data = httpResultVO.getData();
+    private void moreItems() {
+        if (moreLoading == false) {
+            moreLoading = true;
+        } else {
+            return;
+        }
 
-            for (int i = 0; i < data.size(); i++) {
-                DiaryListData dataObj = new DiaryListData();
+        DiaryApi diaryApi = new DiaryApi();
+
+        Map headers = new HashMap<>();
+        String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+        String serviceId = "MPMS_02001";
+        String contentType = "application/json";
+        headers.put("url", url);
+        headers.put("serviceName", serviceId);
+
+        Map params = new HashMap<>();
+//        params.put("USER_EMAIL", global.get("email"));
+        params.put("SEARCH_COUNT", SEARCH_COUNT);
+        params.put("SEARCH_PAGE", currentPosition++);
+
+        diaryApi.execute(headers, params);
+    }
+
+    public class DiaryApi extends GeneralApi {
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            List<DiaryListData> parseData = new ArrayList<>();
+
+            DiaryListVO diaryListVO = GsonUtil.fromJson(result, DiaryListVO.class);
+            List<DiaryListVO.DiaryObject> list = diaryListVO.getData();
+
+            if (CollectionUtils.isEmpty(list)) {
+                return;
+            }
+
+            for (DiaryListVO.DiaryObject diaries : list) {
                 try {
-                    String registerTime = MapUtils.getString((Map) data.get(i), "FRST_REGIST_DTIME");
-                    String contents = MapUtils.getString((Map) data.get(i), "PET_JOURNAL_CN");
-                    Integer no = MapUtils.getInteger((Map) data.get(i), "PET_JOURNAL_SN");
-                    dataObj.setContent(URLDecoder.decode(contents, "UTF-8"));
-                    dataObj.setYearAndDate(SDF_DATA.parse(registerTime));
-                    dataObj.setNo(no);
-                    parseData.add(dataObj);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                    DiaryListData diaryListData = new DiaryListData();
+                    diaryListData.setRawDate(SDF_DATA.parse(diaries.getCreateDate()));
+                    diaryListData.setContent(URLDecoder.decode(diaries.getContents(), "UTF-8"));
+                    diaryListData.setNo(diaries.getNo());
+                    parseData.add(diaryListData);
                 } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
             }
+
+            moreLoading = false;
 
             Collections.sort(parseData, new Comp());
             Collections.reverse(parseData);
@@ -267,72 +304,38 @@ public class DiaryListActivity extends BaseActivity {
 
             reCalcNewYear();
             adapter.notifyDataSetChanged();
-
-            Log.d("tag", "tag");
-        }
-    }
-
-    private void moreItems() {
-        if (moreLoading == false) {
-            moreLoading = true;
-        } else {
-            return;
         }
 
-        DiaryMoreApi diaryMoreApi = new DiaryMoreApi();
-        diaryMoreApi.setContext(global);
+        private void reCalcNewYear() {
+            List<DiaryListData> list = new ArrayList<>();
 
-        String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-        String serviceId = "MPMS_02001";
-        String contentType = "application/json";
-
-        Map params = new HashMap<>();
-        params.put("USER_EMAIL", global.get("email"));
-        params.put("SEARCH_COUNT", SEARCH_COUNT);
-        params.put("SEARCH_PAGE", currentPosition++);
-
-        diaryMoreApi.execute(contentType, url, serviceId, params, global.getToken());
-    }
-
-    public class DiaryMoreApi extends HttpConn {
-
-        @Override
-        protected void onPostExecute(HttpResultVO result) {
-            super.onPostExecute(result);
-            parseAndShow(result);
-            moreLoading = false;
-        }
-    }
-
-    private void reCalcNewYear() {
-        List<DiaryListData> list = new ArrayList<>();
-
-        for (int i = 0; i < adapter.getCount(); i++) {
-            list.add((DiaryListData) lvDiary.getAdapter().getItem(i));
-        }
-
-        for (int i = 0; i < list.size(); i++) {
-            DiaryListData listData = list.get(i);
-            boolean isViewYear = false;
-
-            if (i + 1 == list.size()) {
-                isViewYear = true;
-            } else if (i + 1 < list.size()) {
-                int year = Integer.parseInt(listData.getYear());
-                int afterYear = Integer.parseInt(list.get(i + 1).getYear());
-
-                if (year < afterYear) {
-                    isViewYear = true;
-                }
+            for (int i = 0; i < adapter.getCount(); i++) {
+                list.add((DiaryListData) lvDiary.getAdapter().getItem(i));
             }
 
-            adapter.markYearAtPosition(isViewYear, i);
-        }
-    }
+            for (int i = 0; i < list.size(); i++) {
+                DiaryListData listData = list.get(i);
+                boolean isViewYear = false;
 
-    class Comp implements Comparator<DiaryListData> {
-        public int compare(DiaryListData d1, DiaryListData d2) {
-            return d1.getRawDate().compareTo(d2.getRawDate());
+                if (i + 1 == list.size()) {
+                    isViewYear = true;
+                } else if (i + 1 < list.size()) {
+                    int year = Integer.parseInt(listData.getYear());
+                    int afterYear = Integer.parseInt(list.get(i + 1).getYear());
+
+                    if (year < afterYear) {
+                        isViewYear = true;
+                    }
+                }
+
+                adapter.markYearAtPosition(isViewYear, i);
+            }
+        }
+
+        class Comp implements Comparator<DiaryListData> {
+            public int compare(DiaryListData d1, DiaryListData d2) {
+                return d1.getRawDate().compareTo(d2.getRawDate());
+            }
         }
     }
 }
