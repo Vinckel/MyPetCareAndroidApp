@@ -1,27 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@android:color/white"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="petcare.com.mypetcare.Activity.HospitalDetailActivity"
     tools:showIn="@layout/activity_hospital_detail">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/vp_hospital_detail"
-        android:layout_width="match_parent"
-        android:layout_height="270dp" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="qwerqwerqwerqwre" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="270dp">
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp_hospital_detail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true" />
+
+            <TextView
+                android:id="@+id/tv_hospital_detail_page_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="13dp"
+                android:background="#88000000"
+                android:gravity="center"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="0/0"
+                android:textColor="@android:color/white"
+
+                android:textSize="13sp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tv_hospital_detail_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center_vertical"
+                    android:text="Real Animal Hospital"
+                    android:textColor="#4a4a4a"
+                    android:textSize="20sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_hospital_detail_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:text="0.5km"
+                    android:textColor="#9b9b9b"
+                    android:textSize="13sp"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_hospital_detail_title"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_hospital_detail_title" />
+
+                <ImageView
+                    android:id="@+id/iv_hospital_detail_map"
+                    android:layout_width="50dp"
+                    android:layout_height="47dp"
+                    android:src="@drawable/ic_beauty_shop_t"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_hospital_detail_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:text="Seoul National University Medical Center"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_hospital_detail_title" />
+
+                <LinearLayout
+                    android:id="@+id/ll_hospital_detail_tags"
+                    android:layout_width="0dp"
+                    android:layout_height="5dp"
+                    android:layout_marginTop="11dp"
+                    android:background="#0000FF"
+                    android:orientation="horizontal"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_hospital_detail_subtitle">
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_hospital_detail_time_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
+                    android:text="Time"
+                    android:textColor="#4f4f4f"
+                    android:textSize="12sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ll_hospital_detail_tags" />
+
+                <TextView
+                    android:id="@+id/tv_hospital_detail_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="9dp"
+                    android:layout_marginStart="9dp"
+                    android:layout_marginTop="23dp"
+                    android:text="DDDDDDDDDDDDD\nAAAAAAAAAAAAAA\nBBBBBBBBBBB\nCCCCCCCCCCCCC\nCCCCCCCCCCCCC\nCCCCCCCCCCCCC\nCCCCCCCCCCCCC\nCCCCCCCCCCCCC"
+                    android:textColor="#898989"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_hospital_detail_time_title"
+                    app:layout_constraintTop_toBottomOf="@+id/ll_hospital_detail_tags" />
+
+                <TextView
+                    android:id="@+id/tv_hospital_detail_url_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Homepage"
+                    android:textColor="#4f4f4f"
+                    android:textSize="12sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_hospital_detail_time" />
+
+                <TextView
+                    android:id="@+id/tv_hospital_detail_url"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="9dp"
+                    android:layout_marginTop="10dp"
+                    android:text="www.realanimal.co.kr"
+                    android:textColor="#7579e8"
+                    android:textSize="12sp"
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_hospital_detail_time"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_hospital_detail_time" />
+
+                <ImageView
+                    android:id="@+id/iv_hospital_detail_line"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="25dp"
+                    android:src="#eaeaea"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_hospital_detail_url" />
+
+                <TextView
+                    android:id="@+id/tv_hospital_detail_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="42dp"
+                    android:text="DDDDDDDDDDDDD\nAAAAAAAAAAAAAA\nBBBBBBBBBBB\nCCCCCCCCCCCCC\nCCCCCCCCCCCCC\nCCCCCCCCCCCCC\nCCCCCCCCCCCCC\nCCCCCCCCCCCCC"
+                    android:textColor="#4a4a4a"
+                    android:textSize="14sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/iv_hospital_detail_line" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="42dp"
+                    android:background="@color/colorPrimary"
+                    android:text="make a Call"
+                    android:textColor="@android:color/white"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_hospital_detail_description" />
+            </android.support.constraint.ConstraintLayout>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</ScrollView>

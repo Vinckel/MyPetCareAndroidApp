@@ -16,6 +16,7 @@
 
 package petcare.com.mypetcare.Activity.SearchFragment;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -24,6 +25,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -31,6 +33,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import petcare.com.mypetcare.Activity.HospitalDetailActivity;
 import petcare.com.mypetcare.Adapter.HospitalListViewAdapter;
 import petcare.com.mypetcare.R;
 import petcare.com.mypetcare.Util.GeneralApi;
@@ -223,6 +226,15 @@ public class SlidingTabsBasicFragment extends Fragment {
                     adapter.addItem("test", "testdesc", "testdesc", R.drawable.ic_menu_camera, Arrays.asList(new String[]{"d", "b"}));
                     adapter.addItem("test", "testdesc", "testdesc", R.drawable.ic_menu_camera, Arrays.asList(new String[]{"d", "b"}));
                     lvHospitalList.setAdapter(adapter);
+                    lvHospitalList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Intent intent = new Intent(getActivity(), HospitalDetailActivity.class);
+                            intent.putExtra("position", position);
+
+                            startActivity(intent);
+                        }
+                    });
                     break;
 //                case 8:
 //                    break;

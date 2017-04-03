@@ -4,7 +4,6 @@ import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -12,7 +11,6 @@ import com.android.volley.toolbox.NetworkImageView;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import petcare.com.mypetcare.R;
@@ -27,9 +25,9 @@ public class HospitalDetailViewpagerAdapter extends PagerAdapter {
     private List<String> imageUrlList;
     private ImageLoader imageLoader;
 
-    public HospitalDetailViewpagerAdapter(LayoutInflater inflater) {
+    public HospitalDetailViewpagerAdapter(LayoutInflater inflater, List<String> imageUrlList) {
         this.inflater = inflater;
-        imageUrlList = new ArrayList<>();
+        this.imageUrlList = imageUrlList;
     }
     /**
      * Return the number of views available.
@@ -56,6 +54,7 @@ public class HospitalDetailViewpagerAdapter extends PagerAdapter {
         imageLoader = VolleySingleton.getInstance(container.getContext()).getImageLoader();
 
         NetworkImageView image = (NetworkImageView) v.findViewById(R.id.iv_hospital_detail_viewpager);
+
         image.setImageUrl(imageUrlList.get(position), imageLoader);
         return v;
     }
