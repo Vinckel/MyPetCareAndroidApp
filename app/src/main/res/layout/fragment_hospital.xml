@@ -12,7 +12,9 @@
         android:orientation="horizontal">
 
         <Spinner
+            android:id="@+id/sp_hospital_distance"
             android:layout_width="106dp"
+            android:entries="@array/city"
             android:layout_height="match_parent" />
 
         <RelativeLayout

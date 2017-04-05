@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ public class HospitalDetailActivity extends AppCompatActivity {
     private ImageButton ibBack;
     private TextView tvPageCount;
     private List<String> urls;
+    private ImageView ivMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,15 @@ public class HospitalDetailActivity extends AppCompatActivity {
         Toolbar parent = (Toolbar) actionBarView.getParent();
         parent.setContentInsetsAbsolute(0, 0);
 
+        ivMap = (ImageView) findViewById(R.id.iv_hospital_detail_map);
+        ivMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), HospitalMapActivity.class);
+
+                startActivity(intent);
+            }
+        });
         tvPageCount = (TextView) findViewById(R.id.tv_hospital_detail_page_count);
         ibBack = (ImageButton) findViewById(R.id.ib_hospital_detail_back);
         ibBack.setOnClickListener(new View.OnClickListener() {

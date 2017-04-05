@@ -20,12 +20,16 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -108,15 +112,19 @@ public class SlidingTabsBasicFragment extends Fragment {
      * {@link SlidingTabLayout}.
      */
     class SamplePagerAdapter extends PagerAdapter {
-
+        private int adoptPageState;
         /**
          * @return the number of pages to display
          */
         @Override
         public int getCount() {
-            return 10;
+            return 9;
         }
 
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
         /**
          * @return true if the value returned from {@link #instantiateItem(ViewGroup, int)} is the
          * same object as the {@link View} added to the {@link ViewPager}.
@@ -139,24 +147,30 @@ public class SlidingTabsBasicFragment extends Fragment {
             String title = null;
 
             switch (position) {
-//                case 1:
-//                    break;
-//                case 2:
-//                    break;
-//                case 3:
-//                    break;
-//                case 4:
-//                    break;
-//                case 5:
-//                    break;
-//                case 6:
-//                    break;
-                case 7:
+                case 0:
+                    title = "카페";
+                    break;
+                case 1:
+                    title = "장례";
+                    break;
+                case 2:
+                    title = "분양";
+                    break;
+                case 3:
+                    title = "신고";
+                    break;
+                case 4:
+                    title = "공고";
+                    break;
+                case 5:
                     title = "병원";
                     break;
-//                case 8:
+                case 6:
+                    title = "미용";
+                    break;
+//                case 7:
 //                    break;
-//                case 9:
+//                case 8:
 //                    break;
                 default:
                     title = "Item " + (position + 1);
@@ -179,28 +193,56 @@ public class SlidingTabsBasicFragment extends Fragment {
          * inflate a layout from the apps resources and then change the text view to signify the position.
          */
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
+        public Object instantiateItem(final ViewGroup container, int position) {
             // Inflate a new layout from our resources
-            View v = null;
+            View view = null;
 
             switch (position) {
+//                case 0:
+//                    break;
 //                case 1:
 //                    break;
-//                case 2:
-//                    break;
+                case 2:
+                    switch (adoptPageState) {
+                        case 1:
+                            view = getActivity().getLayoutInflater().inflate(R.layout.fragment_adopt_list, container, false);
+                            container.addView(view);
+                            break;
+                        case 2:
+                            break;
+                        default:
+                            view = getActivity().getLayoutInflater().inflate(R.layout.fragment_adopt, container, false);
+                            container.addView(view);
+                            ImageView ivAdopt = (ImageView) view.findViewById(R.id.iv_adopt);
+                            ivAdopt.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    adoptPageState = 1;
+                                    notifyDataSetChanged();
+                                }
+                            });
+                            break;
+                    }
+//                    view = getActivity().getLayoutInflater().inflate(R.layout.fragment_adopt, container, false);
+//                    container.addView(view);
+//                    ImageView ivAdopt = (ImageView) view.findViewById(R.id.iv_adopt);
+//                    ivAdopt.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            adoptPageState = 1;
+//                            notifyDataSetChanged();
+//                        }
+//                    });
+                    break;
 //                case 3:
 //                    break;
 //                case 4:
 //                    break;
-//                case 5:
-//                    break;
-//                case 6:
-//                    break;
-                case 7:
-                    v = getActivity().getLayoutInflater().inflate(R.layout.fragment_hospital, container, false);
-                    container.addView(v);
-                    ListView lvHospitalList = (ListView) v.findViewById(R.id.lv_hospital_list);
-                    HospitalListViewAdapter adapter = new HospitalListViewAdapter(v.getContext());
+                case 5:
+                    view = getActivity().getLayoutInflater().inflate(R.layout.fragment_hospital, container, false);
+                    container.addView(view);
+                    ListView lvHospitalList = (ListView) view.findViewById(R.id.lv_hospital_list);
+                    HospitalListViewAdapter adapter = new HospitalListViewAdapter(view.getContext());
                     HospitalApi hospitalApi = new HospitalApi();
 
                     Map headers = new HashMap<>();
@@ -236,18 +278,20 @@ public class SlidingTabsBasicFragment extends Fragment {
                         }
                     });
                     break;
+//                case 6:
+//                    break;
+//                case 7:
+//                    break;
 //                case 8:
 //                    break;
-//                case 9:
-//                    break;
                 default:
-                    v = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
+                    view = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
                             container, false);
                     // Add the newly created View to the ViewPager
-                    container.addView(v);
+                    container.addView(view);
 
                     // Retrieve a TextView from the inflated View, and update its text
-                    TextView title = (TextView) v.findViewById(R.id.item_title);
+                    TextView title = (TextView) view.findViewById(R.id.item_title);
                     title.setText(String.valueOf(position + 1));
                     break;
             }
@@ -267,7 +311,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 //            }
 
             // Return the View
-            return v;
+            return view;
         }
 
         /**

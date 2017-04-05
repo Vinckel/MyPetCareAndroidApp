@@ -55,6 +55,10 @@
         <activity
             android:name=".Activity.HospitalDetailActivity"
             android:label="@string/title_activity_hospital_detail"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.HospitalMapActivity"
+            android:label="@string/title_activity_hospital_map"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="city">
+        <item>1km이내</item>
+        <item>2km이내</item>
+        <item>3km이내</item>
+        <item>4km이내</item>
+    </string-array>
+</resources>
