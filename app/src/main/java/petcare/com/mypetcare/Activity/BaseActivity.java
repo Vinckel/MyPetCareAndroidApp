@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 
+import org.apache.commons.lang3.StringUtils;
+
 import petcare.com.mypetcare.Util.GeneralApi;
 import petcare.com.mypetcare.Util.Global;
 import petcare.com.mypetcare.Util.TokenApi;
@@ -34,13 +36,13 @@ public class BaseActivity extends AppCompatActivity {
             GeneralApi.setGlobal(global);
             SharedPreferences pref = getSharedPreferences("local_auth", MODE_PRIVATE);
 
-            String email = pref.getString("email", "test@test.com");
+            String email = pref.getString("email", null);
             String token = pref.getString("token", null);
 
             global.set("email", email);
             global.set("token", token);
 
-            if (!global.isValidToken()) {
+            if (!global.isValidToken() && StringUtils.isNotEmpty(email)) {
                 TokenApi tokenApi = new TokenApi();
                 tokenApi.setContext(global);
                 tokenApi.execute(email);

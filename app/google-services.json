@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "367179060025",
+    "project_id": "mypetcare-d0b4e"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:367179060025:android:d3cfe3960fb9b332",
+        "android_client_info": {
+          "package_name": "petcare.com.mypetcare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "367179060025-gguuqg1sjjmqncfaca36phnve2sjea6g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "petcare.com.mypetcare",
+            "certificate_hash": "937936b21fd9d4002571f34277a583802ea4c3ca"
+          }
+        },
+        {
+          "client_id": "367179060025-vd4r68e687cj7v8psfsqgiuc1m56lj18.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWN0cllepZy8OBztBrd9-2HAqLuZXmb0E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
