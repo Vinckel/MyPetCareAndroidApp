@@ -32,6 +32,9 @@ import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
+import com.nhn.android.naverlogin.OAuthLogin;
+import com.nhn.android.naverlogin.OAuthLoginHandler;
+import com.nhn.android.naverlogin.ui.view.OAuthLoginButton;
 
 import org.apache.commons.collections4.MapUtils;
 import org.json.JSONException;
@@ -54,6 +57,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private static final int RC_SIGN_IN = 9001; // google
     protected static Global global = null;
     private ISessionCallback iSessionCallback;
+    private OAuthLogin mOAuthLoginModule;
 
     private void saveEmail(String email) {
         SharedPreferences.Editor edit = pref.edit();
@@ -157,6 +161,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if (checkEmail()) {
             goToMain();
         }
+        initializeNaverAPI();
 
         iSessionCallback = new SessionCallback();
         Session.getCurrentSession().addCallback(iSessionCallback);
@@ -249,25 +254,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
     }
 
-    private void kakaoLogin() {
-        UserManagement.requestMe(new MeResponseCallback() {
-            @Override
-            public void onSessionClosed(ErrorResult errorResult) {
-                Log.e("kakaoSessionError", errorResult.getErrorMessage());
-            }
-
-            @Override
-            public void onNotSignedUp() {
-
-            }
-
-            @Override
-            public void onSuccess(UserProfile result) {
-                Log.e("kakao login email", result.getEmail());
-            }
-        });
-    }
-
     private void getToken(String email) {
         TokenApi tokenApi = new TokenApi();
         tokenApi.setContext(global);
@@ -309,5 +295,42 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     protected void onDestroy() {
         super.onDestroy();
         Session.getCurrentSession().removeCallback(iSessionCallback);
+    }
+
+    private void initializeNaverAPI() {
+        mOAuthLoginModule = OAuthLogin.getInstance();
+        mOAuthLoginModule.init(
+                this,
+                getString(R.string.naver_client_id),
+                getString(R.string.naver_client_secret),
+                getString(R.string.naver_client_name)
+        );
+
+        // 네이버 로그인 버튼 리스너 등록
+        OAuthLoginButton naverLoginButton = (OAuthLoginButton) findViewById(R.id.bt_login_naver);
+        naverLoginButton.setOAuthLoginHandler(new OAuthLoginHandler() {
+            @Override
+            public void run(boolean b) {
+                if (b) {
+                    final String token = mOAuthLoginModule.getAccessToken(LoginActivity.this);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String response = mOAuthLoginModule.requestApi(LoginActivity.this, token, "https://openapi.naver.com/v1/nid/me");
+                            try {
+                                JSONObject json = new JSONObject(response);
+                                // response 객체에서 원하는 값 얻어오기
+                                String email = json.getJSONObject("response").getString("email");
+                                setEmailAndGoMain(email);
+                                // 액티비티 이동 등 원하는 함수 호출
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                } else {
+                }
+            }
+        });
     }
 }
