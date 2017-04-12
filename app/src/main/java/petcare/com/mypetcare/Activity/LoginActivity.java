@@ -2,21 +2,18 @@ package petcare.com.mypetcare.Activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -28,12 +25,18 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.kakao.auth.ISessionCallback;
+import com.kakao.auth.Session;
+import com.kakao.network.ErrorResult;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.MeResponseCallback;
+import com.kakao.usermgmt.response.model.UserProfile;
+import com.kakao.util.exception.KakaoException;
 
 import org.apache.commons.collections4.MapUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -50,6 +53,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private GoogleApiClient googleApiClient;
     private static final int RC_SIGN_IN = 9001; // google
     protected static Global global = null;
+    private ISessionCallback iSessionCallback;
 
     private void saveEmail(String email) {
         SharedPreferences.Editor edit = pref.edit();
@@ -92,6 +96,58 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 //        Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
 
+    private class SessionCallback implements ISessionCallback {
+        @Override
+        public void onSessionOpened() {
+            Log.d("TAG" , "세션 오픈됨");
+            // 사용자 정보를 가져옴, 회원가입 미가입시 자동가입 시킴
+            kakaoRequestMe();
+        }
+
+        @Override
+        public void onSessionOpenFailed(KakaoException exception) {
+            if(exception != null) {
+                Log.d("TAG" , exception.getMessage());
+            }
+        }
+    }
+
+    protected void kakaoRequestMe() {
+        UserManagement.requestMe(new MeResponseCallback() {
+            @Override
+            public void onFailure(ErrorResult errorResult) {
+                int ErrorCode = errorResult.getErrorCode();
+                int ClientErrorCode = -777;
+
+                if (ErrorCode == ClientErrorCode) {
+                    Toast.makeText(getApplicationContext(), "카카오톡 서버의 네트워크가 불안정합니다. 잠시 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.d("TAG" , "오류로 카카오로그인 실패 ");
+                }
+            }
+
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+                Log.d("TAG" , "오류로 카카오로그인 실패 ");
+            }
+
+            @Override
+            public void onSuccess(UserProfile userProfile) {
+                Log.e("kakaoLogin", userProfile.getEmail());
+                setEmailAndGoMain(userProfile.getEmail());
+                // 사용자정보 추출(완료)
+//                profileUrl = userProfile.getProfileImagePath();
+//                userId = String.valueOf(userProfile.getId());
+//                userName = userProfile.getNickname();
+            }
+
+            @Override
+            public void onNotSignedUp() {
+                // 자동가입이 아닐경우 동의창
+            }
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,11 +158,24 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             goToMain();
         }
 
+        iSessionCallback = new SessionCallback();
+        Session.getCurrentSession().addCallback(iSessionCallback);
+//        Session.getCurrentSession().checkAndImplicitOpen();
+//        Session.getCurrentSession().open(AuthType.KAKAO_TALK, LoginActivity.this);
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
 
-        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
+//        Button btGoogle = (Button) findViewById(R.id.bt_login_google);
+//        btGoogle.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                signIn();
+//            }
+//        });
+
+        SignInButton signInButton = (SignInButton) findViewById(R.id.bt_login_google);
+        signInButton.setSize(SignInButton.SIZE_WIDE);
         signInButton.setScopes(gso.getScopeArray());
 
         signInButton.setOnClickListener(new View.OnClickListener() {
@@ -140,47 +209,61 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         callbackManager = CallbackManager.Factory.create();
 
-        Button fbLogin = (Button) findViewById(R.id.bt_login_facebook);
-        fbLogin.setOnClickListener(new View.OnClickListener() {
+        LoginButton fbLogin = (LoginButton) findViewById(R.id.bt_login_facebook);
+        fbLogin.setReadPermissions("email");
+        fbLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
-            public void onClick(View v) {
-                LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("email"));
-                LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            public void onSuccess(LoginResult loginResult) {
+                AccessToken token = loginResult.getAccessToken();
+                Log.d("result", token.toString());
+                GraphRequest graphRequest = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
                     @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        AccessToken token = loginResult.getAccessToken();
-                        Log.d("result", token.toString());
-                        GraphRequest graphRequest = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(JSONObject object, GraphResponse response) {
-                                Log.d("result", object.toString());
-                                try {
-                                    Map<String, Object> map = GsonUtil.toMap(object);
-                                    String email = MapUtils.getString(map, "email");
-                                    setEmailAndGoMain(email);
-                                } catch (JSONException e) {
-                                    Toast.makeText(LoginActivity.this, "정보를 가져오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-
-                        Bundle params = new Bundle();
-                        params.putString("fields", "email");
-                        graphRequest.setParameters(params);
-                        graphRequest.executeAsync();
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        Log.e("fbLoginCancel", "canceled");
-                    }
-
-                    @Override
-                    public void onError(FacebookException error) {
-                        Log.e("fbLoginError", error.toString());
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        Log.d("result", object.toString());
+                        try {
+                            Map<String, Object> map = GsonUtil.toMap(object);
+                            String email = MapUtils.getString(map, "email");
+                            setEmailAndGoMain(email);
+                        } catch (JSONException e) {
+                            Toast.makeText(LoginActivity.this, "정보를 가져오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        }
                     }
                 });
+
+                Bundle params = new Bundle();
+                params.putString("fields", "email");
+                graphRequest.setParameters(params);
+                graphRequest.executeAsync();
+            }
+
+            @Override
+            public void onCancel() {
+                Log.e("fbLoginCancel", "canceled");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.e("fbLoginError", error.toString());
+            }
+        });
+    }
+
+    private void kakaoLogin() {
+        UserManagement.requestMe(new MeResponseCallback() {
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+                Log.e("kakaoSessionError", errorResult.getErrorMessage());
+            }
+
+            @Override
+            public void onNotSignedUp() {
+
+            }
+
+            @Override
+            public void onSuccess(UserProfile result) {
+                Log.e("kakao login email", result.getEmail());
             }
         });
     }
@@ -217,5 +300,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
         }
+        if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
+            return;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Session.getCurrentSession().removeCallback(iSessionCallback);
     }
 }

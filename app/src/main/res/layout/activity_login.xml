@@ -7,25 +7,49 @@
     tools:context="petcare.com.mypetcare.Activity.LoginActivity">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/ll_login"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <Button
+        <ImageView
+            android:layout_width="117dp"
+            android:layout_height="102dp"
+            android:layout_gravity="center"
+            android:src="@drawable/img_bi" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_login"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        android:padding="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <com.facebook.login.widget.LoginButton
             android:id="@+id/bt_login_facebook"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="facebook" />
-
-        <Button
-            android:id="@+id/bt_login_google"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="google" />
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp" />
 
         <com.google.android.gms.common.SignInButton
-            android:id="@+id/sign_in_button"
-            android:layout_width="wrap_content"
+            android:id="@+id/bt_login_google"
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
+
+        <com.kakao.usermgmt.LoginButton
+            android:id="@+id/bt_login_kakao"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <Button
@@ -35,20 +59,11 @@
             android:layout_marginTop="0dp"
             android:text="naver" />
 
-        <Button
-            android:id="@+id/bt_login_kakao"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
-            android:text="kakao" />
+        <!-- <Button
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="0dp"
+             android:text="kakao" />-->
 
-        <!--<Button
-            android:id="@+id/bt_login_facebook"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
-            android:text="facebook"
-            app:layout_constraintTop_toBottomOf="@+id/bt_login_kakao"
-            tools:layout_editor_absoluteX="0dp" />-->
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
