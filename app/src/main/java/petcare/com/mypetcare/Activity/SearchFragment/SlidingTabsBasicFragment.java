@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -38,6 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import petcare.com.mypetcare.Activity.HospitalDetailActivity;
+import petcare.com.mypetcare.Adapter.AdoptGridViewAdapter;
 import petcare.com.mypetcare.Adapter.HospitalListViewAdapter;
 import petcare.com.mypetcare.R;
 import petcare.com.mypetcare.Util.GeneralApi;
@@ -90,6 +92,9 @@ public class SlidingTabsBasicFragment extends Fragment {
         // Get the ViewPager and set its PagerAdapter so that it can display items
         mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
         mViewPager.setAdapter(new SamplePagerAdapter());
+        Bundle bundle = this.getArguments();
+        int startPage = bundle.getInt("startPage");
+        mViewPager.setCurrentItem(startPage);
         // END_INCLUDE (setup_viewpager)
 
         // BEGIN_INCLUDE (setup_slidingtablayout)
@@ -207,6 +212,23 @@ public class SlidingTabsBasicFragment extends Fragment {
                         case 1:
                             view = getActivity().getLayoutInflater().inflate(R.layout.fragment_adopt_list, container, false);
                             container.addView(view);
+
+                            GridView gv = (GridView) view.findViewById(R.id.gv_adopt_list);
+                            AdoptGridViewAdapter adapter = new AdoptGridViewAdapter(getContext(), R.layout.gridview_adopt_list);
+                            gv.setAdapter(adapter);
+                            adapter.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapter.addItem("http://i.imgur.com/SEBjThb.jpg");
+                            adapter.addItem("http://i.imgur.com/SEBjThb.jpg");
+                            adapter.addItem("http://i.imgur.com/SEBjThb.jpg");
+                            adapter.addItem("http://i.imgur.com/SEBjThb.jpg");
+                            adapter.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapter.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapter.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapter.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapter.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapter.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapter.addItem("http://i.imgur.com/3jXjgTT.jpg");
+
                             break;
                         case 2:
                             break;

@@ -50,6 +50,7 @@ public class MainActivity extends BaseActivity
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, petcare.com.mypetcare.Activity.SearchFragment.MainActivity.class);
+                intent.putExtra("startPage", 5);
                 startActivity(intent);
             }
         });

@@ -47,6 +47,9 @@ public class MainActivity extends FragmentActivity {
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             SlidingTabsBasicFragment fragment = new SlidingTabsBasicFragment();
+            Bundle b = new Bundle();
+            b.putInt("startPage", getIntent().getExtras().getInt("startPage", 0));
+            fragment.setArguments(b);
             transaction.replace(R.id.sample_content_fragment, fragment);
             transaction.commit();
         }
