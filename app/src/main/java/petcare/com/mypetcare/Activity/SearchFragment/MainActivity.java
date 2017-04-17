@@ -20,9 +20,11 @@ package petcare.com.mypetcare.Activity.SearchFragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import petcare.com.mypetcare.Activity.BaseActivity;
 import petcare.com.mypetcare.R;
 
 /**
@@ -32,18 +34,12 @@ import petcare.com.mypetcare.R;
  * For devices with displays with a width of 720dp or greater, the sample log is always visible,
  * on other devices its visibility is controlled by an item on the Action Bar.
  */
-public class MainActivity extends FragmentActivity {
-
-    public static final String TAG = "MainActivity";
-
-    // Whether the Log Fragment is currently shown
-    private boolean mLogShown;
+public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_fragment);
-
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             SlidingTabsBasicFragment fragment = new SlidingTabsBasicFragment();

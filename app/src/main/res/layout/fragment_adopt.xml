@@ -51,7 +51,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/iv_cross"
+            android:id="@+id/iv_mating"
             android:layout_width="81dp"
             android:layout_height="81dp"
             android:src="@drawable/ic_love_n" />

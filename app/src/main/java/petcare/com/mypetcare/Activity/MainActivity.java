@@ -27,6 +27,7 @@ public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawer;
     ImageButton ibHospital;
+    ImageButton ibAdopt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +47,22 @@ public class MainActivity extends BaseActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         ibHospital = (ImageButton) findViewById(R.id.btnHospital);
+        ibAdopt = (ImageButton) findViewById(R.id.btnAdopt);
+
         ibHospital.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, petcare.com.mypetcare.Activity.SearchFragment.MainActivity.class);
                 intent.putExtra("startPage", 5);
+                startActivity(intent);
+            }
+        });
+
+        ibAdopt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, petcare.com.mypetcare.Activity.SearchFragment.MainActivity.class);
+                intent.putExtra("startPage", 2);
                 startActivity(intent);
             }
         });

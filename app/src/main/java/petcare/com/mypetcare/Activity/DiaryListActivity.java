@@ -142,28 +142,21 @@ public class DiaryListActivity extends BaseActivity {
                             return;
                         }
 
-//                        HttpConn diaryEditApi = new HttpConn();
-//                        diaryEditApi.setContext(global);
-//
-//                        String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-//                        String serviceId = "MPMS_02003";
-//                        String contentType = "application/json";
-//
-//                        Map params = new HashMap<>();
-//                        params.put("USER_EMAIL", global.get("email"));
-//                        params.put("PET_JOURNAL_SN", datapopupCurrentData.getNo());
-//                        HttpResultVO httpResultVO = null;
-//
-//                        try {
-//                            httpResultVO = diaryEditApi.execute(contentType, url, serviceId, params, global.getToken()).get();
-////                            startActivity(intent);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        } catch (ExecutionException e) {
-//                            e.printStackTrace();
-//                        }
+                        DiaryRemoveApi diaryRemoveApi = new DiaryRemoveApi();
 
-                        Toast.makeText(DiaryListActivity.this, "click", Toast.LENGTH_SHORT).show();
+                        Map headers = new HashMap<>();
+                        String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+                        String serviceId = "MPMS_02004";
+                        String contentType = "application/json";
+                        headers.put("url", url);
+                        headers.put("serviceName", serviceId);
+
+                        Map params = new HashMap<>();
+                        params.put("PET_JOURNAL_SN", datapopupCurrentData.getNo());
+
+                        diaryRemoveApi.execute(headers, params);
+
+                        Toast.makeText(DiaryListActivity.this, "삭제되었습니다.", Toast.LENGTH_SHORT).show();
                         popup.dismiss();
                     }
                 });
@@ -264,6 +257,14 @@ public class DiaryListActivity extends BaseActivity {
         params.put("SEARCH_PAGE", currentPosition++);
 
         diaryApi.execute(headers, params);
+    }
+
+    public class DiaryRemoveApi extends GeneralApi {
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     public class DiaryApi extends GeneralApi {

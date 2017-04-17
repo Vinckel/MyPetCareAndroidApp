@@ -14,7 +14,7 @@
         android:padding="16dp">
 
         <EditText
-            android:id="@+id/et_adopt_list_search"
+            android:id="@+id/et_mating_list_search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/diaryListLeftBg"
@@ -33,7 +33,7 @@
     </RelativeLayout>
 
     <GridView
-        android:id="@+id/gv_adopt_list"
+        android:id="@+id/gv_mating_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:horizontalSpacing="5dp"

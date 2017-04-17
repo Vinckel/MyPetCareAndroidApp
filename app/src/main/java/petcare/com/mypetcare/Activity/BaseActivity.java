@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
 
 import petcare.com.mypetcare.Util.GeneralApi;
+import petcare.com.mypetcare.Util.GeneralMultipartApi;
 import petcare.com.mypetcare.Util.Global;
 import petcare.com.mypetcare.Util.TokenApi;
 
@@ -34,6 +35,7 @@ public class BaseActivity extends AppCompatActivity {
             initialized = true;
             global = (Global) getApplicationContext();
             GeneralApi.setGlobal(global);
+            GeneralMultipartApi.setGlobal(global);
             SharedPreferences pref = getSharedPreferences("local_auth", MODE_PRIVATE);
 
             String email = pref.getString("email", null);

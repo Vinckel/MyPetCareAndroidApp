@@ -20,14 +20,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -38,7 +38,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import petcare.com.mypetcare.Activity.AdoptDetailActivity;
+import petcare.com.mypetcare.Activity.BaseActivity;
 import petcare.com.mypetcare.Activity.HospitalDetailActivity;
+import petcare.com.mypetcare.Activity.MatingDetailActivity;
+import petcare.com.mypetcare.Activity.MatingRequestActivity;
 import petcare.com.mypetcare.Adapter.AdoptGridViewAdapter;
 import petcare.com.mypetcare.Adapter.HospitalListViewAdapter;
 import petcare.com.mypetcare.R;
@@ -54,6 +58,11 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static final int SEARCH_COUNT = 20;
 
     static final String LOG_TAG = "SlidingTabsBasicFragment";
+    private static ActionBar actionBar;
+    private static TextView tvTitle;
+    private static ImageView ivWrite;
+    private static SamplePagerAdapter adapter;
+    private static final String[] titleArr = {"카페", "장례" ,"분양", "신고", "공고", "병원", "미용", "미용", "미용"};
 
     /**
      * A custom {@link ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -71,9 +80,46 @@ public class SlidingTabsBasicFragment extends Fragment {
      * resources.
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_sample, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_sample, container, false);
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.tb_slide);
+        ((BaseActivity) getActivity()).setSupportActionBar(toolbar);
+
+        actionBar = ((BaseActivity) getActivity()).getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayShowHomeEnabled(false);
+
+        View actionBarView = inflater.inflate(R.layout.actionbar_main2, null);
+        tvTitle = (TextView) actionBarView.findViewById(R.id.tv_main2_title);
+        ivWrite = (ImageView) actionBarView.findViewById(R.id.iv_main2_write);
+
+        ActionBar.LayoutParams lp1 = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
+        actionBar.setCustomView(actionBarView, lp1);
+
+//        Toolbar parent = (Toolbar) actionBarView.getParent();
+        toolbar.setContentInsetsAbsolute(0, 0);
+
+
+
+
+
+        view.setFocusableInTouchMode(true);
+        view.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK && mViewPager.getCurrentItem() == 2 && adapter.getAdoptPageState() != 0) {
+                    adapter.setAdoptPageState(0);
+                    ivWrite.setVisibility(View.GONE);
+                    adapter.notifyDataSetChanged();
+                    tvTitle.setText(titleArr[2]);
+                    return true;
+                }
+                return false;
+            }
+        });
+        return view;
     }
 
     // BEGIN_INCLUDE (fragment_onviewcreated)
@@ -91,10 +137,52 @@ public class SlidingTabsBasicFragment extends Fragment {
         // BEGIN_INCLUDE (setup_viewpager)
         // Get the ViewPager and set its PagerAdapter so that it can display items
         mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
-        mViewPager.setAdapter(new SamplePagerAdapter());
+        adapter = new SamplePagerAdapter();
+        mViewPager.setAdapter(adapter);
         Bundle bundle = this.getArguments();
         int startPage = bundle.getInt("startPage");
         mViewPager.setCurrentItem(startPage);
+        tvTitle.setText(titleArr[startPage]);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                tvTitle.setText(titleArr[position]);
+                if (position == 2 && adapter.getAdoptPageState() == 2) {
+                    tvTitle.setText("교배");
+                    ivWrite.setVisibility(View.VISIBLE);
+                    ivWrite.setOnClickListener(null);
+                    ivWrite.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getActivity(), MatingRequestActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                } else if (position == 3) {
+                    ivWrite.setVisibility(View.VISIBLE);
+                    ivWrite.setOnClickListener(null);
+                    ivWrite.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+                } else {
+                    ivWrite.setVisibility(View.GONE);
+                    ivWrite.setOnClickListener(null);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         // END_INCLUDE (setup_viewpager)
 
         // BEGIN_INCLUDE (setup_slidingtablayout)
@@ -117,13 +205,21 @@ public class SlidingTabsBasicFragment extends Fragment {
      * {@link SlidingTabLayout}.
      */
     class SamplePagerAdapter extends PagerAdapter {
-        private int adoptPageState;
+        private int adoptPageState = 0;
         /**
          * @return the number of pages to display
          */
         @Override
         public int getCount() {
             return 9;
+        }
+
+        public int getAdoptPageState() {
+            return adoptPageState;
+        }
+
+        public void setAdoptPageState(int state) {
+            adoptPageState = state;
         }
 
         @Override
@@ -149,41 +245,9 @@ public class SlidingTabsBasicFragment extends Fragment {
          */
         @Override
         public CharSequence getPageTitle(int position) {
-            String title = null;
-
-            switch (position) {
-                case 0:
-                    title = "카페";
-                    break;
-                case 1:
-                    title = "장례";
-                    break;
-                case 2:
-                    title = "분양";
-                    break;
-                case 3:
-                    title = "신고";
-                    break;
-                case 4:
-                    title = "공고";
-                    break;
-                case 5:
-                    title = "병원";
-                    break;
-                case 6:
-                    title = "미용";
-                    break;
-//                case 7:
-//                    break;
-//                case 8:
-//                    break;
-                default:
-                    title = "Item " + (position + 1);
-                    break;
-            }
-
-            return title;
+            return titleArr[position];
         }
+
         // END_INCLUDE (pageradapter_getpagetitle)
 
         public class HospitalApi extends GeneralApi {
@@ -213,24 +277,66 @@ public class SlidingTabsBasicFragment extends Fragment {
                             view = getActivity().getLayoutInflater().inflate(R.layout.fragment_adopt_list, container, false);
                             container.addView(view);
 
-                            GridView gv = (GridView) view.findViewById(R.id.gv_adopt_list);
-                            AdoptGridViewAdapter adapter = new AdoptGridViewAdapter(getContext(), R.layout.gridview_adopt_list);
-                            gv.setAdapter(adapter);
-                            adapter.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                            adapter.addItem("http://i.imgur.com/SEBjThb.jpg");
-                            adapter.addItem("http://i.imgur.com/SEBjThb.jpg");
-                            adapter.addItem("http://i.imgur.com/SEBjThb.jpg");
-                            adapter.addItem("http://i.imgur.com/SEBjThb.jpg");
-                            adapter.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                            adapter.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                            adapter.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                            adapter.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                            adapter.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                            adapter.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                            adapter.addItem("http://i.imgur.com/3jXjgTT.jpg");
+//                            ivWrite.setVisibility(View.VISIBLE);
+
+                            GridView gvAdopt = (GridView) view.findViewById(R.id.gv_adopt_list);
+                            AdoptGridViewAdapter adapterAdopt = new AdoptGridViewAdapter(getContext(), R.layout.gridview_adopt_list);
+                            gvAdopt.setAdapter(adapterAdopt);
+                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapterAdopt.addItem("http://i.imgur.com/SEBjThb.jpg");
+                            adapterAdopt.addItem("http://i.imgur.com/SEBjThb.jpg");
+                            adapterAdopt.addItem("http://i.imgur.com/SEBjThb.jpg");
+                            adapterAdopt.addItem("http://i.imgur.com/SEBjThb.jpg");
+                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            gvAdopt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    Intent intent = new Intent(getActivity(), AdoptDetailActivity.class);
+                                    intent.putExtra("id", id);
+
+                                    startActivity(intent);
+                                }
+                            });
 
                             break;
                         case 2:
+                            view = getActivity().getLayoutInflater().inflate(R.layout.fragment_mating_list, container, false);
+                            container.addView(view);
+                            tvTitle.setText("교배");
+
+                            ivWrite.setVisibility(View.VISIBLE);
+
+                            GridView gvMating = (GridView) view.findViewById(R.id.gv_mating_list);
+                            AdoptGridViewAdapter adapterMating = new AdoptGridViewAdapter(getContext(), R.layout.gridview_adopt_list);
+                            gvMating.setAdapter(adapterMating);
+                            adapterMating.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapterMating.addItem("http://i.imgur.com/SEBjThb.jpg");
+                            adapterMating.addItem("http://i.imgur.com/SEBjThb.jpg");
+                            adapterMating.addItem("http://i.imgur.com/SEBjThb.jpg");
+                            adapterMating.addItem("http://i.imgur.com/SEBjThb.jpg");
+                            adapterMating.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapterMating.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapterMating.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapterMating.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapterMating.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapterMating.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            adapterMating.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                            gvMating.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    Intent intent = new Intent(getActivity(), MatingDetailActivity.class);
+                                    intent.putExtra("id", id);
+
+                                    startActivity(intent);
+                                }
+                            });
+
                             break;
                         default:
                             view = getActivity().getLayoutInflater().inflate(R.layout.fragment_adopt, container, false);
@@ -240,6 +346,22 @@ public class SlidingTabsBasicFragment extends Fragment {
                                 @Override
                                 public void onClick(View v) {
                                     adoptPageState = 1;
+                                    notifyDataSetChanged();
+                                }
+                            });
+                            ImageView ivMating = (ImageView) view.findViewById(R.id.iv_mating);
+                            ivMating.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    adoptPageState = 2;
+                                    ivWrite.setOnClickListener(null);
+                                    ivWrite.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Intent intent = new Intent(getActivity(), MatingRequestActivity.class);
+                                            startActivity(intent);
+                                        }
+                                    });
                                     notifyDataSetChanged();
                                 }
                             });
@@ -294,7 +416,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             Intent intent = new Intent(getActivity(), HospitalDetailActivity.class);
-                            intent.putExtra("position", position);
+                            intent.putExtra("id", id);
 
                             startActivity(intent);
                         }
@@ -314,7 +436,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 
                     // Retrieve a TextView from the inflated View, and update its text
                     TextView title = (TextView) view.findViewById(R.id.item_title);
-                    title.setText(String.valueOf(position + 1));
+                    title.setText(String.valueOf(position));
                     break;
             }
 

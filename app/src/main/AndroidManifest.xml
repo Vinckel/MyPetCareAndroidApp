@@ -19,6 +19,7 @@
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
+
         <activity
             android:name=".Activity.MainActivity"
             android:label="@string/title_activity_main"
@@ -33,8 +34,7 @@
             android:name=".Activity.SplashActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.DiaryListActivity"
             android:label="@string/title_activity_diary"
@@ -61,20 +61,31 @@
             android:name=".Activity.HospitalMapActivity"
             android:label="@string/title_activity_hospital_map"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Activity.LoginActivity" >
+        <activity android:name=".Activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- [naveroauthlogin][start] 네이버아이디로로그인을 사용하기 위해서 넣어줘야하는 부분 -->
-        <activity android:name="com.nhn.android.naverlogin.ui.OAuthLoginActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-        <activity android:name="com.nhn.android.naverlogin.ui.OAuthLoginInAppBrowserActivity"
-            android:label="OAuth2.0 In-app"/>
-        <!-- [naveroauthlogin][end] -->
+        <activity
+            android:name="com.nhn.android.naverlogin.ui.OAuthLoginActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name="com.nhn.android.naverlogin.ui.OAuthLoginInAppBrowserActivity"
+            android:label="OAuth2.0 In-app" />
+        <activity
+            android:name=".Activity.AdoptDetailActivity"
+            android:label="@string/title_activity_adopt_detail"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.MatingDetailActivity"
+            android:label="@string/title_activity_mating"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.MatingRequestActivity"
+            android:label="@string/title_activity_mating_request"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

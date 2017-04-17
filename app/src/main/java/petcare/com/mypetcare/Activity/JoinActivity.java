@@ -50,6 +50,8 @@ import java.util.Map;
 
 import petcare.com.mypetcare.Adapter.JoinPopupListViewAdapter;
 import petcare.com.mypetcare.R;
+import petcare.com.mypetcare.Util.GeneralApi;
+import petcare.com.mypetcare.Util.GeneralMultipartApi;
 import petcare.com.mypetcare.Util.PicUtil;
 import petcare.com.mypetcare.Util.VolleyMultipartRequest;
 import petcare.com.mypetcare.Util.VolleySingleton;
@@ -332,97 +334,112 @@ public class JoinActivity extends BaseActivity {
         });
     }
 
+    public class MultipartApi extends GeneralMultipartApi {
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+        }
+    }
+
     private void save() {
+        MultipartApi multipartApi = new MultipartApi();
+        Map headers = new HashMap<>();
         String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", global.getToken());
-        headers.put("Content-Type", "multipart/form-data");
-        headers.put("SERVICE_NAME", "MPMS_01002");
+        String serviceId = "MPMS_01002";
+        String contentType = "multipart/form-data";
 
-        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(url, headers, new Response.Listener<NetworkResponse>() {
-            @Override
-            public void onResponse(NetworkResponse response) {
-                String resultResponse = new String(response.data);
-//                try {
-//                    JSONObject result = new JSONObject(resultResponse);
-//                    String status = result.getString("status");
-//                    String message = result.getString("message");
-//
-//                    if (status.equals("0")) {
-//                        Log.i("Messsage", message);
-//                    } else {
-//                        Log.i("Unexpected", message);
+        headers.put("url", url);
+        headers.put("serviceName", serviceId);
+
+        Map params = new HashMap<>();
+        String imagePath = (String) ivPic1.getTag();
+        params.put("path", imagePath);
+        multipartApi.execute(headers, params);
+
+//        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(url, headers, new Response.Listener<NetworkResponse>() {
+//            @Override
+//            public void onResponse(NetworkResponse response) {
+//                String resultResponse = new String(response.data);
+////                try {
+////                    JSONObject result = new JSONObject(resultResponse);
+////                    String status = result.getString("status");
+////                    String message = result.getString("message");
+////
+////                    if (status.equals("0")) {
+////                        Log.i("Messsage", message);
+////                    } else {
+////                        Log.i("Unexpected", message);
+////                    }
+////                } catch (JSONException e) {
+////                    e.printStackTrace();
+////                }
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                NetworkResponse networkResponse = error.networkResponse;
+//                String errorMessage = "Unknown error";
+//                if (networkResponse == null) {
+//                    if (error.getClass().equals(TimeoutError.class)) {
+//                        errorMessage = "Request timeout";
+//                    } else if (error.getClass().equals(NoConnectionError.class)) {
+//                        errorMessage = "Failed to connect server";
 //                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
+//                } else {
+//                    String result = new String(networkResponse.data);
+//                    try {
+//                        JSONObject response = new JSONObject(result);
+//                        String status = response.getString("status");
+//                        String message = response.getString("message");
+//
+//                        Log.e("Error Status", status);
+//                        Log.e("Error Message", message);
+//
+//                        if (networkResponse.statusCode == 404) {
+//                            errorMessage = "Resource not found";
+//                        } else if (networkResponse.statusCode == 401) {
+//                            errorMessage = message+" Please login again";
+//                        } else if (networkResponse.statusCode == 400) {
+//                            errorMessage = message+ " Check your inputs";
+//                        } else if (networkResponse.statusCode == 500) {
+//                            errorMessage = message+" Something is getting wrong";
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
 //                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                NetworkResponse networkResponse = error.networkResponse;
-                String errorMessage = "Unknown error";
-                if (networkResponse == null) {
-                    if (error.getClass().equals(TimeoutError.class)) {
-                        errorMessage = "Request timeout";
-                    } else if (error.getClass().equals(NoConnectionError.class)) {
-                        errorMessage = "Failed to connect server";
-                    }
-                } else {
-                    String result = new String(networkResponse.data);
-                    try {
-                        JSONObject response = new JSONObject(result);
-                        String status = response.getString("status");
-                        String message = response.getString("message");
-
-                        Log.e("Error Status", status);
-                        Log.e("Error Message", message);
-
-                        if (networkResponse.statusCode == 404) {
-                            errorMessage = "Resource not found";
-                        } else if (networkResponse.statusCode == 401) {
-                            errorMessage = message+" Please login again";
-                        } else if (networkResponse.statusCode == 400) {
-                            errorMessage = message+ " Check your inputs";
-                        } else if (networkResponse.statusCode == 500) {
-                            errorMessage = message+" Something is getting wrong";
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                Log.i("Error", errorMessage);
-                error.printStackTrace();
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("USER_EMAIL", "test@test.com");
-                params.put("PET_KND_CD", "001");
-                params.put("PET_BIRTH", "20170101");
-                params.put("name", "1");
-                params.put("filename", "q1");
-//                params.put("api_token", "gh659gjhvdyudo973823tt9gvjf7i6ric75r76");
-//                params.put("name", mNameInput.getText().toString());
-//                params.put("location", mLocationInput.getText().toString());
-//                params.put("about", mAvatarInput.getText().toString());
-//                params.put("contact", mContactInput.getText().toString());
-                return params;
-            }
-
-            @Override
-            protected Map<String, DataPart> getByteData() {
-                Map<String, DataPart> params = new HashMap<>();
-                // file name could found file base or direct access from real path
-                // for now just get bitmap data from ImageView
-                params.put("multipart", new DataPart("file_avatar.jpg", PicUtil.getFileDataFromDrawable(getBaseContext(), ivPic1.getDrawable()), "image/jpeg"));
-
-                return params;
-            }
-        };
-
-        VolleySingleton.getInstance(getBaseContext()).addToRequestQueue(multipartRequest);
+//                Log.i("Error", errorMessage);
+//                error.printStackTrace();
+//            }
+//        }) {
+//            @Override
+//            protected Map<String, String> getParams() {
+//                Map<String, String> params = new HashMap<>();
+//                params.put("USER_EMAIL", "test@test.com");
+//                params.put("PET_KND_CD", "001");
+//                params.put("PET_BIRTH", "20170101");
+//                params.put("name", "1");
+//                params.put("filename", "q1");
+////                params.put("api_token", "gh659gjhvdyudo973823tt9gvjf7i6ric75r76");
+////                params.put("name", mNameInput.getText().toString());
+////                params.put("location", mLocationInput.getText().toString());
+////                params.put("about", mAvatarInput.getText().toString());
+////                params.put("contact", mContactInput.getText().toString());
+//                return params;
+//            }
+//
+//            @Override
+//            protected Map<String, DataPart> getByteData() {
+//                Map<String, DataPart> params = new HashMap<>();
+//                // file name could found file base or direct access from real path
+//                // for now just get bitmap data from ImageView
+//                params.put("multipart", new DataPart("file_avatar.jpg", PicUtil.getFileDataFromDrawable(getBaseContext(), ivPic1.getDrawable()), "image/jpeg"));
+//
+//                return params;
+//            }
+//        };
+//
+//        VolleySingleton.getInstance(getBaseContext()).addToRequestQueue(multipartRequest);
     }
 
 
@@ -437,6 +454,7 @@ public class JoinActivity extends BaseActivity {
 
             switch (requestCode) {
                 case 1:
+                    ivPic1.setTag(getPathFromUri(data.getData()));
                     ivPic1.setImageDrawable(bitmapDrawable);
                     break;
                 case 2:
@@ -447,6 +465,15 @@ public class JoinActivity extends BaseActivity {
                     break;
             }
         }
+    }
+
+    public String getPathFromUri(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToNext();
+        String path = cursor.getString(cursor.getColumnIndex("_data"));
+        cursor.close();
+
+        return path;
     }
 
     public Bitmap getPicture(Uri selectedImage) {
