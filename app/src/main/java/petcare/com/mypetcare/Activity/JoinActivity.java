@@ -15,6 +15,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.StringRes;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -37,6 +38,7 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,12 +48,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import petcare.com.mypetcare.Adapter.JoinPopupListViewAdapter;
+import petcare.com.mypetcare.Model.CommonResult;
 import petcare.com.mypetcare.R;
 import petcare.com.mypetcare.Util.GeneralApi;
 import petcare.com.mypetcare.Util.GeneralMultipartApi;
+import petcare.com.mypetcare.Util.GsonUtil;
 import petcare.com.mypetcare.Util.PicUtil;
 import petcare.com.mypetcare.Util.VolleyMultipartRequest;
 import petcare.com.mypetcare.Util.VolleySingleton;
@@ -84,6 +89,8 @@ public class JoinActivity extends BaseActivity {
 
     private static final SimpleDateFormat SDF_YYYYMMDD = new SimpleDateFormat("yyyy년 MM월 dd일");
     private static final SimpleDateFormat SDF_YYYYMM = new SimpleDateFormat("yyyy년 MM월");
+    private static final SimpleDateFormat SDF_YMD_FOR_SAVE = new SimpleDateFormat("yyyyMMdd");
+    private static final SimpleDateFormat SDF_YM_FOR_SAVE = new SimpleDateFormat("yyyyMM");
 
     private String petCode = null;
     private String birth = null;
@@ -254,10 +261,13 @@ public class JoinActivity extends BaseActivity {
                 String format;
                 if (date <= 0 || date > 31) {
                     tmpCal.set(Calendar.DAY_OF_MONTH, 1);
-                    format = SDF_YYYYMM.format(new Date(tmpCal.getTimeInMillis()));
+//                    format = SDF_YYYYMM.format(new Date(tmpCal.getTimeInMillis()));
+                    format = SDF_YM_FOR_SAVE.format(new Date(tmpCal.getTimeInMillis()));
+                    format += "00";
                 } else {
                     tmpCal.set(Calendar.DAY_OF_MONTH, date);
-                    format = SDF_YYYYMMDD.format(new Date(tmpCal.getTimeInMillis()));
+//                    format = SDF_YYYYMMDD.format(new Date(tmpCal.getTimeInMillis()));
+                    format = SDF_YMD_FOR_SAVE.format(new Date(tmpCal.getTimeInMillis()));
                 }
 
                 Toast.makeText(getApplicationContext(), format, Toast.LENGTH_SHORT).show();
@@ -302,20 +312,6 @@ public class JoinActivity extends BaseActivity {
 //                    Toast.makeText(getApplicationContext(), "다시 시도해주세요.", Toast.LENGTH_SHORT).show();
 //                }
 
-                AlertDialog.Builder alert = new AlertDialog.Builder(JoinActivity.this);
-                alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        finish();
-                    }
-                });
-                alert.setMessage("회원가입이 완료되었습니다.");
-                alert.setCancelable(false);
-                AlertDialog alertDialog = alert.create();
-                alertDialog.show();
-                Button btDone = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                btDone.setTextColor(getResources().getColor(R.color.normalFont));
             }
         };
 
@@ -335,117 +331,78 @@ public class JoinActivity extends BaseActivity {
     }
 
     public class MultipartApi extends GeneralMultipartApi {
+
         @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
+        protected void onPostExecute(List<String> resultList) {
+            super.onPostExecute(resultList);
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(JoinActivity.this);
+            alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    finish();
+                }
+            });
+
+            boolean isAllOk = true;
+            for (String each : resultList) {
+                CommonResult result = GsonUtil.fromJson(each, CommonResult.class);
+                if (result.getResultCode() != 0) {
+                    result.getResultMessage();
+                    isAllOk = false;
+                }
+            }
+
+            if (isAllOk) {
+                alert.setMessage("등록이 완료되었습니다.");
+            } else {
+                alert.setMessage("등록이 완료되었습니다.\n일부 이미지 등록에 실패했습니다.");
+            }
+
+            alert.setCancelable(false);
+            AlertDialog alertDialog = alert.create();
+            alertDialog.show();
+            Button btDone = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            btDone.setTextColor(getResources().getColor(R.color.normalFont));
         }
     }
 
     private void save() {
+        Map<String, Map<String, String>> param1 = new HashMap<>();
+        Map<String, Map<String, String>> param2 = new HashMap<>();
+        Map<String, Map<String, String>> param3 = new HashMap<>();
+
+        String pic1ImagePath = (String) ivPic1.getTag();
+        String pic2ImagePath = (String) ivPic2.getTag();
+        String pic3ImagePath = (String) ivPic3.getTag();
+
         MultipartApi multipartApi = new MultipartApi();
-        Map headers = new HashMap<>();
         String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-        String serviceId = "MPMS_01002";
-        String contentType = "multipart/form-data";
+        String serviceId = "MPMS_01004";
 
-        headers.put("url", url);
-        headers.put("serviceName", serviceId);
+        Map<String, String> header = new HashMap<>();
+        header.put("url", url);
+        header.put("serviceName", serviceId);
 
-        Map params = new HashMap<>();
-        String imagePath = (String) ivPic1.getTag();
-        params.put("path", imagePath);
-        multipartApi.execute(headers, params);
+        Map<String, String> body = new HashMap<>();
+        body.put("PET_BIRTH", birth);
+        body.put("PET_KND_CD", petCode);
 
-//        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(url, headers, new Response.Listener<NetworkResponse>() {
-//            @Override
-//            public void onResponse(NetworkResponse response) {
-//                String resultResponse = new String(response.data);
-////                try {
-////                    JSONObject result = new JSONObject(resultResponse);
-////                    String status = result.getString("status");
-////                    String message = result.getString("message");
-////
-////                    if (status.equals("0")) {
-////                        Log.i("Messsage", message);
-////                    } else {
-////                        Log.i("Unexpected", message);
-////                    }
-////                } catch (JSONException e) {
-////                    e.printStackTrace();
-////                }
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                NetworkResponse networkResponse = error.networkResponse;
-//                String errorMessage = "Unknown error";
-//                if (networkResponse == null) {
-//                    if (error.getClass().equals(TimeoutError.class)) {
-//                        errorMessage = "Request timeout";
-//                    } else if (error.getClass().equals(NoConnectionError.class)) {
-//                        errorMessage = "Failed to connect server";
-//                    }
-//                } else {
-//                    String result = new String(networkResponse.data);
-//                    try {
-//                        JSONObject response = new JSONObject(result);
-//                        String status = response.getString("status");
-//                        String message = response.getString("message");
-//
-//                        Log.e("Error Status", status);
-//                        Log.e("Error Message", message);
-//
-//                        if (networkResponse.statusCode == 404) {
-//                            errorMessage = "Resource not found";
-//                        } else if (networkResponse.statusCode == 401) {
-//                            errorMessage = message+" Please login again";
-//                        } else if (networkResponse.statusCode == 400) {
-//                            errorMessage = message+ " Check your inputs";
-//                        } else if (networkResponse.statusCode == 500) {
-//                            errorMessage = message+" Something is getting wrong";
-//                        }
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                Log.i("Error", errorMessage);
-//                error.printStackTrace();
-//            }
-//        }) {
-//            @Override
-//            protected Map<String, String> getParams() {
-//                Map<String, String> params = new HashMap<>();
-//                params.put("USER_EMAIL", "test@test.com");
-//                params.put("PET_KND_CD", "001");
-//                params.put("PET_BIRTH", "20170101");
-//                params.put("name", "1");
-//                params.put("filename", "q1");
-////                params.put("api_token", "gh659gjhvdyudo973823tt9gvjf7i6ric75r76");
-////                params.put("name", mNameInput.getText().toString());
-////                params.put("location", mLocationInput.getText().toString());
-////                params.put("about", mAvatarInput.getText().toString());
-////                params.put("contact", mContactInput.getText().toString());
-//                return params;
-//            }
-//
-//            @Override
-//            protected Map<String, DataPart> getByteData() {
-//                Map<String, DataPart> params = new HashMap<>();
-//                // file name could found file base or direct access from real path
-//                // for now just get bitmap data from ImageView
-//                params.put("multipart", new DataPart("file_avatar.jpg", PicUtil.getFileDataFromDrawable(getBaseContext(), ivPic1.getDrawable()), "image/jpeg"));
-//
-//                return params;
-//            }
-//        };
-//
-//        VolleySingleton.getInstance(getBaseContext()).addToRequestQueue(multipartRequest);
+        Map<String, String> files = new HashMap<>();
+        if (pic1ImagePath != null) {
+            files.put("1", pic1ImagePath);
+        }
+        if (pic2ImagePath != null) {
+            files.put("2", pic2ImagePath);
+        }
+        if (pic3ImagePath != null) {
+            files.put("3", pic3ImagePath);
+        }
+
+        multipartApi.execute(header, body, files);
     }
-
-
-
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -458,9 +415,11 @@ public class JoinActivity extends BaseActivity {
                     ivPic1.setImageDrawable(bitmapDrawable);
                     break;
                 case 2:
+                    ivPic2.setTag(getPathFromUri(data.getData()));
                     ivPic2.setImageDrawable(bitmapDrawable);
                     break;
                 case 3:
+                    ivPic3.setTag(getPathFromUri(data.getData()));
                     ivPic3.setImageDrawable(bitmapDrawable);
                     break;
             }
@@ -497,6 +456,7 @@ public class JoinActivity extends BaseActivity {
             return listView.getChildAt(childIndex);
         }
     }
+
     public static boolean setNumberPickerTextColor(NumberPicker numberPicker, int color) {
         final int count = numberPicker.getChildCount();
         for (int i = 0; i < count; i++) {

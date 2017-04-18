@@ -12,6 +12,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.MediaType;
@@ -25,7 +27,7 @@ import okhttp3.Response;
  * Created by KS on 2017-04-02.
  */
 
-public class GeneralMultipartApi extends AsyncTask<Map<String, String>, Void, String> {
+public class GeneralMultipartApi extends AsyncTask<Map<String, String>, Void, List<String>> {
     private static final int CONNECTION_TIMEOUT = 2500;
     private static Global global = null;
     private static OkHttpClient client;
@@ -38,38 +40,51 @@ public class GeneralMultipartApi extends AsyncTask<Map<String, String>, Void, St
     }
 
     @Override
-    protected String doInBackground(Map<String, String>... params) {
-        if (params.length != 2 || params[0] == null || params[1] == null) {
+    protected List<String> doInBackground(Map<String, String>... params) {
+        List<String> resultList = new ArrayList<>();
+        if (params.length < 1 || params.length > 3) {
             return null;
         }
 
-        Map<String, String> headerParam = params[0];
-        Map<String, String> bodyParam = params[1];
-        String email = global.getEmail();
-        String url = MapUtils.getString(headerParam, "url");
-        String serviceName = MapUtils.getString(headerParam, "serviceName");
-        String filePath = MapUtils.getString(bodyParam, "path");
-        String[] split = StringUtils.split(filePath, ".");
-        String extension;
+        Map<String, String> header = params[0];
+        Map<String, String> body = params[1];
+        Map<String, String> files = params[2];
 
-        if (split.length > 0) {
-            extension = split[split.length - 1];
-        } else {
-            extension = "jpg";
-        }
+        String email = global.getEmail();
+
+        String url = MapUtils.getString(header, "url");
+        String serviceName = MapUtils.getString(header, "serviceName");
 
         if (StringUtils.isAnyEmpty(email, url, serviceName)) {
             return null;
         }
 
         client = new OkHttpClient();
-        RequestBody rb = RequestBody.create(null, jsonInput.toString());
-        RequestBody multipartBody = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("name", "1")
-                .addFormDataPart("USER_EMAIL", email)
-                .addFormDataPart("USER_NAME", StringUtils.EMPTY)
-                .addFormDataPart("filename", extension, RequestBody.create(MEDIA_TYPE_IMG, new File(filePath))).build();
+
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        builder.addFormDataPart("USER_EMAIL", email);
+
+        for (String key : body.keySet()) {
+            String value = body.get(key);
+            builder.addFormDataPart(key, value);
+        }
+
+        for (String key : files.keySet()) {
+            String value = files.get(key);
+
+            String[] split = StringUtils.split(value, ".");
+            String extension;
+
+            if (split.length > 0) {
+                extension = split[split.length - 1];
+            } else {
+                extension = "jpg";
+            }
+
+            builder.addFormDataPart(key, key + "." + extension,  RequestBody.create(MEDIA_TYPE_IMG, new File(value)));
+        }
+
+        MultipartBody multipartBody = builder.build();
 
         Request request = new Request.Builder()
                 .url(url)
@@ -85,12 +100,15 @@ public class GeneralMultipartApi extends AsyncTask<Map<String, String>, Void, St
         try {
             Response response = client.newCall(request).execute();
             String result = response.body().string();
+            resultList.add(result);
             Log.d("response", result);
-            return result;
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            resultList.add(e.getMessage());
         }
+//        }
+
+        return resultList;
     }
 
     public void setContext(Global global) {
