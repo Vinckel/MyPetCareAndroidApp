@@ -12,13 +12,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.StringRes;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -32,16 +32,9 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.NetworkResponse;
-import com.android.volley.NoConnectionError;
-import com.android.volley.Response;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,12 +47,9 @@ import java.util.Map;
 import petcare.com.mypetcare.Adapter.JoinPopupListViewAdapter;
 import petcare.com.mypetcare.Model.CommonResult;
 import petcare.com.mypetcare.R;
-import petcare.com.mypetcare.Util.GeneralApi;
 import petcare.com.mypetcare.Util.GeneralMultipartApi;
 import petcare.com.mypetcare.Util.GsonUtil;
 import petcare.com.mypetcare.Util.PicUtil;
-import petcare.com.mypetcare.Util.VolleyMultipartRequest;
-import petcare.com.mypetcare.Util.VolleySingleton;
 
 public class JoinActivity extends BaseActivity {
     private Dialog speciesDialog;
@@ -370,9 +360,15 @@ public class JoinActivity extends BaseActivity {
     }
 
     private void save() {
-        Map<String, Map<String, String>> param1 = new HashMap<>();
-        Map<String, Map<String, String>> param2 = new HashMap<>();
-        Map<String, Map<String, String>> param3 = new HashMap<>();
+        if (petCode == null) {
+            Toast.makeText(getApplicationContext(), "반려동물의 종류를 입력해주세요.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (birth == null) {
+            Toast.makeText(getApplicationContext(), "반려동물의 생년월일을 입력해주세요.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         String pic1ImagePath = (String) ivPic1.getTag();
         String pic2ImagePath = (String) ivPic2.getTag();
@@ -407,42 +403,28 @@ public class JoinActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), getPicture(data.getData()));
-
-            switch (requestCode) {
-                case 1:
-                    ivPic1.setTag(getPathFromUri(data.getData()));
-                    ivPic1.setImageDrawable(bitmapDrawable);
-                    break;
-                case 2:
-                    ivPic2.setTag(getPathFromUri(data.getData()));
-                    ivPic2.setImageDrawable(bitmapDrawable);
-                    break;
-                case 3:
-                    ivPic3.setTag(getPathFromUri(data.getData()));
-                    ivPic3.setImageDrawable(bitmapDrawable);
-                    break;
+            try {
+                final Uri imageUri = data.getData();
+                Bitmap selectedImage = PicUtil.getPicture(getApplicationContext(), imageUri);
+                String pathFromUri = PicUtil.getPathFromUri(getApplicationContext(), data.getData());
+                switch (requestCode) {
+                    case 1:
+                        ivPic1.setTag(pathFromUri);
+                        ivPic1.setImageBitmap(selectedImage);
+                        break;
+                    case 2:
+                        ivPic2.setTag(pathFromUri);
+                        ivPic2.setImageBitmap(selectedImage);
+                        break;
+                    case 3:
+                        ivPic3.setTag(pathFromUri);
+                        ivPic3.setImageBitmap(selectedImage);
+                        break;
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
         }
-    }
-
-    public String getPathFromUri(Uri uri) {
-        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToNext();
-        String path = cursor.getString(cursor.getColumnIndex("_data"));
-        cursor.close();
-
-        return path;
-    }
-
-    public Bitmap getPicture(Uri selectedImage) {
-        String[] filePathColumn = { MediaStore.Images.Media.DATA };
-        Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-        cursor.moveToFirst();
-        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-        String picturePath = cursor.getString(columnIndex);
-        cursor.close();
-        return BitmapFactory.decodeFile(picturePath);
     }
 
     public View getViewByPosition(int pos, ListView listView) {

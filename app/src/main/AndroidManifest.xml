@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".Util.Global"
@@ -85,6 +86,11 @@
         <activity
             android:name=".Activity.MatingRequestActivity"
             android:label="@string/title_activity_mating_request"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".Activity.MyInfoActivity"
+            android:label="@string/title_activity_my_info"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

@@ -62,4 +62,5 @@
     <string name="title_activity_adopt_detail">AdoptDetailActivity</string>
     <string name="title_activity_mating">MatingActivity</string>
     <string name="title_activity_mating_request">MatingRequestActivity</string>
+    <string name="title_activity_my_info">MyInfoActivity</string>
 </resources>

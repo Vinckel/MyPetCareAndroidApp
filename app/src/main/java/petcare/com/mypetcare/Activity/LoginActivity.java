@@ -1,7 +1,11 @@
 package petcare.com.mypetcare.Activity;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -51,6 +55,7 @@ import petcare.com.mypetcare.Util.GsonUtil;
 import petcare.com.mypetcare.Util.TokenApi;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+    private static final int REQUEST_CODE_LOCATION = 1;
     private CallbackManager callbackManager;
     private SharedPreferences pref;
     private GoogleApiClient googleApiClient;
@@ -158,6 +163,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         setContentView(R.layout.activity_login);
         global = (Global) getApplicationContext();
         pref = getSharedPreferences("local_auth", MODE_PRIVATE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkPermission();
+        }
+
         if (checkEmail()) {
             goToMain();
         }
@@ -332,5 +342,27 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 }
             }
         });
+    }
+
+    @TargetApi(23)
+    private void checkPermission() {
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED
+                || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                // Explain to the user why we need to write the permission.
+                Toast.makeText(this, "Read/Write external storage", Toast.LENGTH_SHORT).show();
+            }
+
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_CODE_LOCATION);
+
+        } else {
+            // 다음 부분은 항상 허용일 경우에 해당이 됩니다.
+            // writeFile();
+        }
     }
 }
