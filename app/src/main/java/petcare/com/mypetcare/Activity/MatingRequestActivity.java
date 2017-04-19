@@ -114,37 +114,31 @@ public class MatingRequestActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             ClipData clipData = data.getClipData();
-            List<String> tmpPathList = new ArrayList<>();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-            if (clipData != null) {
-                for (int i = 0; i < clipData.getItemCount(); i++) {
-                    try {
-                        ClipData.Item item = clipData.getItemAt(i);
-                        Uri uri = item.getUri();
-                        paths.add(PicUtil.getPathFromUri(getApplicationContext(), uri));
-                        bitmapPaths.add(PicUtil.getPicture(getApplicationContext(), uri));
-                    } catch (FileNotFoundException e) {
-                        Toast.makeText(getApplicationContext(), "파일을 불러오던 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-                        Log.e("error", e.getMessage());
+
+            try {
+                if (clipData != null) {
+                    for (int i = 0; i < clipData.getItemCount(); i++) {
+
+                            ClipData.Item item = clipData.getItemAt(i);
+                            Uri uri = item.getUri();
+                            paths.add(PicUtil.getPathFromUri(getApplicationContext(), uri));
+                            bitmapPaths.add(PicUtil.getPicture(getApplicationContext(), uri));
                     }
+                } else {
+                    Uri uri = data.getData();
+
+                    paths.add(PicUtil.getPathFromUri(getApplicationContext(), uri));
+                    bitmapPaths.add(PicUtil.getPicture(getApplicationContext(), uri));
                 }
-
-                adapter.addItemAll(bitmapPaths);
-                llPicAreaWithAddPhoto.setVisibility(View.GONE);
-                rlPicAreaWithPager.setVisibility(View.VISIBLE);
-                adapter.notifyDataSetChanged();
-            } else {
-                Uri mImageUri = data.getData();
-
-                // Get the cursor
-                Cursor cursor = getContentResolver().query(mImageUri, filePathColumn, null, null, null);
-                // Move to first row
-                cursor.moveToFirst();
-
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                String imageEncoded = cursor.getString(columnIndex);
-                cursor.close();
+            } catch (FileNotFoundException e) {
+                Toast.makeText(getApplicationContext(), "파일을 불러오던 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                Log.e("error", e.getMessage());
             }
+
+            adapter.addItemAll(bitmapPaths);
+            llPicAreaWithAddPhoto.setVisibility(View.GONE);
+            rlPicAreaWithPager.setVisibility(View.VISIBLE);
+            adapter.notifyDataSetChanged();
         }
     }
 }
