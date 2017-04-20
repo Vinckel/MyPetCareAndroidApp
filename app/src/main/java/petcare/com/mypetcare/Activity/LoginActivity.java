@@ -190,7 +190,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 //        });
 
         SignInButton signInButton = (SignInButton) findViewById(R.id.bt_login_google);
-        signInButton.setSize(SignInButton.SIZE_WIDE);
+        signInButton.setSize(SignInButton.COLOR_AUTO);
         signInButton.setScopes(gso.getScopeArray());
 
         signInButton.setOnClickListener(new View.OnClickListener() {

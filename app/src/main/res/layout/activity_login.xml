@@ -39,8 +39,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp" />
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp" />
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/bt_login_google"

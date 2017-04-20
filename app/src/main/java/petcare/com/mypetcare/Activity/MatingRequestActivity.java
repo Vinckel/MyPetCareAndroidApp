@@ -1,14 +1,13 @@
 package petcare.com.mypetcare.Activity;
 
+import android.app.AlertDialog;
 import android.content.ClipData;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,31 +15,56 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
+
+import org.apache.commons.lang3.StringUtils;
+import org.w3c.dom.Text;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import petcare.com.mypetcare.Adapter.MatingRequestViewpagerAdapter;
+import petcare.com.mypetcare.Model.CommonResult;
 import petcare.com.mypetcare.R;
+import petcare.com.mypetcare.Util.GeneralMultipartApi;
+import petcare.com.mypetcare.Util.GsonUtil;
 import petcare.com.mypetcare.Util.PicUtil;
 
 public class MatingRequestActivity extends AppCompatActivity {
+    private static final int PIC_LIMIT_COUNT = 2;
     private ImageButton ibBack;
     private ImageView ivAddPic;
     private ViewPager pager;
-    private List<String> paths;
+    private Map<String, String> paths;
     private List<Bitmap> bitmapPaths;
     private TextView tvPageCount;
     private MatingRequestViewpagerAdapter adapter;
     private RelativeLayout rlPicAreaWithPager;
+    private RelativeLayout rlPicTouch;
     private LinearLayout llPicAreaWithAddPhoto;
+    private TextView tvDone;
+
+    private EditText etName;
+    private EditText etBreed;
+    private EditText etColor;
+    private ToggleButton btGenderMale;
+    private ToggleButton btGenderFemale;
+    private EditText etAge;
+    private EditText etIntroduce;
+
+    private boolean genderPick;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +96,67 @@ public class MatingRequestActivity extends AppCompatActivity {
             }
         });
 
+        llPicAreaWithAddPhoto = (LinearLayout) findViewById(R.id.ll_pic_area);
+        rlPicAreaWithPager = (RelativeLayout) findViewById(R.id.rl_pic_area);
+        rlPicTouch = (RelativeLayout) findViewById(R.id.rl_pic_touch);
+
+        etName = (EditText) findViewById(R.id.et_mating_request_name);
+        etBreed = (EditText) findViewById(R.id.et_mating_request_breed);
+        etColor = (EditText) findViewById(R.id.et_mating_request_color);
+        etAge = (EditText) findViewById(R.id.et_mating_request_age);
+        etIntroduce = (EditText) findViewById(R.id.et_mating_request_intro);
+        btGenderMale = (ToggleButton) findViewById(R.id.bt_mating_request_gender_male);
+        btGenderFemale = (ToggleButton) findViewById(R.id.bt_mating_request_gender_female);
+
+//        View.OnClickListener toggleButtonListener = new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (btGenderMale.isChecked()) {
+//                    btGenderFemale.setChecked(false);
+//                } else {
+//                    btGenderFemale.setChecked(true);
+//                }
+//            }
+//        };
+
+        btGenderMale.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                btGenderFemale.setChecked(!isChecked);
+                if (isChecked) {
+                    buttonView.setTextColor(Color.parseColor("#ffffff"));
+                    buttonView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                } else {
+                    buttonView.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    buttonView.setBackgroundColor(Color.parseColor("#ffffff"));
+                }
+            }
+        });
+
+        btGenderFemale.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                btGenderMale.setChecked(!isChecked);
+                if (isChecked) {
+                    buttonView.setTextColor(Color.parseColor("#ffffff"));
+                    buttonView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                } else {
+                    buttonView.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    buttonView.setBackgroundColor(Color.parseColor("#ffffff"));
+                }
+            }
+        });
+
+        tvDone = (TextView) findViewById(R.id.tv_mating_request_done);
+        tvDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                validate();
+            }
+        });
+
         ivAddPic = (ImageView) findViewById(R.id.iv_add_pic);
-        ivAddPic.setOnClickListener(new View.OnClickListener() {
+        rlPicTouch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
@@ -86,7 +169,7 @@ public class MatingRequestActivity extends AppCompatActivity {
 
         tvPageCount = (TextView) findViewById(R.id.tv_mating_detail_page_count);
         pager = (ViewPager) findViewById(R.id.vp_mating_request);
-        paths = new ArrayList<>();
+        paths = new HashMap<>();
         adapter = new MatingRequestViewpagerAdapter(getLayoutInflater());
         pager.setAdapter(adapter);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -107,9 +190,93 @@ public class MatingRequestActivity extends AppCompatActivity {
         });
 
         bitmapPaths = new ArrayList<>();
-        llPicAreaWithAddPhoto = (LinearLayout) findViewById(R.id.ll_pic_area);
-        rlPicAreaWithPager = (RelativeLayout) findViewById(R.id.rl_pic_area);
     }
+
+    private void validate() {
+        boolean isOk = false;
+        String errorMessage = "";
+
+        if (StringUtils.isEmpty(etName.getText())) {
+            errorMessage = "이름을 입력하세요.";
+            etName.setFocusableInTouchMode(true);
+        } else if (StringUtils.isEmpty(etBreed.getText())) {
+            errorMessage = "견종을 입력하세요.";
+            etBreed.setFocusableInTouchMode(true);
+        } else if (StringUtils.isEmpty(etColor.getText())) {
+            errorMessage = "컬러를 입력하세요.";
+            etColor.setFocusableInTouchMode(true);
+        } else if (!btGenderFemale.isChecked() && !btGenderMale.isChecked()) {
+            errorMessage = "성별을 입력하세요.";
+        } else if (StringUtils.isEmpty(etAge.getText())) {
+            errorMessage = "나이를 입력하세요.";
+            etAge.setFocusableInTouchMode(true);
+        } else if (bitmapPaths.size() == 0) {
+            errorMessage = "사진을 1장 이상 추가해주세요.";
+        } else {
+            isOk = true;
+        }
+
+        if (!isOk) {
+            Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        save();
+    }
+
+    private void save() {
+        MultipartApi multipartApi = new MultipartApi();
+        String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+        String serviceId = "MPMS_01004";
+
+        Map<String, String> header = new HashMap<>();
+        header.put("url", url);
+        header.put("serviceName", serviceId);
+
+        Map<String, String> body = new HashMap<>();
+//        body.put();
+
+//        multipartApi.execute(header, body, paths);
+    }
+    public class MultipartApi extends GeneralMultipartApi {
+
+        @Override
+        protected void onPostExecute(List<String> resultList) {
+            super.onPostExecute(resultList);
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(MatingRequestActivity.this);
+            alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    finish();
+                }
+            });
+
+            boolean isAllOk = true;
+            for (String each : resultList) {
+                CommonResult result = GsonUtil.fromJson(each, CommonResult.class);
+                if (result.getResultCode() != 0) {
+                    result.getResultMessage();
+                    isAllOk = false;
+                }
+            }
+
+            if (isAllOk) {
+                alert.setMessage("등록이 완료되었습니다.");
+            } else {
+                alert.setMessage("등록이 완료되었습니다.\n일부 이미지 등록에 실패했습니다.");
+            }
+
+            alert.setCancelable(false);
+            AlertDialog alertDialog = alert.create();
+            alertDialog.show();
+            Button btDone = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            btDone.setTextColor(getResources().getColor(R.color.normalFont));
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -117,17 +284,23 @@ public class MatingRequestActivity extends AppCompatActivity {
 
             try {
                 if (clipData != null) {
-                    for (int i = 0; i < clipData.getItemCount(); i++) {
+                    List<ClipData.Item> itemList = new ArrayList<>();
+                    if (clipData.getItemCount() > PIC_LIMIT_COUNT) {
+                        Toast.makeText(getApplicationContext(), "이미지는 " + PIC_LIMIT_COUNT + "개 이하만 가능합니다.", Toast.LENGTH_SHORT).show();
+                    }
 
+                    int count = clipData.getItemCount() > PIC_LIMIT_COUNT ? PIC_LIMIT_COUNT : clipData.getItemCount();
+
+                    for (int i = 0; i < count; i++) {
                             ClipData.Item item = clipData.getItemAt(i);
                             Uri uri = item.getUri();
-                            paths.add(PicUtil.getPathFromUri(getApplicationContext(), uri));
+                            paths.put(String.valueOf(i + 1), PicUtil.getPathFromUri(getApplicationContext(), uri));
                             bitmapPaths.add(PicUtil.getPicture(getApplicationContext(), uri));
                     }
                 } else {
                     Uri uri = data.getData();
 
-                    paths.add(PicUtil.getPathFromUri(getApplicationContext(), uri));
+                    paths.put("1", PicUtil.getPathFromUri(getApplicationContext(), uri));
                     bitmapPaths.add(PicUtil.getPicture(getApplicationContext(), uri));
                 }
             } catch (FileNotFoundException e) {
