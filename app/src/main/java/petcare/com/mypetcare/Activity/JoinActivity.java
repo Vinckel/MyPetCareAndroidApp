@@ -270,6 +270,7 @@ public class JoinActivity extends BaseActivity {
         View.OnClickListener doneClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                validate();
                 save();
 
 
@@ -320,6 +321,18 @@ public class JoinActivity extends BaseActivity {
         });
     }
 
+    private void validate() {
+        if (petCode == null) {
+            Toast.makeText(getApplicationContext(), "반려동물의 종류를 입력해주세요.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (birth == null) {
+            Toast.makeText(getApplicationContext(), "반려동물의 생년월일을 입력해주세요.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+    }
+
     public class MultipartApi extends GeneralMultipartApi {
 
         @Override
@@ -360,16 +373,6 @@ public class JoinActivity extends BaseActivity {
     }
 
     private void save() {
-        if (petCode == null) {
-            Toast.makeText(getApplicationContext(), "반려동물의 종류를 입력해주세요.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (birth == null) {
-            Toast.makeText(getApplicationContext(), "반려동물의 생년월일을 입력해주세요.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         String pic1ImagePath = (String) ivPic1.getTag();
         String pic2ImagePath = (String) ivPic2.getTag();
         String pic3ImagePath = (String) ivPic3.getTag();

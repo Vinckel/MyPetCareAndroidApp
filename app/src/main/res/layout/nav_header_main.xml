@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="141dp"
+    android:id="@+id/cl_nav_my_info"
     android:background="@color/colorPrimary"
     android:theme="@style/CustomActionBar">
 

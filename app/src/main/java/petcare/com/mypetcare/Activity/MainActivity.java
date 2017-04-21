@@ -2,6 +2,7 @@ package petcare.com.mypetcare.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -28,6 +29,7 @@ public class MainActivity extends BaseActivity
     DrawerLayout drawer;
     ImageButton ibHospital;
     ImageButton ibAdopt;
+    ConstraintLayout clMyInfoArea;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +133,16 @@ public class MainActivity extends BaseActivity
                     Intent intent = new Intent(getApplicationContext(), DiaryListActivity.class);
                     startActivity(intent);
                 }
+            }
+        });
+
+        clMyInfoArea = (ConstraintLayout) findViewById(R.id.cl_nav_my_info);
+        clMyInfoArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawer.closeDrawer(GravityCompat.START);
+                Intent intent = new Intent(MainActivity.this, MyInfoActivity.class);
+                startActivity(intent);
             }
         });
     }
