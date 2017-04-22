@@ -13,7 +13,7 @@ public class MyInfoVO {
     private Integer resultCode;
 
     @SerializedName("DATA")
-    private MyInfoObject data;
+    private List<MyInfoObject> data;
 
     @SerializedName("RESULT_MESSAGE")
     private String resultMessage;
@@ -49,7 +49,7 @@ public class MyInfoVO {
 
         public class MyPetInfoObject {
             @SerializedName("PET_SN")
-            private String no;
+            private Integer no;
 
             @SerializedName("PET_KND_CD")
             private String petBreedCode;
@@ -66,7 +66,7 @@ public class MyInfoVO {
             @SerializedName("PET_IMG_THUM_URL")
             private String petImgThumbUrl;
 
-            public String getNo() {
+            public Integer getNo() {
                 return no;
             }
 
@@ -96,7 +96,7 @@ public class MyInfoVO {
         return resultCode;
     }
 
-    public MyInfoObject getData() {
+    public List<MyInfoObject> getData() {
         return data;
     }
 

@@ -32,6 +32,8 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -46,7 +48,9 @@ import java.util.Map;
 
 import petcare.com.mypetcare.Adapter.JoinPopupListViewAdapter;
 import petcare.com.mypetcare.Model.CommonResult;
+import petcare.com.mypetcare.Model.PetInfoVO;
 import petcare.com.mypetcare.R;
+import petcare.com.mypetcare.Util.GeneralApi;
 import petcare.com.mypetcare.Util.GeneralMultipartApi;
 import petcare.com.mypetcare.Util.GsonUtil;
 import petcare.com.mypetcare.Util.PicUtil;
@@ -77,13 +81,13 @@ public class JoinActivity extends BaseActivity {
 
     private Calendar cal;
 
-    private static final SimpleDateFormat SDF_YYYYMMDD = new SimpleDateFormat("yyyy년 MM월 dd일");
-    private static final SimpleDateFormat SDF_YYYYMM = new SimpleDateFormat("yyyy년 MM월");
     private static final SimpleDateFormat SDF_YMD_FOR_SAVE = new SimpleDateFormat("yyyyMMdd");
     private static final SimpleDateFormat SDF_YM_FOR_SAVE = new SimpleDateFormat("yyyyMM");
 
     private String petCode = null;
     private String birth = null;
+
+    private boolean isEdit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +95,26 @@ public class JoinActivity extends BaseActivity {
         setContentView(R.layout.activity_join);
         Toolbar toolbar = (Toolbar) findViewById(R.id.join_toolbar);
         setSupportActionBar(toolbar);
+
+        Intent intent = getIntent();
+        Integer no = intent.getIntExtra("no", -1);
+
+        if (no > 0) {
+            isEdit = true;
+
+            PetInfoLoadApi petInfoLoadApi = new PetInfoLoadApi();
+
+            Map headers = new HashMap<>();
+            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+            String serviceId = "MPMS_01003";
+            headers.put("url", url);
+            headers.put("serviceName", serviceId);
+
+            Map body = new HashMap<>();
+            body.put("PET_SN", no);
+
+            petInfoLoadApi.execute(headers, body);
+        }
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);
@@ -121,6 +145,7 @@ public class JoinActivity extends BaseActivity {
                 startActivityForResult(intent, 1);
             }
         });
+
         ivPic2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,6 +154,7 @@ public class JoinActivity extends BaseActivity {
                 startActivityForResult(intent, 2);
             }
         });
+
         ivPic3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -260,7 +286,7 @@ public class JoinActivity extends BaseActivity {
                     format = SDF_YMD_FOR_SAVE.format(new Date(tmpCal.getTimeInMillis()));
                 }
 
-                Toast.makeText(getApplicationContext(), format, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), format, Toast.LENGTH_SHORT).show();
                 btBirth.setText(format);
                 birth = format;
                 ageDialog.dismiss();
@@ -330,6 +356,28 @@ public class JoinActivity extends BaseActivity {
         if (birth == null) {
             Toast.makeText(getApplicationContext(), "반려동물의 생년월일을 입력해주세요.", Toast.LENGTH_SHORT).show();
             return;
+        }
+    }
+
+    public class PetInfoLoadApi extends GeneralApi {
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            PetInfoVO petInfoVO = GsonUtil.fromJson(result, PetInfoVO.class);
+            if (petInfoVO.getResultCode() != 0) {
+                return;
+            }
+
+            PetInfoVO.PetInfoObject petInfo = petInfoVO.getData().get(0);
+            String birth = petInfo.getBirth();
+            String breed = petInfo.getBreed();
+            String breedCode = petInfo.getBreedCode();
+            List<PetInfoVO.PetInfoObject.PetImageObject> imgList = petInfo.getImgData();
+
+            btBirth.setText(birth);
+            btSpecies.setText(breed);
+            petCode = breedCode;
+            speciesPosition = Integer.parseInt(breedCode, 10) - 1;
         }
     }
 

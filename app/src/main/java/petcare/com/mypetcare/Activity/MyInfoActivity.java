@@ -1,25 +1,27 @@
 package petcare.com.mypetcare.Activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,8 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import petcare.com.mypetcare.Model.CommonResult;
-import petcare.com.mypetcare.Model.DiaryListVO;
+import petcare.com.mypetcare.Activity.CustomView.RoundedImageView;
+import petcare.com.mypetcare.Adapter.MyInfoPetListViewAdapter;
+import petcare.com.mypetcare.Model.MyInfoPetListData;
 import petcare.com.mypetcare.Model.MyInfoVO;
 import petcare.com.mypetcare.R;
 import petcare.com.mypetcare.Util.GeneralApi;
@@ -41,12 +44,17 @@ import petcare.com.mypetcare.Util.VolleySingleton;
 
 public class MyInfoActivity extends AppCompatActivity {
     private ImageView ivAdd;
-    private NetworkImageView ivProfile;
+    private RoundedImageView ivProfile;
     private TextView tvDone;
     private EditText etName;
     private Button btDone;
     private boolean isLoading;
     private ImageLoader imageLoader;
+    private ImageButton ibBack;
+    private boolean isChangedImage;
+    private ListView lvPetInfo;
+    private LinearLayout llPetInfoAdd;
+    private MyInfoPetListViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +79,25 @@ public class MyInfoActivity extends AppCompatActivity {
         parent.setContentInsetsAbsolute(0, 0);
 
         ivAdd = (ImageView) findViewById(R.id.iv_my_info_add);
-        ivProfile = (NetworkImageView) findViewById(R.id.iv_my_info_profile);
+        ivProfile = (RoundedImageView) findViewById(R.id.iv_my_info_profile);
         tvDone = (TextView) findViewById(R.id.tv_my_info_done);
         btDone = (Button) findViewById(R.id.bt_my_info_done);
         etName = (EditText) findViewById(R.id.et_my_info_name);
+        ibBack = (ImageButton) findViewById(R.id.ib_my_info_back);
+        lvPetInfo = (ListView) findViewById(R.id.lv_my_info);
+        llPetInfoAdd = (LinearLayout) findViewById(R.id.ll_my_info_pet_add);
         isLoading = false;
         imageLoader = VolleySingleton.getInstance(MyInfoActivity.this).getImageLoader();
+
+        lvPetInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MyInfoActivity.this, JoinActivity.class);
+                MyInfoPetListData data = adapter.getItem(position);
+                intent.putExtra("no", data.getNo());
+                startActivity(intent);
+            }
+        });
 
         ivAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,6 +118,12 @@ public class MyInfoActivity extends AppCompatActivity {
 
         tvDone.setOnClickListener(doneListener);
         btDone.setOnClickListener(doneListener);
+        ibBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         MyInfoLoadApi myInfoLoadApi = new MyInfoLoadApi();
 
@@ -116,25 +143,54 @@ public class MyInfoActivity extends AppCompatActivity {
             super.onPostExecute(result);
             MyInfoVO myInfoVO = GsonUtil.fromJson(result, MyInfoVO.class);
             if (myInfoVO.getResultCode() != 0) {
+                Toast.makeText(MyInfoActivity.this, "사용자 정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
                 return ;
             }
 
-            MyInfoVO.MyInfoObject data = myInfoVO.getData();
+            MyInfoVO.MyInfoObject data = myInfoVO.getData().get(0);
             if (StringUtils.isNotEmpty(data.getUserName())) {
                 etName.setText(data.getUserName());
             }
 
             if (StringUtils.isNotEmpty(data.getUserImgThumbUrl())) {
-                ivProfile.setImageUrl(data.getUserImgThumbUrl(), imageLoader);
+//                ivProfile.setImageUrl(data.getUserImgThumbUrl(), imageLoader);
+//                ivProfile.setImageUrl("http://i.imgur.com/SEBjThb.jpg", imageLoader);
+                imageLoader.get(data.getUserImgThumbUrl(), new ImageLoader.ImageListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("error", "Image Load Error: " + error.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(ImageLoader.ImageContainer response, boolean arg1) {
+                        if (response.getBitmap() != null) {
+                            ivProfile.setImageBitmap(response.getBitmap());
+                        }
+                    }
+                });
             }
 
             if (CollectionUtils.isNotEmpty(data.getData())) {
+                adapter = new MyInfoPetListViewAdapter(MyInfoActivity.this);
                 List<MyInfoVO.MyInfoObject.MyPetInfoObject> petList = data.getData();
+                for (MyInfoVO.MyInfoObject.MyPetInfoObject myPetInfo : petList) {
+                    Integer no = myPetInfo.getNo();
+                    String birth = myPetInfo.getPetBirth();
+                    String breed = myPetInfo.getPetBreed();
+                    String url = myPetInfo.getPetImgThumbUrl();
+                    adapter.addItem(breed, birth, url, no);
+                }
+                lvPetInfo.setAdapter(adapter);
+                llPetInfoAdd.setVisibility(View.GONE);
+                lvPetInfo.setVisibility(View.VISIBLE);
+
+                adapter.notifyDataSetChanged();
             }
         }
     }
 
-    public class MultipartApi extends GeneralMultipartApi {
+    public class MyInfoSaveMultipartApi extends GeneralMultipartApi {
 
         @Override
         protected void onPostExecute(List<String> resultList) {
@@ -173,11 +229,16 @@ public class MyInfoActivity extends AppCompatActivity {
 //            btDone.setTextColor(getResources().getColor(R.color.normalFont));
         }
     }
+    public class MyInfoSaveApi extends GeneralApi {
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            finish();
+        }
+    }
 
     private void save() {
-        String imagePath = (String) ivProfile.getTag();
-
-        MultipartApi multipartApi = new MultipartApi();
         String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
         String serviceId = "MPMS_01002";
 
@@ -186,16 +247,21 @@ public class MyInfoActivity extends AppCompatActivity {
         header.put("serviceName", serviceId);
 
         Map<String, String> body = new HashMap<>();
-        Map<String, String> files = new HashMap<>();
-        if (imagePath != null) {
-            files.put("1", imagePath);
-        }
+        body.put("USER_NAME", StringUtils.trim(etName.getText().toString()));
 
-        multipartApi.execute(header, body, files);
+        if (isChangedImage) {
+            MyInfoSaveMultipartApi myInfoSaveMultipartApi = new MyInfoSaveMultipartApi();
+            Map<String, String> files = new HashMap<>();
+            String imagePath = (String) ivProfile.getTag();
+            files.put("1", imagePath);
+            myInfoSaveMultipartApi.execute(header, body, files);
+        } else {
+            MyInfoSaveApi myInfoSaveApi = new MyInfoSaveApi();
+            myInfoSaveApi.execute(header, body);
+        }
     }
 
     private void validate() {
-        // 딱히 체크 안 함
     }
 
     @Override
@@ -207,6 +273,7 @@ public class MyInfoActivity extends AppCompatActivity {
                 Bitmap selectedImage = PicUtil.getPicture(getApplicationContext(), imageUri);
                 ivProfile.setTag(pathFromUri);
                 ivProfile.setImageBitmap(selectedImage);
+                isChangedImage = true;
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }

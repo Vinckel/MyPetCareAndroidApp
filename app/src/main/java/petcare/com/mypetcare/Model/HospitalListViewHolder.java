@@ -11,7 +11,7 @@ import android.widget.TextView;
 public class HospitalListViewHolder {
 //    public ImageView view;
 //    public TextView name;
-//    public TextView desc;
+//    public TextView birth;
 //    public LinearLayout tags;
 //    public TextView dist;
 }
