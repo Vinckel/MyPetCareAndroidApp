@@ -5,18 +5,12 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -32,11 +26,13 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,6 +50,7 @@ import petcare.com.mypetcare.Util.GeneralApi;
 import petcare.com.mypetcare.Util.GeneralMultipartApi;
 import petcare.com.mypetcare.Util.GsonUtil;
 import petcare.com.mypetcare.Util.PicUtil;
+import petcare.com.mypetcare.Util.VolleySingleton;
 
 public class JoinActivity extends BaseActivity {
     private Dialog speciesDialog;
@@ -68,7 +65,6 @@ public class JoinActivity extends BaseActivity {
     private TextView tvDone;
     private Button btDone;
 
-//    private ImageButton ibPic1;
     private ImageView ivPic1;
     private ImageView ivPic2;
     private ImageView ivPic3;
@@ -84,10 +80,13 @@ public class JoinActivity extends BaseActivity {
     private static final SimpleDateFormat SDF_YMD_FOR_SAVE = new SimpleDateFormat("yyyyMMdd");
     private static final SimpleDateFormat SDF_YM_FOR_SAVE = new SimpleDateFormat("yyyyMM");
 
-    private String petCode = null;
-    private String birth = null;
+    private String petCodeForSave = null;
+    private String birthForSave = null;
 
     private boolean isEdit = false;
+    private boolean isPicChanged = false;
+    private ImageLoader imageLoader;
+    private Integer no; // 수정 시 내 전체 펫 중의 순서
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +96,8 @@ public class JoinActivity extends BaseActivity {
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        Integer no = intent.getIntExtra("no", -1);
+        no = intent.getIntExtra("no", -1);
+        imageLoader = VolleySingleton.getInstance(JoinActivity.this).getImageLoader();
 
         if (no > 0) {
             isEdit = true;
@@ -190,7 +190,7 @@ public class JoinActivity extends BaseActivity {
                 speciesPosition = position;
                 TextView tv = (TextView) view.findViewById(R.id.tv_join_inner);
                 btSpecies.setText(tv.getText());
-                petCode = "00" + (position + 1);
+                petCodeForSave = "00" + (position + 1);
                 speciesDialog.dismiss();
             }
         });
@@ -277,18 +277,20 @@ public class JoinActivity extends BaseActivity {
                 String format;
                 if (date <= 0 || date > 31) {
                     tmpCal.set(Calendar.DAY_OF_MONTH, 1);
-//                    format = SDF_YYYYMM.format(new Date(tmpCal.getTimeInMillis()));
                     format = SDF_YM_FOR_SAVE.format(new Date(tmpCal.getTimeInMillis()));
                     format += "00";
                 } else {
                     tmpCal.set(Calendar.DAY_OF_MONTH, date);
-//                    format = SDF_YYYYMMDD.format(new Date(tmpCal.getTimeInMillis()));
                     format = SDF_YMD_FOR_SAVE.format(new Date(tmpCal.getTimeInMillis()));
                 }
 
-//                Toast.makeText(getApplicationContext(), format, Toast.LENGTH_SHORT).show();
-                btBirth.setText(format);
-                birth = format;
+                String dateStr = year + "년 " + month + "월";
+                if (date > 0) {
+                    dateStr += (" " + date + "일");
+                }
+
+                btBirth.setText(dateStr);
+                birthForSave = format;
                 ageDialog.dismiss();
             }
         });
@@ -296,9 +298,9 @@ public class JoinActivity extends BaseActivity {
         View.OnClickListener doneClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validate();
-                save();
-
+                if (validate()) {
+                    save();
+                }
 
 
 //                String token = global.getToken();
@@ -306,11 +308,11 @@ public class JoinActivity extends BaseActivity {
 //                Map params = new HashMap<>();
 //                params.put("USER_EMAIL", "test@test.com");
 //
-//                if (StringUtils.isNotEmpty(petCode)) {
-//                    params.put("PET_KND_CD", petCode);
+//                if (StringUtils.isNotEmpty(petCodeForSave)) {
+//                    params.put("PET_KND_CD", petCodeForSave);
 //                }
-//                if (StringUtils.isNotEmpty(birth)) {
-//                    params.put("PET_BIRTH", birth);
+//                if (StringUtils.isNotEmpty(birthForSave)) {
+//                    params.put("PET_BIRTH", birthForSave);
 //                }
 //
 //                String contentType = "application/json";
@@ -347,16 +349,18 @@ public class JoinActivity extends BaseActivity {
         });
     }
 
-    private void validate() {
-        if (petCode == null) {
+    private boolean validate() {
+        if (petCodeForSave == null) {
             Toast.makeText(getApplicationContext(), "반려동물의 종류를 입력해주세요.", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
-        if (birth == null) {
+        if (birthForSave == null) {
             Toast.makeText(getApplicationContext(), "반려동물의 생년월일을 입력해주세요.", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
+
+        return true;
     }
 
     public class PetInfoLoadApi extends GeneralApi {
@@ -374,10 +378,91 @@ public class JoinActivity extends BaseActivity {
             String breedCode = petInfo.getBreedCode();
             List<PetInfoVO.PetInfoObject.PetImageObject> imgList = petInfo.getImgData();
 
-            btBirth.setText(birth);
+            Integer year = Integer.parseInt(StringUtils.substring(birth, 0, 4));
+            Integer month = Integer.parseInt(StringUtils.substring(birth, 4, 6));
+            Integer date = Integer.parseInt(StringUtils.substring(birth, 6, 8));
+
+            npYear.setValue(year);
+            npMonth.setValue(month);
+            npDate.setValue(date + 1);
+
+            cal.set(year, month - 1, 1, 0, 0, 0);
+            int maxDate = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            npDate.setMaxValue(maxDate + 1);
+
+            String dateStr = year + "년 " + month + "월";
+            if (date > 0) {
+                dateStr += (" " + date + "일");
+            }
+
+            birthForSave = birth;
+            btBirth.setText(dateStr);
             btSpecies.setText(breed);
-            petCode = breedCode;
+            petCodeForSave = breedCode;
             speciesPosition = Integer.parseInt(breedCode, 10) - 1;
+            for (final PetInfoVO.PetInfoObject.PetImageObject imgObj : imgList) {
+                imageLoader.get(imgObj.getPetImgThumbUrl(), new ImageLoader.ImageListener() {
+                    @Override
+                    public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                        if (response.getBitmap() != null) {
+                            switch (imgObj.getNo()) {
+                                case 1:
+                                    ivPic1.setImageBitmap(response.getBitmap());
+                                    String path1 = PicUtil.saveBitmapToJpeg(JoinActivity.this, response.getBitmap(), "pet1");
+                                    ivPic1.setTag(path1);
+                                    break;
+                                case 2:
+                                    ivPic2.setImageBitmap(response.getBitmap());
+                                    String path2 = PicUtil.saveBitmapToJpeg(JoinActivity.this, response.getBitmap(), "pet2");
+                                    ivPic2.setTag(path2);
+                                    break;
+                                case 3:
+                                    ivPic3.setImageBitmap(response.getBitmap());
+                                    String path3 = PicUtil.saveBitmapToJpeg(JoinActivity.this, response.getBitmap(), "pet3");
+                                    ivPic3.setTag(path3);
+                                    break;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                });
+            }
+        }
+    }
+
+    public class JsonSaveApi extends GeneralApi {
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(JoinActivity.this);
+            alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    finish();
+                }
+            });
+
+            CommonResult commonResult = GsonUtil.fromJson(result, CommonResult.class);
+                if (commonResult.getResultCode() != 0) {
+                    commonResult.getResultMessage();
+                    alert.setMessage("등록에 실패했습니다.");
+                } else {
+                    alert.setMessage("등록이 완료되었습니다.");
+            }
+
+            alert.setCancelable(false);
+            AlertDialog alertDialog = alert.create();
+            alertDialog.show();
+            Button btDone = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            btDone.setTextColor(getResources().getColor(R.color.normalFont));
         }
     }
 
@@ -426,16 +511,26 @@ public class JoinActivity extends BaseActivity {
         String pic3ImagePath = (String) ivPic3.getTag();
 
         MultipartApi multipartApi = new MultipartApi();
+        JsonSaveApi jsonApi = new JsonSaveApi();
         String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-        String serviceId = "MPMS_01004";
+        String serviceId;
+        if (isEdit) {
+            serviceId = "MPMS_01005";
+        } else {
+            serviceId = "MPMS_01004";
+        }
 
         Map<String, String> header = new HashMap<>();
         header.put("url", url);
         header.put("serviceName", serviceId);
 
         Map<String, String> body = new HashMap<>();
-        body.put("PET_BIRTH", birth);
-        body.put("PET_KND_CD", petCode);
+        body.put("PET_BIRTH", birthForSave);
+        body.put("PET_KND_CD", petCodeForSave);
+
+        if (isEdit) {
+            body.put("PET_SN", String.valueOf(no));
+        }
 
         Map<String, String> files = new HashMap<>();
         if (pic1ImagePath != null) {
@@ -448,7 +543,11 @@ public class JoinActivity extends BaseActivity {
             files.put("3", pic3ImagePath);
         }
 
-        multipartApi.execute(header, body, files);
+        if (isPicChanged) {
+            multipartApi.execute(header, body, files);
+        } else {
+            jsonApi.execute(header, body);
+        }
     }
 
     @Override
@@ -472,6 +571,7 @@ public class JoinActivity extends BaseActivity {
                         ivPic3.setImageBitmap(selectedImage);
                         break;
                 }
+                isPicChanged = true;
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -482,7 +582,7 @@ public class JoinActivity extends BaseActivity {
         final int firstListItemPosition = listView.getFirstVisiblePosition();
         final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
 
-        if (pos < firstListItemPosition || pos > lastListItemPosition ) {
+        if (pos < firstListItemPosition || pos > lastListItemPosition) {
             return listView.getAdapter().getView(pos, null, listView);
         } else {
             final int childIndex = pos - firstListItemPosition;
@@ -511,6 +611,7 @@ public class JoinActivity extends BaseActivity {
         }
         return false;
     }
+
     private void setDividerColor(NumberPicker picker, int color) {
         java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
         for (java.lang.reflect.Field pf : pickerFields) {
@@ -523,8 +624,7 @@ public class JoinActivity extends BaseActivity {
                     e.printStackTrace();
                 } catch (Resources.NotFoundException e) {
                     e.printStackTrace();
-                }
-                catch (IllegalAccessException e) {
+                } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
                 break;

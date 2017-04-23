@@ -29,24 +29,37 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.apache.commons.collections4.CollectionUtils;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import petcare.com.mypetcare.Activity.AdoptDetailActivity;
+import petcare.com.mypetcare.Activity.AnnounceActivity;
 import petcare.com.mypetcare.Activity.BaseActivity;
 import petcare.com.mypetcare.Activity.HospitalDetailActivity;
 import petcare.com.mypetcare.Activity.MatingDetailActivity;
 import petcare.com.mypetcare.Activity.MatingRequestActivity;
 import petcare.com.mypetcare.Adapter.AdoptGridViewAdapter;
+import petcare.com.mypetcare.Adapter.AnnounceGridViewAdapter;
 import petcare.com.mypetcare.Adapter.HospitalListViewAdapter;
+import petcare.com.mypetcare.Model.GeoRegionVO;
+import petcare.com.mypetcare.Model.GeoStateVO;
 import petcare.com.mypetcare.R;
 import petcare.com.mypetcare.Util.GeneralApi;
+import petcare.com.mypetcare.Util.GsonUtil;
 
 /**
  * A basic sample which shows how to use {@link com.example.android.common.view.SlidingTabLayout}
@@ -61,7 +74,10 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static ActionBar actionBar;
     private static TextView tvTitle;
     private static ImageView ivWrite;
+    private static ImageButton ibBack;
     private static SamplePagerAdapter adapter;
+    private static List<GeoStateVO.GeoStateObject> stateList;
+    private static List<GeoRegionVO.GeoRegionObject> regionList;
     private static final String[] titleArr = {"카페", "장례" ,"분양", "신고", "공고", "병원", "미용", "미용", "미용"};
 
     /**
@@ -93,6 +109,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 
         View actionBarView = inflater.inflate(R.layout.actionbar_main2, null);
         tvTitle = (TextView) actionBarView.findViewById(R.id.tv_main2_title);
+        ibBack = (ImageButton) actionBarView.findViewById(R.id.ib_main2_back);
         ivWrite = (ImageView) actionBarView.findViewById(R.id.iv_main2_write);
 
         ActionBar.LayoutParams lp1 = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
@@ -101,9 +118,12 @@ public class SlidingTabsBasicFragment extends Fragment {
 //        Toolbar parent = (Toolbar) actionBarView.getParent();
         toolbar.setContentInsetsAbsolute(0, 0);
 
-
-
-
+        ibBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().finish();
+            }
+        });
 
         view.setFocusableInTouchMode(true);
         view.setOnKeyListener(new View.OnKeyListener() {
@@ -277,8 +297,6 @@ public class SlidingTabsBasicFragment extends Fragment {
                             view = getActivity().getLayoutInflater().inflate(R.layout.fragment_adopt_list, container, false);
                             container.addView(view);
 
-//                            ivWrite.setVisibility(View.VISIBLE);
-
                             GridView gvAdopt = (GridView) view.findViewById(R.id.gv_adopt_list);
                             AdoptGridViewAdapter adapterAdopt = new AdoptGridViewAdapter(getContext(), R.layout.gridview_adopt_list);
                             gvAdopt.setAdapter(adapterAdopt);
@@ -380,8 +398,65 @@ public class SlidingTabsBasicFragment extends Fragment {
                     break;
 //                case 3:
 //                    break;
-//                case 4:
-//                    break;
+                case 4:
+                    view = getActivity().getLayoutInflater().inflate(R.layout.fragment_announce_list, container, false);
+                    container.addView(view);
+
+                    GridView gvAnnounce = (GridView) view.findViewById(R.id.gv_announce_list);
+                    AnnounceGridViewAdapter adapterAnnounce = new AnnounceGridViewAdapter(getContext(), R.layout.gridview_announce_list);
+                    gvAnnounce.setAdapter(adapterAnnounce);
+                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                    adapterAnnounce.addItem("http://i.imgur.com/SEBjThb.jpg");
+                    adapterAnnounce.addItem("http://i.imgur.com/SEBjThb.jpg");
+                    adapterAnnounce.addItem("http://i.imgur.com/SEBjThb.jpg");
+                    adapterAnnounce.addItem("http://i.imgur.com/SEBjThb.jpg");
+                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
+                    gvAnnounce.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Intent intent = new Intent(getActivity(), AnnounceActivity.class);
+                            intent.putExtra("id", id);
+
+                            startActivity(intent);
+                        }
+                    });
+
+                    Spinner spState = (Spinner) view.findViewById(R.id.sp_announce_state);
+                    final Spinner spRegion = (Spinner) view.findViewById(R.id.sp_announce_region);
+
+                    spState.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            if (CollectionUtils.isNotEmpty(stateList)) {
+                                GeoStateVO.GeoStateObject stateObject = stateList.get(position);
+                                callRegionApi(stateObject.getCode(), spRegion);
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+
+
+                    GeoStateApi geoStateApi = new GeoStateApi(spState, spRegion);
+                    Map headerGeo = new HashMap<>();
+                    String urlGeo = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+                    String serviceIdGeo = "MPMS_12002";
+                    headerGeo.put("url", urlGeo);
+                    headerGeo.put("serviceName", serviceIdGeo);
+
+                    Map bodyGeo = new HashMap<>();
+
+                    geoStateApi.execute(headerGeo, bodyGeo);
+                    break;
                 case 5:
                     view = getActivity().getLayoutInflater().inflate(R.layout.fragment_hospital, container, false);
                     container.addView(view);
@@ -466,6 +541,87 @@ public class SlidingTabsBasicFragment extends Fragment {
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
 //            Log.i(LOG_TAG, "destroyItem() [position: " + position + "]");
+        }
+    }
+
+    private class GeoStateApi extends GeneralApi {
+        Spinner spinnerState;
+        Spinner spinnerRegion;
+
+        public GeoStateApi(Spinner spinnerState, Spinner spinnerRegion) {
+            this.spinnerState = spinnerState;
+            this.spinnerRegion = spinnerRegion;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            GeoStateVO geoStateVO = GsonUtil.fromJson(result, GeoStateVO.class);
+            if (geoStateVO.getResultCode() != 0) {
+                return;
+            }
+
+            stateList = geoStateVO.getData();
+            List<String> arr = new ArrayList<>();
+
+            for (GeoStateVO.GeoStateObject geo : stateList) {
+                 arr.add(geo.getName());
+            }
+
+            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<> (getActivity(), android.R.layout.simple_spinner_item, arr);
+            spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerState.setAdapter(spinnerArrayAdapter);
+
+            if (stateList.size() > 0) {
+                callRegionApi(stateList.get(0).getCode(), spinnerRegion);
+            }
+        }
+    }
+
+    private void callRegionApi(String code, Spinner spinnerRegion) {
+        GeoRegionApi geoRegionApi = new GeoRegionApi(spinnerRegion);
+        Map headerGeo = new HashMap<>();
+        String urlGeo = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+        String serviceIdGeo = "MPMS_12003";
+        headerGeo.put("url", urlGeo);
+        headerGeo.put("serviceName", serviceIdGeo);
+
+        Map bodyGeo = new HashMap<>();
+        bodyGeo.put("UPR_CD", code);
+
+        geoRegionApi.execute(headerGeo, bodyGeo);
+    }
+
+    private class GeoRegionApi extends GeneralApi {
+        Spinner spinner;
+
+        public GeoRegionApi(Spinner spinner) {
+            this.spinner = spinner;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            GeoRegionVO geoRegionVO = GsonUtil.fromJson(result, GeoRegionVO.class);
+            if (geoRegionVO.getResultCode() != 0) {
+                Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                spinner.setAdapter(null);
+                return;
+            }
+
+            regionList = geoRegionVO.getData();
+            List<String> arr = new ArrayList<>();
+
+            for (GeoRegionVO.GeoRegionObject geo : regionList) {
+                arr.add(geo.getRegionName());
+            }
+
+            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<> (getActivity(), android.R.layout.simple_spinner_item, arr);
+            spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(null);
+            spinner.setAdapter(spinnerArrayAdapter);
         }
     }
 }

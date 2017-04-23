@@ -1,7 +1,8 @@
 package petcare.com.mypetcare.Activity;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -18,18 +18,17 @@ import java.util.List;
 import petcare.com.mypetcare.Adapter.AdoptDetailViewpagerAdapter;
 import petcare.com.mypetcare.R;
 
-public class MatingDetailActivity extends BaseActivity {
+public class AnnounceActivity extends BaseActivity {
     private ViewPager pager;
     private ImageButton ibBack;
     private TextView tvPageCount;
     private List<String> urls;
-    private ImageView ivMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mating_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tb_mating);
+        setContentView(R.layout.activity_announce);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tb_announce);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
@@ -39,7 +38,7 @@ public class MatingDetailActivity extends BaseActivity {
         actionBar.setDisplayShowHomeEnabled(false);
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View actionBarView = inflater.inflate(R.layout.actionbar_mating_detail, null);
+        View actionBarView = inflater.inflate(R.layout.actionbar_announce, null);
 
         ActionBar.LayoutParams lp1 = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
         actionBar.setCustomView(actionBarView, lp1);
@@ -47,25 +46,15 @@ public class MatingDetailActivity extends BaseActivity {
         Toolbar parent = (Toolbar) actionBarView.getParent();
         parent.setContentInsetsAbsolute(0, 0);
 
-        ivMap = (ImageView) findViewById(R.id.iv_mating_detail_map);
-        ivMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), HospitalMapActivity.class);
-
-                startActivity(intent);
-            }
-        });
-        tvPageCount = (TextView) findViewById(R.id.tv_mating_detail_page_count);
-        ibBack = (ImageButton) findViewById(R.id.ib_mating_detail_back);
+        tvPageCount = (TextView) findViewById(R.id.tv_announce_page_count);
+        ibBack = (ImageButton) findViewById(R.id.ib_announce_back);
         ibBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-
-        pager = (ViewPager) findViewById(R.id.vp_mating_detail);
+        pager = (ViewPager) findViewById(R.id.vp_announce);
         urls = new ArrayList<>();
         urls.add("http://i.imgur.com/3jXjgTT.jpg");
         urls.add("http://i.imgur.com/SEBjThb.jpg");

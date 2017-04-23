@@ -1,6 +1,7 @@
 package petcare.com.mypetcare.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,8 +9,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,13 +58,38 @@ public class MyInfoPetListViewAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.listview_my_info_pet, null);
         MyInfoPetListData data = list.get(position);
-        RoundedImageView image = (RoundedImageView) convertView.findViewById(R.id.iv_lv_my_info_pet_img);
+        final RoundedImageView image = (RoundedImageView) convertView.findViewById(R.id.iv_lv_my_info_pet_img);
         TextView name = (TextView) convertView.findViewById(R.id.tv_lv_my_info_pet_name);
         TextView birth = (TextView) convertView.findViewById(R.id.tv_lv_my_info_pet_birth);
 
 //        image.setImageUrl(list.get(position).getImageUrl(), imageLoader);
         name.setText(data.getName());
-        birth.setText(data.getBirth());
+
+        String birthStr = data.getBirth();
+        Integer year = Integer.parseInt(StringUtils.substring(birthStr, 0, 4));
+        Integer month = Integer.parseInt(StringUtils.substring(birthStr, 4, 6));
+        Integer date = Integer.parseInt(StringUtils.substring(birthStr, 6, 8));
+
+        birthStr = year + "년 " + month + "월";
+        if (date > 0) {
+            birthStr += (" " + date + "일");
+        }
+
+        birth.setText(birthStr);
+        imageLoader.get(data.getImageUrl(), new ImageLoader.ImageListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("error", "Image Load Error: " + error.getMessage());
+            }
+
+            @Override
+            public void onResponse(ImageLoader.ImageContainer response, boolean arg1) {
+                if (response.getBitmap() != null) {
+                    image.setImageBitmap(response.getBitmap());
+                }
+            }
+        });
 
         return convertView;
     }

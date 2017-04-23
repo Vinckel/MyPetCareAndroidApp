@@ -43,8 +43,10 @@
     <string name="diary_title">반려동물 일지</string>
     <string name="diary_write_title">일지 쓰기</string>
 
+    <string name="nav_insure">보험금 접수</string>
     <string name="nav_diary">반려동물 일지</string>
     <string name="nav_info">추가정보 작성</string>
+    <string name="nav_my_write">등록 글 관리</string>
     <string name="nav_share">마이펫+ 추천하기</string>
     <string name="nav_inquiry">문의하기</string>
     <string name="nav_notice">이벤트 및 공지사항</string>
@@ -63,4 +65,5 @@
     <string name="title_activity_mating">MatingActivity</string>
     <string name="title_activity_mating_request">MatingRequestActivity</string>
     <string name="title_activity_my_info">MyInfoActivity</string>
+    <string name="title_activity_announce">AnnounceActivity</string>
 </resources>

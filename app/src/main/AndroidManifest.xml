@@ -91,6 +91,11 @@
         <activity
             android:name=".Activity.MyInfoActivity"
             android:label="@string/title_activity_my_info"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".Activity.AnnounceActivity"
+            android:label="@string/title_activity_announce"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

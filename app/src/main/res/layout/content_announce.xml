@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="petcare.com.mypetcare.Activity.AnnounceActivity"
+    tools:showIn="@layout/activity_announce">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="270dp">
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp_announce"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true" />
+
+            <TextView
+                android:id="@+id/tv_announce_page_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="13dp"
+                android:background="#88000000"
+                android:gravity="center"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="0/0"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tv_announce_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center_vertical"
+                    android:text="이름"
+                    android:textColor="#4a4a4a"
+                    android:textSize="20sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/tv_announce_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="날짜"
+                    android:textColor="#4f4f4f"
+                    android:textSize="12sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_announce_name" />
+
+                <TextView
+                    android:id="@+id/tv_announce_date_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="9dp"
+                    android:layout_marginStart="9dp"
+                    android:textColor="#898989"
+                    android:textSize="12sp"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_date"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_date" />
+
+                <TextView
+                    android:id="@+id/tv_announce_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="실종장소"
+                    android:textColor="#4f4f4f"
+                    android:textSize="12sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_announce_date" />
+
+                <TextView
+                    android:id="@+id/tv_announce_location_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="9dp"
+                    android:layout_marginStart="9dp"
+                    android:textColor="#898989"
+                    android:textSize="12sp"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_location"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_location" />
+
+                <TextView
+                    android:id="@+id/tv_announce_mark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="특징"
+                    android:textColor="#4f4f4f"
+                    android:textSize="12sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_announce_location" />
+
+                <TextView
+                    android:id="@+id/tv_announce_mark_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="9dp"
+                    android:layout_marginStart="9dp"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_mark"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_mark" />
+
+                <TextView
+                    android:id="@+id/tv_announce_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="사례금"
+                    android:textColor="#4f4f4f"
+                    android:textSize="12sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_announce_mark_desc" />
+
+                <TextView
+                    android:id="@+id/tv_announce_price_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="9dp"
+                    android:layout_marginStart="9dp"
+                    android:textColor="#898989"
+                    android:textSize="12sp"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_price"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_price" />
+
+                <TextView
+                    android:id="@+id/tv_announce_etc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="기타"
+                    android:textColor="#4f4f4f"
+                    android:textSize="12sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_announce_price" />
+
+                <TextView
+                    android:id="@+id/tv_announce_etc_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="9dp"
+                    android:layout_marginStart="9dp"
+                    android:textColor="#898989"
+                    android:textSize="12sp"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_etc"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_etc" />
+
+                <TextView
+                    android:id="@+id/tv_announce_homepage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="홈페이지"
+                    android:textColor="#4f4f4f"
+                    android:textSize="12sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_announce_etc" />
+
+                <TextView
+                    android:id="@+id/tv_announce_homepage_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="9dp"
+                    android:layout_marginStart="9dp"
+                    android:textColor="#7579e8"
+                    android:textSize="12sp"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_homepage"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_homepage" />
+
+                <ImageView
+                    android:id="@+id/iv_announce_line"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="25dp"
+                    android:src="#eaeaea"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_announce_homepage" />
+
+
+
+
+                <TextView
+                    android:id="@+id/tv_announce_breed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:text="견종"
+                    android:textColor="#4f4f4f"
+                    android:textSize="12sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/iv_announce_line" />
+
+                <TextView
+                    android:id="@+id/tv_announce_breed_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="9dp"
+                    android:layout_marginStart="9dp"
+                    android:text="잉글리쉬불독"
+                    android:textColor="#898989"
+                    android:textSize="12sp"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_breed"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_breed" />
+
+                <TextView
+                    android:id="@+id/tv_announce_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="컬러"
+                    android:textColor="#4f4f4f"
+                    android:textSize="12sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_announce_breed" />
+
+                <TextView
+                    android:id="@+id/tv_announce_color_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="9dp"
+                    android:layout_marginStart="9dp"
+                    android:textColor="#898989"
+                    android:textSize="12sp"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_color"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_color" />
+
+                <TextView
+                    android:id="@+id/tv_announce_gender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="성별"
+                    android:textColor="#4f4f4f"
+                    android:textSize="12sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_announce_color" />
+
+                <TextView
+                    android:id="@+id/tv_announce_gender_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="9dp"
+                    android:layout_marginStart="9dp"
+                    android:textColor="#898989"
+                    android:textSize="12sp"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_gender"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_gender" />
+
+                <TextView
+                    android:id="@+id/tv_announce_age"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="나이"
+                    android:textColor="#4f4f4f"
+                    android:textSize="12sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_announce_gender" />
+
+                <TextView
+                    android:id="@+id/tv_announce_age_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="9dp"
+                    android:layout_marginStart="9dp"
+                    android:textColor="#898989"
+                    android:textSize="12sp"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_age"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_age" />
+
+                <Button
+                    android:id="@+id/bt_announce_call"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="42dp"
+                    android:background="@color/colorPrimary"
+                    android:text="make a Call"
+                    android:textColor="@android:color/white"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_announce_age" />
+            </android.support.constraint.ConstraintLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

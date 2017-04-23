@@ -14,6 +14,8 @@ import android.support.v4.content.ContextCompat;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -53,5 +55,24 @@ public class PicUtil {
         cursor.close();
 
         return path;
+    }
+
+    public static String saveBitmapToJpeg(Context context, Bitmap bitmap, String name) {
+        File storage = context.getCacheDir();
+        String fileName = name + ".jpg";
+        File tempFile = new File(storage, fileName);
+
+        try {
+            tempFile.createNewFile();
+            FileOutputStream out = new FileOutputStream(tempFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.close(); // 마무리로 닫아줍니다.
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return tempFile.getAbsolutePath();
     }
 }

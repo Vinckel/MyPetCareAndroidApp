@@ -42,7 +42,7 @@ import petcare.com.mypetcare.Util.GsonUtil;
 import petcare.com.mypetcare.Util.PicUtil;
 import petcare.com.mypetcare.Util.VolleySingleton;
 
-public class MyInfoActivity extends AppCompatActivity {
+public class MyInfoActivity extends BaseActivity {
     private ImageView ivAdd;
     private RoundedImageView ivProfile;
     private TextView tvDone;
@@ -55,6 +55,7 @@ public class MyInfoActivity extends AppCompatActivity {
     private ListView lvPetInfo;
     private LinearLayout llPetInfoAdd;
     private MyInfoPetListViewAdapter adapter;
+    private boolean picJustChanged;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +88,7 @@ public class MyInfoActivity extends AppCompatActivity {
         lvPetInfo = (ListView) findViewById(R.id.lv_my_info);
         llPetInfoAdd = (LinearLayout) findViewById(R.id.ll_my_info_pet_add);
         isLoading = false;
+        picJustChanged = false;
         imageLoader = VolleySingleton.getInstance(MyInfoActivity.this).getImageLoader();
 
         lvPetInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -111,8 +113,9 @@ public class MyInfoActivity extends AppCompatActivity {
         View.OnClickListener doneListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validate();
-                save();
+                if (validate()) {
+                    save();
+                }
             }
         };
 
@@ -124,7 +127,20 @@ public class MyInfoActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (picJustChanged) {
+            picJustChanged = false;
+            return;
+        }
+
+        getListview();
+    }
+
+    private void getListview() {
         MyInfoLoadApi myInfoLoadApi = new MyInfoLoadApi();
 
         Map headers = new HashMap<>();
@@ -137,6 +153,7 @@ public class MyInfoActivity extends AppCompatActivity {
 
         myInfoLoadApi.execute(headers, params);
     }
+
     public class MyInfoLoadApi extends GeneralApi {
         @Override
         protected void onPostExecute(String result) {
@@ -261,7 +278,8 @@ public class MyInfoActivity extends AppCompatActivity {
         }
     }
 
-    private void validate() {
+    private boolean validate() {
+        return true;
     }
 
     @Override
@@ -274,6 +292,7 @@ public class MyInfoActivity extends AppCompatActivity {
                 ivProfile.setTag(pathFromUri);
                 ivProfile.setImageBitmap(selectedImage);
                 isChangedImage = true;
+                picJustChanged = true;
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }

@@ -9,27 +9,45 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import petcare.com.mypetcare.Activity.CustomView.RoundedImageView;
 import petcare.com.mypetcare.Adapter.NavigationListViewAdapter;
+import petcare.com.mypetcare.Model.MyInfoVO;
 import petcare.com.mypetcare.R;
+import petcare.com.mypetcare.Util.GeneralApi;
+import petcare.com.mypetcare.Util.GsonUtil;
+import petcare.com.mypetcare.Util.VolleySingleton;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    DrawerLayout drawer;
-    ImageButton ibHospital;
-    ImageButton ibAdopt;
-    ConstraintLayout clMyInfoArea;
+    private DrawerLayout drawer;
+    private ImageButton ibHospital;
+    private ImageButton ibAdopt;
+    private ConstraintLayout clMyInfoArea;
+    private TextView tvMyInfoName;
+    private TextView tvMyInfoPetCount;
+    private RoundedImageView tvMyInfoProfile;
+    private ImageLoader imageLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +68,10 @@ public class MainActivity extends BaseActivity
 
         ibHospital = (ImageButton) findViewById(R.id.btnHospital);
         ibAdopt = (ImageButton) findViewById(R.id.btnAdopt);
+        tvMyInfoName = (TextView) findViewById(R.id.tv_nav_top_name);
+        tvMyInfoPetCount = (TextView) findViewById(R.id.tv_nav_top_pet_count);
+        tvMyInfoProfile = (RoundedImageView) findViewById(R.id.iv_nav_top_profile);
+        imageLoader = VolleySingleton.getInstance(MainActivity.this).getImageLoader();
 
         ibHospital.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,14 +90,34 @@ public class MainActivity extends BaseActivity
                 startActivity(intent);
             }
         });
+        setCustomActionBar();
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        setCustomActionBar();
-//        setLogo();
-        return super.onPrepareOptionsMenu(menu);
+    public void onResume() {
+        super.onResume();
+        settingMyInfo();
     }
+
+    private void settingMyInfo() {
+        MyInfoLoadApi myInfoLoadApi = new MyInfoLoadApi();
+
+        Map headers = new HashMap<>();
+        String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+        String serviceId = "MPMS_01001";
+        headers.put("url", url);
+        headers.put("serviceName", serviceId);
+
+        Map params = new HashMap<>();
+
+        myInfoLoadApi.execute(headers, params);
+    }
+
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+////        setLogo();
+//        return super.onPrepareOptionsMenu(menu);
+//    }
 
     private void setCustomActionBar() {
         ActionBar actionBar = getSupportActionBar();
@@ -109,8 +151,10 @@ public class MainActivity extends BaseActivity
         NavigationListViewAdapter adapter = new NavigationListViewAdapter(this);
         lv.setAdapter(adapter);
 
+        adapter.addItem(R.drawable.ic_insurance_t, R.string.nav_insure, null);
         adapter.addItem(R.drawable.ic_list, R.string.nav_diary, null);
         adapter.addItem(R.drawable.ic_add_info, R.string.nav_info, null);
+        adapter.addItem(R.drawable.ic_beauty_shop_t, R.string.nav_my_write, null);
         adapter.addItem(R.drawable.ic_share, R.string.nav_share, null);
         adapter.addItem(R.drawable.ic_info, R.string.nav_inquiry, null);
         adapter.addItem(R.drawable.ic_event_notice, R.string.nav_notice, R.drawable.ic_event_notice);
@@ -145,6 +189,39 @@ public class MainActivity extends BaseActivity
                 startActivity(intent);
             }
         });
+    }
+
+    public class MyInfoLoadApi extends GeneralApi {
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            MyInfoVO myInfoVO = GsonUtil.fromJson(result, MyInfoVO.class);
+
+            if (myInfoVO.getResultCode() != 0) {
+                return ;
+            }
+            MyInfoVO.MyInfoObject info = myInfoVO.getData().get(0);
+            String userName = info.getUserName();
+            String url = info.getUserImgThumbUrl();
+            int count = CollectionUtils.size(info.getData());
+
+            tvMyInfoName.setText(userName);
+            tvMyInfoPetCount.setText("마이펫 " + String.valueOf(count));
+            imageLoader.get(url, new ImageLoader.ImageListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("error", "Image Load Error: " + error.getMessage());
+                }
+
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean arg1) {
+                    if (response.getBitmap() != null) {
+                        tvMyInfoProfile.setImageBitmap(response.getBitmap());
+                    }
+                }
+            });
+        }
     }
 
     @Override
