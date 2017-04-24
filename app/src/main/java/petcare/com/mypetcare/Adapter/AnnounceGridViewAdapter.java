@@ -64,4 +64,8 @@ public class AnnounceGridViewAdapter extends BaseAdapter {
 
         return convertView;
     }
+
+    public void removeAllItems() {
+        imageUrlList.clear();
+    }
 }

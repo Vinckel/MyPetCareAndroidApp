@@ -55,6 +55,7 @@ import petcare.com.mypetcare.Activity.MatingRequestActivity;
 import petcare.com.mypetcare.Adapter.AdoptGridViewAdapter;
 import petcare.com.mypetcare.Adapter.AnnounceGridViewAdapter;
 import petcare.com.mypetcare.Adapter.HospitalListViewAdapter;
+import petcare.com.mypetcare.Model.AnnounceInfoVO;
 import petcare.com.mypetcare.Model.GeoRegionVO;
 import petcare.com.mypetcare.Model.GeoStateVO;
 import petcare.com.mypetcare.R;
@@ -78,7 +79,10 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static SamplePagerAdapter adapter;
     private static List<GeoStateVO.GeoStateObject> stateList;
     private static List<GeoRegionVO.GeoRegionObject> regionList;
+    private static String selectedState = null;
+    private static String selectedRegion = null;
     private static final String[] titleArr = {"카페", "장례" ,"분양", "신고", "공고", "병원", "미용", "미용", "미용"};
+    private static AnnounceGridViewAdapter adapterAnnounce;
 
     /**
      * A custom {@link ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -403,20 +407,20 @@ public class SlidingTabsBasicFragment extends Fragment {
                     container.addView(view);
 
                     GridView gvAnnounce = (GridView) view.findViewById(R.id.gv_announce_list);
-                    AnnounceGridViewAdapter adapterAnnounce = new AnnounceGridViewAdapter(getContext(), R.layout.gridview_announce_list);
+                    adapterAnnounce = new AnnounceGridViewAdapter(getContext(), R.layout.gridview_announce_list);
                     gvAnnounce.setAdapter(adapterAnnounce);
-                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                    adapterAnnounce.addItem("http://i.imgur.com/SEBjThb.jpg");
-                    adapterAnnounce.addItem("http://i.imgur.com/SEBjThb.jpg");
-                    adapterAnnounce.addItem("http://i.imgur.com/SEBjThb.jpg");
-                    adapterAnnounce.addItem("http://i.imgur.com/SEBjThb.jpg");
-                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
+//                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
+//                    adapterAnnounce.addItem("http://i.imgur.com/SEBjThb.jpg");
+//                    adapterAnnounce.addItem("http://i.imgur.com/SEBjThb.jpg");
+//                    adapterAnnounce.addItem("http://i.imgur.com/SEBjThb.jpg");
+//                    adapterAnnounce.addItem("http://i.imgur.com/SEBjThb.jpg");
+//                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
+//                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
+//                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
+//                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
+//                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
+//                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
+//                    adapterAnnounce.addItem("http://i.imgur.com/3jXjgTT.jpg");
                     gvAnnounce.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -435,7 +439,8 @@ public class SlidingTabsBasicFragment extends Fragment {
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                             if (CollectionUtils.isNotEmpty(stateList)) {
                                 GeoStateVO.GeoStateObject stateObject = stateList.get(position);
-                                callRegionApi(stateObject.getCode(), spRegion);
+                                selectedState = stateObject.getCode();
+                                callRegionApi(spRegion);
                             }
                         }
 
@@ -445,6 +450,21 @@ public class SlidingTabsBasicFragment extends Fragment {
                         }
                     });
 
+                    spRegion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            if (CollectionUtils.isNotEmpty(regionList)) {
+                                GeoRegionVO.GeoRegionObject regionObject = regionList.get(position);
+                                selectedRegion = regionObject.getRegionCode();
+                                callAnnouncePetCallApi();
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
 
                     GeoStateApi geoStateApi = new GeoStateApi(spState, spRegion);
                     Map headerGeo = new HashMap<>();
@@ -574,12 +594,13 @@ public class SlidingTabsBasicFragment extends Fragment {
             spinnerState.setAdapter(spinnerArrayAdapter);
 
             if (stateList.size() > 0) {
-                callRegionApi(stateList.get(0).getCode(), spinnerRegion);
+                selectedState = stateList.get(0).getCode();
+                callRegionApi(spinnerRegion);
             }
         }
     }
 
-    private void callRegionApi(String code, Spinner spinnerRegion) {
+    private void callRegionApi(Spinner spinnerRegion) {
         GeoRegionApi geoRegionApi = new GeoRegionApi(spinnerRegion);
         Map headerGeo = new HashMap<>();
         String urlGeo = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
@@ -588,7 +609,7 @@ public class SlidingTabsBasicFragment extends Fragment {
         headerGeo.put("serviceName", serviceIdGeo);
 
         Map bodyGeo = new HashMap<>();
-        bodyGeo.put("UPR_CD", code);
+        bodyGeo.put("UPR_CD", selectedState);
 
         geoRegionApi.execute(headerGeo, bodyGeo);
     }
@@ -622,6 +643,52 @@ public class SlidingTabsBasicFragment extends Fragment {
             spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(null);
             spinner.setAdapter(spinnerArrayAdapter);
+
+            if (arr.size() > 0) {
+                selectedRegion = regionList.get(0).getRegionCode();
+            }
+        }
+    }
+
+    private void callAnnouncePetCallApi() {
+        AnnouncePetCallApi announcePetCallApi = new AnnouncePetCallApi();
+        Map headerGeo = new HashMap<>();
+        String urlGeo = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+        String serviceIdGeo = "MPMS_12001";
+        headerGeo.put("url", urlGeo);
+        headerGeo.put("serviceName", serviceIdGeo);
+
+        Map bodyGeo = new HashMap<>();
+        bodyGeo.put("UPR_CD", selectedState);
+        bodyGeo.put("ORG_CD", selectedRegion);
+
+        bodyGeo.put("SEARCH_COUNT", 12);
+        bodyGeo.put("SEARCH_PAGE", 1);
+        bodyGeo.put("BGN_DE", "20170101");
+        bodyGeo.put("END_DE", "20170331");
+
+        announcePetCallApi.execute(headerGeo, bodyGeo);
+    }
+
+    private class AnnouncePetCallApi extends GeneralApi {
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            AnnounceInfoVO announceInfoVO = GsonUtil.fromJson(result, AnnounceInfoVO.class);
+            if (announceInfoVO.getResultCode() != 0) {
+                return;
+            }
+
+            adapterAnnounce.removeAllItems();
+
+            List<AnnounceInfoVO.AnnounceInfoObject> dataList = announceInfoVO.getData();
+            for (AnnounceInfoVO.AnnounceInfoObject data : dataList) {
+                adapterAnnounce.addItem(data.getThumbUrl());
+            }
+
+            adapterAnnounce.notifyDataSetChanged();
         }
     }
 }
