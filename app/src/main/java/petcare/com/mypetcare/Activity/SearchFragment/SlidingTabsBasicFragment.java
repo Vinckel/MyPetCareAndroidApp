@@ -24,10 +24,13 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
@@ -81,8 +84,19 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static List<GeoRegionVO.GeoRegionObject> regionList;
     private static String selectedState = null;
     private static String selectedRegion = null;
-    private static final String[] titleArr = {"카페", "장례" ,"분양", "신고", "공고", "병원", "미용", "미용", "미용"};
+    private static final String[] titleArr = {"병원", "미용" ,"호텔", "용품", "카페", "장례", "분양", "신고", "공고"};
     private static AnnounceGridViewAdapter adapterAnnounce;
+    private static List<Integer> pagingCount;
+    private static final int NUM_HOSPITAL = 0;
+    private static final int NUM_BEAUTY = 1;
+    private static final int NUM_HOTEL = 2;
+    private static final int NUM_TOOL = 3;
+    private static final int NUM_CAFE = 4;
+    private static final int NUM_FUNERAL = 5;
+    private static final int NUM_ADOPT = 6;
+    private static final int NUM_REPORT = 7;
+    private static final int NUM_NOTI = 8;
+    private static boolean isLoading = false;
 
     /**
      * A custom {@link ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -133,7 +147,7 @@ public class SlidingTabsBasicFragment extends Fragment {
         view.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK && mViewPager.getCurrentItem() == 2 && adapter.getAdoptPageState() != 0) {
+                if (keyCode == KeyEvent.KEYCODE_BACK && mViewPager.getCurrentItem() == NUM_ADOPT && adapter.getAdoptPageState() != 0) {
                     adapter.setAdoptPageState(0);
                     ivWrite.setVisibility(View.GONE);
                     adapter.notifyDataSetChanged();
@@ -143,6 +157,11 @@ public class SlidingTabsBasicFragment extends Fragment {
                 return false;
             }
         });
+
+        pagingCount = new ArrayList<>();
+        for (int i = 0; i < titleArr.length; i++) {
+            pagingCount.add(1);
+        }
         return view;
     }
 
@@ -176,7 +195,7 @@ public class SlidingTabsBasicFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 tvTitle.setText(titleArr[position]);
-                if (position == 2 && adapter.getAdoptPageState() == 2) {
+                if (position == 6 && adapter.getAdoptPageState() == 2) {
                     tvTitle.setText("교배");
                     ivWrite.setVisibility(View.VISIBLE);
                     ivWrite.setOnClickListener(null);
@@ -187,7 +206,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                             startActivity(intent);
                         }
                     });
-                } else if (position == 3) {
+                } else if (position == 7) {
                     ivWrite.setVisibility(View.VISIBLE);
                     ivWrite.setOnClickListener(null);
                     ivWrite.setOnClickListener(new View.OnClickListener() {
@@ -295,7 +314,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 //                    break;
 //                case 1:
 //                    break;
-                case 2:
+                case NUM_ADOPT:
                     switch (adoptPageState) {
                         case 1:
                             view = getActivity().getLayoutInflater().inflate(R.layout.fragment_adopt_list, container, false);
@@ -402,7 +421,8 @@ public class SlidingTabsBasicFragment extends Fragment {
                     break;
 //                case 3:
 //                    break;
-                case 4:
+                case NUM_NOTI:
+                    pagingCount.set(NUM_NOTI, 1);
                     view = getActivity().getLayoutInflater().inflate(R.layout.fragment_announce_list, container, false);
                     container.addView(view);
 
@@ -431,6 +451,21 @@ public class SlidingTabsBasicFragment extends Fragment {
                         }
                     });
 
+                    gvAnnounce.setOnScrollListener(new AbsListView.OnScrollListener() {
+                        @Override
+                        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                            if (firstVisibleItem + visibleItemCount >= totalItemCount) {
+                                Log.d("gridview", "reached at bottom");
+                                callAnnouncePetCallApi();
+                            }
+                        }
+
+                        @Override
+                        public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+                        }
+                    });
+
                     Spinner spState = (Spinner) view.findViewById(R.id.sp_announce_state);
                     final Spinner spRegion = (Spinner) view.findViewById(R.id.sp_announce_region);
 
@@ -456,6 +491,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                             if (CollectionUtils.isNotEmpty(regionList)) {
                                 GeoRegionVO.GeoRegionObject regionObject = regionList.get(position);
                                 selectedRegion = regionObject.getRegionCode();
+                                adapterAnnounce.removeAllItems();
                                 callAnnouncePetCallApi();
                             }
                         }
@@ -477,7 +513,8 @@ public class SlidingTabsBasicFragment extends Fragment {
 
                     geoStateApi.execute(headerGeo, bodyGeo);
                     break;
-                case 5:
+                case NUM_HOSPITAL:
+                    pagingCount.set(NUM_HOSPITAL, 1);
                     view = getActivity().getLayoutInflater().inflate(R.layout.fragment_hospital, container, false);
                     container.addView(view);
                     ListView lvHospitalList = (ListView) view.findViewById(R.id.lv_hospital_list);
@@ -589,7 +626,27 @@ public class SlidingTabsBasicFragment extends Fragment {
                  arr.add(geo.getName());
             }
 
-            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<> (getActivity(), android.R.layout.simple_spinner_item, arr);
+            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String> (getActivity(), android.R.layout.simple_spinner_item, arr)
+            {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent)
+                {
+                    return setCentered(super.getView(position, convertView, parent));
+                }
+
+                @Override
+                public View getDropDownView(int position, View convertView, ViewGroup parent)
+                {
+                    return setCentered(super.getDropDownView(position, convertView, parent));
+                }
+
+                private View setCentered(View view)
+                {
+                    TextView textView = (TextView)view.findViewById(android.R.id.text1);
+                    textView.setGravity(Gravity.CENTER);
+                    return view;
+                }
+            };
             spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerState.setAdapter(spinnerArrayAdapter);
 
@@ -639,7 +696,27 @@ public class SlidingTabsBasicFragment extends Fragment {
                 arr.add(geo.getRegionName());
             }
 
-            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<> (getActivity(), android.R.layout.simple_spinner_item, arr);
+            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String> (getActivity(), android.R.layout.simple_spinner_item, arr)
+            {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent)
+                {
+                    return setCentered(super.getView(position, convertView, parent));
+                }
+
+                @Override
+                public View getDropDownView(int position, View convertView, ViewGroup parent)
+                {
+                    return setCentered(super.getDropDownView(position, convertView, parent));
+                }
+
+                private View setCentered(View view)
+                {
+                    TextView textView = (TextView)view.findViewById(android.R.id.text1);
+                    textView.setGravity(Gravity.CENTER);
+                    return view;
+                }
+            };
             spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(null);
             spinner.setAdapter(spinnerArrayAdapter);
@@ -663,7 +740,9 @@ public class SlidingTabsBasicFragment extends Fragment {
         bodyGeo.put("ORG_CD", selectedRegion);
 
         bodyGeo.put("SEARCH_COUNT", 12);
-        bodyGeo.put("SEARCH_PAGE", 1);
+        int currentPage = pagingCount.get(NUM_NOTI);
+        bodyGeo.put("SEARCH_PAGE", currentPage);
+        pagingCount.set(NUM_NOTI, currentPage + 1);
         bodyGeo.put("BGN_DE", "20170101");
         bodyGeo.put("END_DE", "20170331");
 
@@ -680,8 +759,6 @@ public class SlidingTabsBasicFragment extends Fragment {
             if (announceInfoVO.getResultCode() != 0) {
                 return;
             }
-
-            adapterAnnounce.removeAllItems();
 
             List<AnnounceInfoVO.AnnounceInfoObject> dataList = announceInfoVO.getData();
             for (AnnounceInfoVO.AnnounceInfoObject data : dataList) {

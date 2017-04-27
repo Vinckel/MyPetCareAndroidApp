@@ -1,0 +1,83 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f1f1f1"
+    android:orientation="vertical"
+    tools:context="petcare.com.mypetcare.Activity.InsureInfoActivity$PlaceholderFragment">
+
+    <LinearLayout
+        android:id="@+id/ll_insure_info_page_5_m1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingTop="35dp">
+
+        <ImageView
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_gravity="top"
+            android:gravity="center"
+            android:src="@drawable/profile1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="15dp"
+            android:background="#ffffff"
+            android:gravity="left"
+            android:paddingBottom="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="15dp"
+            android:text="보험료는 비싸지 않나요?"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_insure_info_page_5_m1"
+        android:gravity="right"
+        android:orientation="horizontal"
+        android:paddingRight="10dp"
+        android:paddingTop="35dp">
+
+        <TextView
+            android:id="@+id/tv_insure_info_5_answer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="15dp"
+            android:background="#ffffff"
+            android:gravity="left"
+            android:paddingBottom="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="15dp"
+            android:text="1년 단위 보험으로\n5세 소형견은 125,930원,\n5세 중대형견은 233,200원,\n5세 고양이는 129,490원이에요.\n(1년에 1회 납부, 분납 가능)\n\n자세한 내용은 \'보험료 예시\' 화면\n참고해주세요."
+            android:textColorLink="#615fe2"
+            android:textSize="15sp" />
+
+        <ImageView
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_gravity="top"
+            android:gravity="center"
+            android:src="@drawable/profile2" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="15dp"
+        android:text="&quot;당신의 반쪽을 지켜주세요!&quot;"
+        android:textColor="@color/colorPrimary" />
+
+</RelativeLayout>

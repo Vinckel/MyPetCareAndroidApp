@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,12 +43,20 @@ public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
     private ImageButton ibHospital;
+    private ImageButton ibBeauty;
+    private ImageButton ibHotel;
+    private ImageButton ibShop;
+    private ImageButton ibCafe;
+    private ImageButton ibFuneral;
     private ImageButton ibAdopt;
+    private ImageButton ibReport;
+    private ImageButton ibNoti;
     private ConstraintLayout clMyInfoArea;
     private TextView tvMyInfoName;
     private TextView tvMyInfoPetCount;
     private RoundedImageView tvMyInfoProfile;
     private ImageLoader imageLoader;
+    private LinearLayout llInsure;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,13 +76,67 @@ public class MainActivity extends BaseActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         ibHospital = (ImageButton) findViewById(R.id.btnHospital);
+        ibBeauty = (ImageButton) findViewById(R.id.btnBeauty);
+        ibHotel = (ImageButton) findViewById(R.id.btnHotel);
+        ibShop = (ImageButton) findViewById(R.id.btnTool);
+        ibCafe = (ImageButton) findViewById(R.id.btnCafe);
+        ibFuneral = (ImageButton) findViewById(R.id.btnFuneral);
         ibAdopt = (ImageButton) findViewById(R.id.btnAdopt);
+        ibReport = (ImageButton) findViewById(R.id.btnReport);
+        ibNoti = (ImageButton) findViewById(R.id.btnNoti);
+        llInsure = (LinearLayout) findViewById(R.id.llInsure);
+
         tvMyInfoName = (TextView) findViewById(R.id.tv_nav_top_name);
         tvMyInfoPetCount = (TextView) findViewById(R.id.tv_nav_top_pet_count);
         tvMyInfoProfile = (RoundedImageView) findViewById(R.id.iv_nav_top_profile);
         imageLoader = VolleySingleton.getInstance(MainActivity.this).getImageLoader();
 
         ibHospital.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, petcare.com.mypetcare.Activity.SearchFragment.MainActivity.class);
+                intent.putExtra("startPage", 0);
+                startActivity(intent);
+            }
+        });
+
+        ibBeauty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, petcare.com.mypetcare.Activity.SearchFragment.MainActivity.class);
+                intent.putExtra("startPage", 1);
+                startActivity(intent);
+            }
+        });
+
+        ibHotel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, petcare.com.mypetcare.Activity.SearchFragment.MainActivity.class);
+                intent.putExtra("startPage", 2);
+                startActivity(intent);
+            }
+        });
+
+        ibShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, petcare.com.mypetcare.Activity.SearchFragment.MainActivity.class);
+                intent.putExtra("startPage", 3);
+                startActivity(intent);
+            }
+        });
+
+        ibCafe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, petcare.com.mypetcare.Activity.SearchFragment.MainActivity.class);
+                intent.putExtra("startPage", 4);
+                startActivity(intent);
+            }
+        });
+
+        ibFuneral.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, petcare.com.mypetcare.Activity.SearchFragment.MainActivity.class);
@@ -86,10 +149,37 @@ public class MainActivity extends BaseActivity
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, petcare.com.mypetcare.Activity.SearchFragment.MainActivity.class);
-                intent.putExtra("startPage", 2);
+                intent.putExtra("startPage", 6);
                 startActivity(intent);
             }
         });
+
+        ibReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, petcare.com.mypetcare.Activity.SearchFragment.MainActivity.class);
+                intent.putExtra("startPage", 7);
+                startActivity(intent);
+            }
+        });
+
+        ibNoti.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, petcare.com.mypetcare.Activity.SearchFragment.MainActivity.class);
+                intent.putExtra("startPage", 8);
+                startActivity(intent);
+            }
+        });
+
+        llInsure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, InsureInfoActivity.class);
+                startActivity(intent);
+            }
+        });
+
         setCustomActionBar();
     }
 

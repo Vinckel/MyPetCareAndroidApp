@@ -254,41 +254,42 @@
             android:textSize="16sp" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/ivLine"
-        android:layout_width="286dp"
-        android:layout_height="3dp"
-        android:layout_marginTop="32dp"
-        android:background="#cbcaca"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/centerReport" />
-
     <LinearLayout
         android:id="@+id/llInsure"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:layout_marginBottom="0dp"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivLine">
+        app:layout_constraintRight_toRightOf="parent">
 
-        <ImageView
-            android:id="@+id/btnInsure"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:background="@drawable/ic_insurance_n" />
-
-        <TextView
-            android:id="@+id/tvInsure"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="9dp"
-            android:text="@string/main_insure"
-            android:textAlignment="center"
-            android:textSize="16sp" />
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/btnInsure"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:background="@drawable/ic_insurance_n" />
+
+            <TextView
+                android:id="@+id/tvInsure"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_gravity="center"
+                android:text="@string/main_insure"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+        </LinearLayout>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

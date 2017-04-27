@@ -96,6 +96,10 @@
         <activity
             android:name=".Activity.AnnounceActivity"
             android:label="@string/title_activity_announce"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.InsureInfoActivity"
+            android:label="@string/title_activity_insure_info"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

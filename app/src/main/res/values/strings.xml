@@ -33,7 +33,7 @@
     <string name="main_adopt">분양</string>
     <string name="main_report">신고</string>
     <string name="main_noti">공고</string>
-    <string name="main_insure">펫 보험 접수</string>
+    <string name="main_insure">펫 보험 알아보기</string>
 
     <string name="join_title">추가정보</string>
     <string name="join_done">완료</string>
@@ -66,4 +66,5 @@
     <string name="title_activity_mating_request">MatingRequestActivity</string>
     <string name="title_activity_my_info">MyInfoActivity</string>
     <string name="title_activity_announce">AnnounceActivity</string>
+    <string name="title_activity_insure_info">InsureInfoActivity</string>
 </resources>
