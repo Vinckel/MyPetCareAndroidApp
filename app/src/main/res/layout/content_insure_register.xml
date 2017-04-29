@@ -84,7 +84,7 @@
             android:background="@android:color/transparent"
             android:hint="이메일을 입력하세요. (예: mypetplus@email.com)"
             android:inputType="textWebEmailAddress"
-            android:maxLength="8"
+            android:maxLength="40"
             android:singleLine="true"
             android:textSize="15sp" />
 
@@ -123,6 +123,7 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/bt_insure_register_done"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
