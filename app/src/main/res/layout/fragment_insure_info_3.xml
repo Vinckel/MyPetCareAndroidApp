@@ -59,7 +59,7 @@ tools:context="petcare.com.mypetcare.Activity.InsureInfoActivity$PlaceholderFrag
         android:paddingRight="15dp"
         android:paddingTop="15dp"
         android:textColorLink="#615fe2"
-        android:text="반쪽의 질병 및 상해에 대한 병원비\n를 \'실손\' 보상해준답니다.\n\n(자세한 내용은 \'보상하는 손해\'와\n\'보상하지 않는 손해\' 참고해주세요.)"
+        android:text="반쪽의 질병 및 상해에 대한 병원비\n를 \'실손\' 보상해준답니다.\n\n(자세한 내용은 \'보장하는 손해\'와\n\'보상하지 않는 손해\' 참고해주세요.)"
         android:textSize="15sp" />
 
     <ImageView

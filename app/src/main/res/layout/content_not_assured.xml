@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="petcare.com.mypetcare.Activity.NotAssuredDamageActivity"
+    tools:showIn="@layout/activity_not_assured_damage">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="20dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="0.3"
+                android:background="#f6f6f6"
+                android:gravity="center"
+                android:text="보장명"
+                android:textSize="11sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="0.7"
+                android:background="#f6f6f6"
+                android:gravity="center"
+                android:text="지급 사유"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:paddingBottom="15dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.3"
+                android:gravity="center"
+                android:text="기왕증, 선천적 질병 등"
+                android:textColor="#626262"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="0.7"
+                android:gravity="left"
+                android:text="보험기간이 시작하기 전에 진단확정된 질병 또는 상해.\n단, 갱신계약의 보험기간 이전의 진단확정된 보험사고는 제외"
+                android:textColor="#9b9b9b"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:src="#eaeaea" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.3"
+                android:gravity="center"
+                android:text="예방접종으로 예방이 가능한 질병 등"
+                android:textColor="#626262"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="0.7"
+                android:gravity="left"
+                android:text="개 파보바이러스 감염증, 개 디스템퍼바이러스 감염증, 개 파라인플루원자 감염증, 개 전염성간염, 개 아데노바이러스 2형감염증, 광견병, 개 코로나바이러스 감염증, 개 렙토스피라 감염증, 개 팔라리아 감염증, 고양이범백혈구 감염증, 고양이칼리시바이러스 감염증, 고양이바이러스성비기관염 및 고양이백혈병바이러스 감염증"
+                android:textColor="#9b9b9b"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:src="#eaeaea" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.3"
+                android:gravity="center"
+                android:text="예방과 관련된 비용"
+                android:textColor="#626262"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="0.7"
+                android:gravity="left"
+                android:text="예방목적의 검사비용, 예방접종비"
+                android:textColor="#9b9b9b"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:src="#eaeaea" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.3"
+                android:gravity="center"
+                android:text="질병 및 상해로 포함되지 않는 것"
+                android:textColor="#626262"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="0.7"
+                android:gravity="left"
+                android:text="-중성화(거세, 피임), 유치잔존, 정류고환, 배꼽헤르니아, 서해부탈장, 치석제어, 이갈이 (부정교합을 포함함), 손발톱갈이(늑대발톱 제거를 포함), 귀청소에 기인하는 모든 처치 및 항문샘 짜기\n단, 다른 질병 또는 상해의 수단으로 이와 같은 처지 또는 이에 대한 처치를 행한 경우에는 보험금을 지급합니다.n-단이(斷耳), 단미(斷尾), 성대제거 및 미용 성형을 위한 처치"
+                android:textColor="#9b9b9b"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:src="#eaeaea" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.3"
+                android:gravity="center"
+                android:text="대체의학"
+                android:textColor="#626262"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="0.7"
+                android:gravity="left"
+                android:text="한의학(단, 침구(鍼灸)는 제외합니다.), 인도의학, 허브요법, 아로마테라피, 동종요법(homepathy), 온천요법 및 산소용법 등의 대체의료"
+                android:textColor="#9b9b9b"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:src="#eaeaea" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.3"
+                android:gravity="center"
+                android:text="건강식품,\n의학품이 아닌 것"
+                android:textColor="#626262"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="0.7"
+                android:gravity="left"
+                android:text="입원중의 식이(食餌)에 해당하지 않는 음식물 및 식이요법, 그리고 수의사가 처방하는 의약품 이외의 것"
+                android:textColor="#9b9b9b"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:src="#eaeaea" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.3"
+                android:gravity="center"
+                android:text="치료비 이외의 비용"
+                android:textColor="#626262"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="0.7"
+                android:gravity="left"
+                android:text="-샴푸, 약용샴푸 및 의약품샴푸 및 이어클리너\n(단, 동물병원내에서 치료의 목적으로 이루어지는 경우에는 보험금을 지급합니다.)\n-왕진료, 펫호텔 또는 위탁료, 산책료, 예방목적을 위한 초진료 및 재진료, 문서료, 동물 병원에 가지않고 약제만 배달되는 배달료 및 이와 동종의 미용\n-카운셀링 비용 상담료, 지도료 및 세컨드오피니언 비용\n-안락사, 시체처치 및 해부검사"
+                android:textColor="#9b9b9b"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:src="#eaeaea" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.3"
+                android:gravity="center"
+                android:text="자연재해 등"
+                android:textColor="#626262"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="0.7"
+                android:gravity="left"
+                android:text="-전쟁, 혁명, 내란, 사변, 폭동, 소요, 노동쟁의 기타 이들과 유사한 사태로 생긴 손해\n-지진, 분화, 홍수, 해일 또는 이와 비슷한 천재지변으로 생긴 손해\n-핵연료물질 또는 핵연료물질에 의하여 오염된 물질의 방사성, 폭발성 그 밖의 유해한 독성 또는 이들의 특성에 의한 사고로 생긴 손해"
+                android:textColor="#9b9b9b"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

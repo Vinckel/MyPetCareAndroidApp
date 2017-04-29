@@ -100,6 +100,14 @@
         <activity
             android:name=".Activity.InsureInfoActivity"
             android:label="@string/title_activity_insure_info"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.AssuredDamageActivity"
+            android:label="@string/title_activity_assured_damage"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.NotAssuredDamageActivity"
+            android:label="@string/title_activity_not_assured"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

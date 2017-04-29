@@ -1,5 +1,6 @@
 package petcare.com.mypetcare.Activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +50,7 @@ public class InsureInfoActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
     private List<ImageView> ivPagerList;
+    private ImageButton ibBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +84,13 @@ public class InsureInfoActivity extends AppCompatActivity {
         ivPagerList.add((ImageView) findViewById(R.id.iv_insure_info_page_4));
         ivPagerList.add((ImageView) findViewById(R.id.iv_insure_info_page_5));
         ivPagerList.get(0).setColorFilter(Color.parseColor("#7579e8"));
+        ibBack = (ImageButton) findViewById(R.id.ib_insure_info_back);
+        ibBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.vp_insure_info);
@@ -161,21 +171,23 @@ public class InsureInfoActivity extends AppCompatActivity {
 //                    tv3Answer.setMovementMethod(LinkMovementMethod.getInstance());
 
                     SpannableStringBuilder sb = new SpannableStringBuilder("반쪽의 질병 및 상해에 대한 병원비\n를 \'실손\' 보상해준답니다.\n\n(자세한 내용은 ");
-                    sb.append("'보상하는 손해'");
+                    sb.append("'보장하는 손해'");
                     sb.setSpan(new ClickableSpan() {
                         @Override
                         public void onClick(View widget) {
-                            Toast.makeText(getContext(), "test!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getActivity(), AssuredDamageActivity.class);
+                            startActivity(intent);
                         }
-                    }, sb.length() - "'보상하는 손해'".length(), sb.length(), 0);
+                    }, sb.length() - "'보장하는 손해'".length(), sb.length(), 0);
                     sb.append("와\n");
-                    sb.append("'보상하지 않는 손해'");
+                    sb.append("'보장하지 않는 손해'");
                     sb.setSpan(new ClickableSpan() {
                         @Override
                         public void onClick(View widget) {
-
+                            Intent intent = new Intent(getActivity(), NotAssuredDamageActivity.class);
+                            startActivity(intent);
                         }
-                    }, sb.length() - "'보상하지 않는 손해'".length(), sb.length(), 0);
+                    }, sb.length() - "'보장하지 않는 손해'".length(), sb.length(), 0);
                     sb.append(" 참고해주세요.)");
                     tv3Answer.setMovementMethod(LinkMovementMethod.getInstance());
                     tv3Answer.setText(sb, TextView.BufferType.SPANNABLE);

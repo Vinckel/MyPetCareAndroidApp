@@ -67,4 +67,6 @@
     <string name="title_activity_my_info">MyInfoActivity</string>
     <string name="title_activity_announce">AnnounceActivity</string>
     <string name="title_activity_insure_info">InsureInfoActivity</string>
+    <string name="title_activity_assured_damage">AssuredDamageActivity</string>
+    <string name="title_activity_not_assured">NotAssuredActivity</string>
 </resources>
