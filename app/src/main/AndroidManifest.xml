@@ -108,6 +108,14 @@
         <activity
             android:name=".Activity.NotAssuredDamageActivity"
             android:label="@string/title_activity_not_assured"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.PriceSampleActivity"
+            android:label="@string/title_activity_price_sample"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.PlanActivity"
+            android:label="@string/title_activity_plan"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

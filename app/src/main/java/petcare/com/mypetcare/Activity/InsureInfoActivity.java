@@ -203,7 +203,8 @@ public class InsureInfoActivity extends AppCompatActivity {
                     ClickableSpan clickableSpan5 = new ClickableSpan() {
                         @Override
                         public void onClick(View widget) {
-                            Toast.makeText(getContext(), "test!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getActivity(), PriceSampleActivity.class);
+                            startActivity(intent);
                         }
                     };
                     ss5.setSpan(clickableSpan5, answer5.indexOf("'"), answer5.lastIndexOf("'") + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
