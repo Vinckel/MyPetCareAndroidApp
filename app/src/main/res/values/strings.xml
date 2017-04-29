@@ -71,4 +71,5 @@
     <string name="title_activity_not_assured">NotAssuredActivity</string>
     <string name="title_activity_price_sample">PriceSampleActivity</string>
     <string name="title_activity_plan">PlanActivity</string>
+    <string name="title_activity_insure_register">InsureRegisterActivity</string>
 </resources>

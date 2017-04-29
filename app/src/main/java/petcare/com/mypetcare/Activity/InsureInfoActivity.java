@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -51,6 +52,7 @@ public class InsureInfoActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private List<ImageView> ivPagerList;
     private ImageButton ibBack;
+    private Button btRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,10 +87,19 @@ public class InsureInfoActivity extends AppCompatActivity {
         ivPagerList.add((ImageView) findViewById(R.id.iv_insure_info_page_5));
         ivPagerList.get(0).setColorFilter(Color.parseColor("#7579e8"));
         ibBack = (ImageButton) findViewById(R.id.ib_insure_info_back);
+        btRegister = (Button) findViewById(R.id.bt_insure_info_register);
+
         ibBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+        btRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(InsureInfoActivity.this, InsureRegisterActivity.class);
+                startActivity(intent);
             }
         });
 

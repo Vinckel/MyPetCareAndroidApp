@@ -116,6 +116,10 @@
         <activity
             android:name=".Activity.PlanActivity"
             android:label="@string/title_activity_plan"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.InsureRegisterActivity"
+            android:label="@string/title_activity_insure_register"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
