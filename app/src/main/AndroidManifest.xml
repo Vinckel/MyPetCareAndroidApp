@@ -120,6 +120,10 @@
         <activity
             android:name=".Activity.InsureRegisterActivity"
             android:label="@string/title_activity_insure_register"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.ReceiptInsureActivity"
+            android:label="@string/title_activity_receipt_insure"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

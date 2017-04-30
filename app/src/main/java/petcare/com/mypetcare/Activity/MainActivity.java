@@ -254,17 +254,23 @@ public class MainActivity extends BaseActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 TextView tv = (TextView) view.findViewById(R.id.tv_nav_list_title);
+                String selected = tv.getText().toString();
 
+                String receipt = getApplicationContext().getResources().getString(R.string.nav_insure);
                 String info = getApplicationContext().getResources().getString(R.string.nav_info);
                 String diary = getApplicationContext().getResources().getString(R.string.nav_diary);
 
-                if (StringUtils.equals(info, tv.getText())) {
+                if (StringUtils.equals(info, selected)) {
                     drawer.closeDrawer(GravityCompat.START);
                     Intent intent = new Intent(getApplicationContext(), JoinActivity.class);
                     startActivity(intent);
-                } else if (StringUtils.equals(diary, tv.getText())) {
+                } else if (StringUtils.equals(diary, selected)) {
                     drawer.closeDrawer(GravityCompat.START);
                     Intent intent = new Intent(getApplicationContext(), DiaryListActivity.class);
+                    startActivity(intent);
+                } else if (StringUtils.equals(receipt, selected)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                    Intent intent = new Intent(getApplicationContext(), ReceiptInsureActivity.class);
                     startActivity(intent);
                 }
             }

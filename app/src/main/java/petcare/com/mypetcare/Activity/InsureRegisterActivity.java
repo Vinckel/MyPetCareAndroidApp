@@ -1,5 +1,7 @@
 package petcare.com.mypetcare.Activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +16,15 @@ import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import petcare.com.mypetcare.Model.CommonResult;
 import petcare.com.mypetcare.R;
+import petcare.com.mypetcare.Util.GeneralApi;
+import petcare.com.mypetcare.Util.GeneralMultipartApi;
+import petcare.com.mypetcare.Util.GsonUtil;
 
 public class InsureRegisterActivity extends BaseActivity {
     private ImageButton ibBack;
@@ -61,7 +71,7 @@ public class InsureRegisterActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (validate()) {  
-                    save();   
+                    save();
                 }
             }
         };
@@ -76,8 +86,45 @@ public class InsureRegisterActivity extends BaseActivity {
         });
     }
 
+    public class InsureRegisterApi extends GeneralApi {
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(InsureRegisterActivity.this);
+            alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    finish();
+                }
+            });
+
+            alert.setMessage("가입 접수가 완료되었습니다.");
+            alert.setCancelable(false);
+            AlertDialog alertDialog = alert.create();
+            alertDialog.show();
+            Button btDone = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            btDone.setTextColor(getResources().getColor(R.color.normalFont));
+        }
+    }
+
     private void save() {
 
+        InsureRegisterApi insureRegisterApi = new InsureRegisterApi();
+        String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+        String serviceId = "MPMS_01004";
+
+        Map<String, String> header = new HashMap<>();
+        header.put("url", url);
+        header.put("serviceName", serviceId);
+
+        Map<String, String> body = new HashMap<>();
+//        body.put();
+
+//        insureRegisterApi.execute(header, body);
     }
 
     private boolean validate() {

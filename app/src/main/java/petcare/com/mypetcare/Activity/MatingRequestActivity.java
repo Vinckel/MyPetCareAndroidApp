@@ -151,7 +151,9 @@ public class MatingRequestActivity extends AppCompatActivity {
         tvDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validate();
+                if (validate()) {
+                    save();
+                }
             }
         });
 
@@ -192,9 +194,8 @@ public class MatingRequestActivity extends AppCompatActivity {
         bitmapPaths = new ArrayList<>();
     }
 
-    private void validate() {
-        boolean isOk = false;
-        String errorMessage = "";
+    private boolean validate() {
+        String errorMessage = null;
 
         if (StringUtils.isEmpty(etName.getText())) {
             errorMessage = "이름을 입력하세요.";
@@ -212,16 +213,14 @@ public class MatingRequestActivity extends AppCompatActivity {
             etAge.setFocusableInTouchMode(true);
         } else if (bitmapPaths.size() == 0) {
             errorMessage = "사진을 1장 이상 추가해주세요.";
-        } else {
-            isOk = true;
         }
 
-        if (!isOk) {
+        if (StringUtils.isNotEmpty(errorMessage)) {
             Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
-        save();
+        return true;
     }
 
     private void save() {
