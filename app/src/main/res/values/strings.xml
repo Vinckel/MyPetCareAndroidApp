@@ -73,4 +73,5 @@
     <string name="title_activity_plan">PlanActivity</string>
     <string name="title_activity_insure_register">InsureRegisterActivity</string>
     <string name="title_activity_receipt_insure">ReceiptInsureActivity</string>
+    <string name="title_activity_inquiry">InquiryActivity</string>
 </resources>

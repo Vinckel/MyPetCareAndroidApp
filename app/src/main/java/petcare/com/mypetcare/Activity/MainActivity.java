@@ -259,20 +259,22 @@ public class MainActivity extends BaseActivity
                 String receipt = getApplicationContext().getResources().getString(R.string.nav_insure);
                 String info = getApplicationContext().getResources().getString(R.string.nav_info);
                 String diary = getApplicationContext().getResources().getString(R.string.nav_diary);
+                String inquiry = getApplicationContext().getResources().getString(R.string.nav_inquiry);
+
+                drawer.closeDrawer(GravityCompat.START);
+                Intent intent = null;
 
                 if (StringUtils.equals(info, selected)) {
-                    drawer.closeDrawer(GravityCompat.START);
-                    Intent intent = new Intent(getApplicationContext(), JoinActivity.class);
-                    startActivity(intent);
+                    intent = new Intent(getApplicationContext(), JoinActivity.class);
                 } else if (StringUtils.equals(diary, selected)) {
-                    drawer.closeDrawer(GravityCompat.START);
-                    Intent intent = new Intent(getApplicationContext(), DiaryListActivity.class);
-                    startActivity(intent);
+                    intent = new Intent(getApplicationContext(), DiaryListActivity.class);
                 } else if (StringUtils.equals(receipt, selected)) {
-                    drawer.closeDrawer(GravityCompat.START);
-                    Intent intent = new Intent(getApplicationContext(), ReceiptInsureActivity.class);
-                    startActivity(intent);
+                    intent = new Intent(getApplicationContext(), ReceiptInsureActivity.class);
+                } else if (StringUtils.equals(inquiry, selected)) {
+                    intent = new Intent(getApplicationContext(), InquiryActivity.class);
                 }
+
+                startActivity(intent);
             }
         });
 

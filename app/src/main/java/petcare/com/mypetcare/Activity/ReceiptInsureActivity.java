@@ -30,7 +30,7 @@ import petcare.com.mypetcare.Util.GeneralMultipartApi;
 import petcare.com.mypetcare.Util.GsonUtil;
 import petcare.com.mypetcare.Util.PicUtil;
 
-public class ReceiptInsureActivity extends AppCompatActivity {
+public class ReceiptInsureActivity extends BaseActivity {
     private ImageView ivPicAttach1;
     private ImageView ivPicAttach2;
     private ImageView ivPicAttach3;
@@ -90,6 +90,24 @@ public class ReceiptInsureActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 startActivityForResult(intent, 1);
+            }
+        });
+
+        ivPicAttach2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, 2);
+            }
+        });
+
+        ivPicAttach3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, 3);
             }
         });
     }

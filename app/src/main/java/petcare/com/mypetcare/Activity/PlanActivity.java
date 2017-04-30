@@ -28,7 +28,7 @@ import android.widget.TextView;
 
 import petcare.com.mypetcare.R;
 
-public class PlanActivity extends AppCompatActivity {
+public class PlanActivity extends BaseActivity {
     private ImageButton ibBack;
 
     /**

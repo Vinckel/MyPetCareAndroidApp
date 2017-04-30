@@ -124,6 +124,10 @@
         <activity
             android:name=".Activity.ReceiptInsureActivity"
             android:label="@string/title_activity_receipt_insure"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.InquiryActivity"
+            android:label="@string/title_activity_inquiry"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,14 +16,10 @@ import android.widget.Toast;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import petcare.com.mypetcare.Model.CommonResult;
 import petcare.com.mypetcare.R;
 import petcare.com.mypetcare.Util.GeneralApi;
-import petcare.com.mypetcare.Util.GeneralMultipartApi;
-import petcare.com.mypetcare.Util.GsonUtil;
 
 public class InsureRegisterActivity extends BaseActivity {
     private ImageButton ibBack;

@@ -21,7 +21,7 @@ import java.util.List;
 import petcare.com.mypetcare.Adapter.HospitalDetailViewpagerAdapter;
 import petcare.com.mypetcare.R;
 
-public class HospitalDetailActivity extends AppCompatActivity {
+public class HospitalDetailActivity extends BaseActivity {
     private ViewPager pager;
     private ImageButton ibBack;
     private TextView tvPageCount;

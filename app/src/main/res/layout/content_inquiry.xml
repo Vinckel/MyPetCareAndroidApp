@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:paddingBottom="17dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="20dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="petcare.com.mypetcare.Activity.InquiryActivity"
+    tools:showIn="@layout/activity_inquiry">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이메일"
+            android:textColor="#4a4a4a"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/et_inquiry_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="14dp"
+            android:background="@android:color/transparent"
+            android:hint="이메일을 입력해주세요. (예: mypetcare@email.com)"
+            android:inputType="textWebEmailAddress"
+            android:maxLength="40"
+            android:singleLine="true"
+            android:textColor="#626262"
+            android:textSize="15sp" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:src="#cbcaca" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="문의 내용"
+            android:textColor="#4a4a4a"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/et_inquiry_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:gravity="top"
+            android:hint="문의 내용을 입력해주세요."
+            android:inputType="textMultiLine"
+            android:minLines="5"
+            android:paddingBottom="10dp"
+            android:paddingLeft="11dp"
+            android:paddingTop="15dp"
+            android:scrollHorizontally="false"
+            android:textColor="#626262"
+            android:textColorHint="#cacaca"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/bt_inquiry_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/colorPrimary"
+        android:text="완료"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
+</RelativeLayout>

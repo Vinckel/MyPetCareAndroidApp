@@ -42,7 +42,7 @@ import petcare.com.mypetcare.Util.GeneralMultipartApi;
 import petcare.com.mypetcare.Util.GsonUtil;
 import petcare.com.mypetcare.Util.PicUtil;
 
-public class MatingRequestActivity extends AppCompatActivity {
+public class MatingRequestActivity extends BaseActivity {
     private static final int PIC_LIMIT_COUNT = 2;
     private ImageButton ibBack;
     private ImageView ivAddPic;

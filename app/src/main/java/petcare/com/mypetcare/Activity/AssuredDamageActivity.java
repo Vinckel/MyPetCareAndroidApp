@@ -18,7 +18,7 @@ import android.widget.ImageButton;
 
 import petcare.com.mypetcare.R;
 
-public class AssuredDamageActivity extends AppCompatActivity {
+public class AssuredDamageActivity extends BaseActivity {
     private ImageButton ibBack;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide

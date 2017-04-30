@@ -11,7 +11,7 @@ import android.view.View;
 
 import petcare.com.mypetcare.R;
 
-public class HospitalMapActivity extends AppCompatActivity {
+public class HospitalMapActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
