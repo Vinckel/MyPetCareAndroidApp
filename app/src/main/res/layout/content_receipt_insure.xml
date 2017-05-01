@@ -138,7 +138,7 @@
                 android:id="@+id/iv_receipt_insure_attach_1"
                 android:layout_width="106dp"
                 android:layout_height="106dp"
-                android:src="@drawable/ic_search_n" />
+                android:src="@drawable/add_photo" />
 
             <ImageView
                 android:id="@+id/iv_receipt_insure_attach_2"
@@ -146,13 +146,13 @@
                 android:layout_height="106dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:src="@drawable/ic_search_n" />
+                android:src="@drawable/add_photo" />
 
             <ImageView
                 android:id="@+id/iv_receipt_insure_attach_3"
                 android:layout_width="106dp"
                 android:layout_height="106dp"
-                android:src="@drawable/ic_search_n" />
+                android:src="@drawable/add_photo" />
         </LinearLayout>
     </LinearLayout>
 

@@ -128,7 +128,16 @@
         <activity
             android:name=".Activity.InquiryActivity"
             android:label="@string/title_activity_inquiry"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.MissingDetailActivity"
+            android:label="@string/title_activity_missing_detail"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.ReportWriteActivity"
+            android:label="@string/title_activity_report_write"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package petcare.com.mypetcare.Activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -32,6 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import petcare.com.mypetcare.Activity.CustomView.RoundedImageView;
+import petcare.com.mypetcare.Adapter.JoinPopupListViewAdapter;
 import petcare.com.mypetcare.Adapter.NavigationListViewAdapter;
 import petcare.com.mypetcare.Model.MyInfoVO;
 import petcare.com.mypetcare.R;
@@ -57,6 +60,7 @@ public class MainActivity extends BaseActivity
     private RoundedImageView tvMyInfoProfile;
     private ImageLoader imageLoader;
     private LinearLayout llInsure;
+    private Dialog shareDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,6 +185,26 @@ public class MainActivity extends BaseActivity
         });
 
         setCustomActionBar();
+
+        JoinPopupListViewAdapter adapterShare = new JoinPopupListViewAdapter(getApplicationContext(), null);
+        shareDialog = new Dialog(MainActivity.this, R.style.Theme_AppCompat_DayNight_Dialog);
+        shareDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        shareDialog.setContentView(R.layout.popup_share);
+        adapterShare.addItem("카카오톡");
+        adapterShare.addItem("페이스북");
+        adapterShare.addItem("라인");
+        adapterShare.addItem("밴드");
+        adapterShare.addItem("이메일");
+
+        ListView lvPopup = (ListView) shareDialog.findViewById(R.id.lv_popup_share);
+        lvPopup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Toast.makeText(getApplicationContext(), "테스트" + position, Toast.LENGTH_SHORT).show();
+//                shareDialog.dismiss();
+            }
+        });
+        lvPopup.setAdapter(adapterShare);
     }
 
     @Override
@@ -260,21 +284,26 @@ public class MainActivity extends BaseActivity
                 String info = getApplicationContext().getResources().getString(R.string.nav_info);
                 String diary = getApplicationContext().getResources().getString(R.string.nav_diary);
                 String inquiry = getApplicationContext().getResources().getString(R.string.nav_inquiry);
+                String share = getApplicationContext().getResources().getString(R.string.nav_share);
 
                 drawer.closeDrawer(GravityCompat.START);
                 Intent intent = null;
 
                 if (StringUtils.equals(info, selected)) {
                     intent = new Intent(getApplicationContext(), JoinActivity.class);
+                    startActivity(intent);
                 } else if (StringUtils.equals(diary, selected)) {
                     intent = new Intent(getApplicationContext(), DiaryListActivity.class);
+                    startActivity(intent);
                 } else if (StringUtils.equals(receipt, selected)) {
                     intent = new Intent(getApplicationContext(), ReceiptInsureActivity.class);
+                    startActivity(intent);
                 } else if (StringUtils.equals(inquiry, selected)) {
                     intent = new Intent(getApplicationContext(), InquiryActivity.class);
+                    startActivity(intent);
+                } else if (StringUtils.equals(share, selected)) {
+                    shareDialog.show();
                 }
-
-                startActivity(intent);
             }
         });
 

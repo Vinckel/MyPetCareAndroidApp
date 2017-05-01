@@ -8,7 +8,7 @@ import java.util.List;
  * Created by KS on 2017-04-24.
  */
 
-public class AnnounceInfoVO {
+public class AnnounceInfoListVO {
     @SerializedName("RESULT_CODE")
     private Integer resultCode;
 

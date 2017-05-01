@@ -7,7 +7,7 @@
     android:background="@android:color/white"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="petcare.com.mypetcare.Activity.MatingRequestActivity"
-    tools:showIn="@layout/activity_mating_request">
+    tools:showIn="@layout/activity_report_write">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,13 +15,13 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/rl_pic_touch"
+            android:id="@+id/rl_report_write_pic_touch"
             android:layout_width="match_parent"
             android:layout_height="270dp"
             android:background="#f9f9f9">
 
             <LinearLayout
-                android:id="@+id/ll_pic_area"
+                android:id="@+id/ll_report_write_pic_area"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -29,7 +29,7 @@
                 android:visibility="visible">
 
                 <ImageView
-                    android:id="@+id/iv_add_pic"
+                    android:id="@+id/iv_report_write_add_pic"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_gravity="center"
@@ -48,19 +48,19 @@
             </LinearLayout>
 
             <RelativeLayout
-                android:id="@+id/rl_pic_area"
+                android:id="@+id/rl_report_write_pic_area"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone">
 
                 <android.support.v4.view.ViewPager
-                    android:id="@+id/vp_mating_request"
+                    android:id="@+id/vp_report_write"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true" />
 
                 <TextView
-                    android:id="@+id/tv_mating_request_page_count"
+                    android:id="@+id/tv_report_write_page_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
@@ -91,23 +91,23 @@
                 android:paddingTop="10dp">
 
                 <TextView
-                    android:id="@+id/tv_mating_request_name"
+                    android:id="@+id/tv_report_write_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:text="Name"
+                    android:text="이름"
                     android:textColor="#4a4a4a"
                     android:textSize="14sp" />
 
                 <EditText
-                    android:id="@+id/et_mating_request_name"
+                    android:id="@+id/et_report_write_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_below="@id/tv_mating_request_name"
+                    android:layout_below="@id/tv_report_write_name"
                     android:background="@android:color/transparent"
-                    android:hint="Input name"
+                    android:hint="이름을 입력해주세요"
                     android:maxLength="15"
                     android:singleLine="true"
                     android:paddingBottom="10dp"
@@ -119,7 +119,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_below="@id/et_mating_request_name"
+                    android:layout_below="@id/et_report_write_name"
                     android:src="#cbcaca" />
             </RelativeLayout>
 
@@ -130,23 +130,23 @@
                 android:paddingTop="10dp">
 
                 <TextView
-                    android:id="@+id/tv_mating_request_breed"
+                    android:id="@+id/tv_report_write_breed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:text="Breed"
+                    android:text="견종"
                     android:textColor="#4a4a4a"
                     android:textSize="14sp" />
 
                 <EditText
-                    android:id="@+id/et_mating_request_breed"
+                    android:id="@+id/et_report_write_breed"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_below="@id/tv_mating_request_breed"
+                    android:layout_below="@id/tv_report_write_breed"
                     android:background="@android:color/transparent"
-                    android:hint="Input breed"
+                    android:hint="견종을 입력해주세요"
                     android:maxLength="15"
                     android:singleLine="true"
                     android:paddingBottom="10dp"
@@ -158,7 +158,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_below="@id/et_mating_request_breed"
+                    android:layout_below="@id/et_report_write_breed"
                     android:src="#cbcaca" />
             </RelativeLayout>
 
@@ -169,23 +169,23 @@
                 android:paddingTop="10dp">
 
                 <TextView
-                    android:id="@+id/tv_mating_request_color"
+                    android:id="@+id/tv_report_write_color"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:text="Color"
+                    android:text="컬러"
                     android:textColor="#4a4a4a"
                     android:textSize="14sp" />
 
                 <EditText
-                    android:id="@+id/et_mating_request_color"
+                    android:id="@+id/et_report_write_color"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_below="@id/tv_mating_request_color"
+                    android:layout_below="@id/tv_report_write_color"
                     android:background="@android:color/transparent"
-                    android:hint="Input color"
+                    android:hint="컬러를 입력해주세요"
                     android:maxLength="15"
                     android:singleLine="true"
                     android:paddingBottom="10dp"
@@ -197,7 +197,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_below="@id/et_mating_request_color"
+                    android:layout_below="@id/et_report_write_color"
                     android:src="#cbcaca" />
             </RelativeLayout>
 
@@ -208,19 +208,19 @@
                 android:paddingTop="10dp">
 
                 <TextView
-                    android:id="@+id/tv_mating_request_gender"
+                    android:id="@+id/tv_report_write_gender"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:text="Gender"
+                    android:text="성별"
                     android:textColor="#4a4a4a"
                     android:textSize="14sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_below="@id/tv_mating_request_gender"
+                    android:layout_below="@id/tv_report_write_gender"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -231,7 +231,7 @@
 
                         <ToggleButton
                             android:background="@android:color/white"
-                            android:id="@+id/bt_mating_request_gender_male"
+                            android:id="@+id/bt_report_write_gender_male"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textOn="남"
@@ -246,7 +246,7 @@
 
                         <ToggleButton
                             android:background="@android:color/white"
-                            android:id="@+id/bt_mating_request_gender_female"
+                            android:id="@+id/bt_report_write_gender_female"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textOn="여"
@@ -262,23 +262,23 @@
                 android:paddingTop="10dp">
 
                 <TextView
-                    android:id="@+id/tv_mating_request_age"
+                    android:id="@+id/tv_report_write_age"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:text="Age"
+                    android:text="나이"
                     android:textColor="#4a4a4a"
                     android:textSize="14sp" />
 
                 <EditText
-                    android:id="@+id/et_mating_request_age"
+                    android:id="@+id/et_report_write_age"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_below="@id/tv_mating_request_age"
+                    android:layout_below="@id/tv_report_write_age"
                     android:background="@android:color/transparent"
-                    android:hint="Input age"
+                    android:hint="나이를 입력해주세요 (2개월, 1년 등)"
                     android:maxLength="15"
                     android:singleLine="true"
                     android:paddingBottom="10dp"
@@ -290,44 +290,226 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_below="@id/et_mating_request_age"
+                    android:layout_below="@id/et_report_write_age"
                     android:src="#cbcaca" />
             </RelativeLayout>
 
-            <!--소개-->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="45dp"
+                android:layout_marginBottom="30dp"
+                android:src="#979797" />
+
+            <!--실종장소-->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp">
 
                 <TextView
-                    android:id="@+id/tv_mating_request_intro"
+                    android:id="@+id/tv_report_write_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:text="Introduce"
+                    android:text="실종장소"
                     android:textColor="#4a4a4a"
                     android:textSize="14sp" />
 
                 <EditText
-                    android:id="@+id/et_mating_request_intro"
+                    android:id="@+id/et_report_write_location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_below="@id/tv_mating_request_intro"
+                    android:layout_below="@id/tv_report_write_location"
                     android:background="@android:color/transparent"
-                    android:hint="Input intro"
-                    android:inputType="textMultiLine"
-                    android:maxLines="5"
-                    android:minLines="5"
-                    android:gravity="top"
+                    android:hint="실종장소를 입력해주세요"
+                    android:maxLength="15"
+                    android:singleLine="true"
                     android:paddingBottom="10dp"
                     android:paddingLeft="11dp"
                     android:paddingTop="15dp"
-                    android:scrollHorizontally="false"
                     android:textColorHint="#cacaca"
                     android:textSize="15sp" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/et_report_write_location"
+                    android:src="#cbcaca" />
+            </RelativeLayout>
+
+            <!--특징-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:id="@+id/tv_report_write_mark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:text="특징"
+                    android:textColor="#4a4a4a"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/et_report_write_mark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/tv_report_write_mark"
+                    android:background="@android:color/transparent"
+                    android:hint="특징을 입력해주세요"
+                    android:maxLength="15"
+                    android:singleLine="true"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="11dp"
+                    android:paddingTop="15dp"
+                    android:textColorHint="#cacaca"
+                    android:textSize="15sp" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/et_report_write_mark"
+                    android:src="#cbcaca" />
+            </RelativeLayout>
+
+            <!--사례금-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:id="@+id/tv_report_write_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:text="사례금 (선택)"
+                    android:textColor="#4a4a4a"
+                    android:textSize="14sp" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_report_write_price_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="10dp"
+                    android:layout_alignParentLeft="true"
+                    android:paddingLeft="11dp"
+                    android:paddingTop="15dp"
+                    android:layout_below="@id/tv_report_write_price">
+
+                    <EditText
+                        android:id="@+id/et_report_write_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:hint="사례금을 입력해주세요"
+                        android:inputType="numberDecimal"
+                        android:maxLength="10"
+                        android:singleLine="true"
+                        android:textColorHint="#cacaca"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_alignParentRight="true"
+                        android:text="원" />
+                </RelativeLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/rl_report_write_price_area"
+                    android:src="#cbcaca" />
+            </RelativeLayout>
+
+            <!--기타-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:id="@+id/tv_report_write_etc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:text="기타"
+                    android:textColor="#4a4a4a"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/et_report_write_etc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/tv_report_write_etc"
+                    android:background="@android:color/transparent"
+                    android:hint="기타사항을 입력해주세요"
+                    android:maxLength="15"
+                    android:singleLine="true"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="11dp"
+                    android:paddingTop="15dp"
+                    android:textColorHint="#cacaca"
+                    android:textSize="15sp" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/et_report_write_etc"
+                    android:src="#cbcaca" />
+            </RelativeLayout>
+
+            <!--전화번호-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:id="@+id/tv_report_write_contact"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:text="전화번호"
+                    android:textColor="#4a4a4a"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/et_report_write_contact"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/tv_report_write_contact"
+                    android:background="@android:color/transparent"
+                    android:hint="연락처를 입력해주세요"
+                    android:inputType="phone"
+                    android:maxLength="15"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="11dp"
+                    android:paddingTop="15dp"
+                    android:singleLine="true"
+                    android:textColorHint="#cacaca"
+                    android:textSize="15sp" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/et_report_write_contact"
+                    android:layout_marginBottom="50dp"
+                    android:src="#cbcaca" />
             </RelativeLayout>
         </LinearLayout>
 

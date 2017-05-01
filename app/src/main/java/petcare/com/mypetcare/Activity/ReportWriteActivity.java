@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +29,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.Text;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ import petcare.com.mypetcare.Util.GeneralMultipartApi;
 import petcare.com.mypetcare.Util.GsonUtil;
 import petcare.com.mypetcare.Util.PicUtil;
 
-public class MatingRequestActivity extends BaseActivity {
+public class ReportWriteActivity extends BaseActivity {
     private static final int PIC_LIMIT_COUNT = 10;
     private ImageButton ibBack;
     private ImageView ivAddPic;
@@ -62,15 +63,17 @@ public class MatingRequestActivity extends BaseActivity {
     private ToggleButton btGenderMale;
     private ToggleButton btGenderFemale;
     private EditText etAge;
-    private EditText etIntroduce;
-
-    private boolean genderPick;
+    private EditText etLocation;
+    private EditText etMark;
+    private EditText etPrice;
+    private EditText etEtc;
+    private EditText etContact;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mating_request);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tb_mating_request);
+        setContentView(R.layout.activity_report_write);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tb_report_write);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
@@ -80,7 +83,7 @@ public class MatingRequestActivity extends BaseActivity {
         actionBar.setDisplayShowHomeEnabled(false);
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View actionBarView = inflater.inflate(R.layout.actionbar_mating_request, null);
+        View actionBarView = inflater.inflate(R.layout.actionbar_report_write, null);
 
         ActionBar.LayoutParams lp1 = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
         actionBar.setCustomView(actionBarView, lp1);
@@ -88,7 +91,7 @@ public class MatingRequestActivity extends BaseActivity {
         Toolbar parent = (Toolbar) actionBarView.getParent();
         parent.setContentInsetsAbsolute(0, 0);
 
-        ibBack = (ImageButton) findViewById(R.id.ib_mating_request_back);
+        ibBack = (ImageButton) findViewById(R.id.ib_report_write_back);
         ibBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,28 +99,22 @@ public class MatingRequestActivity extends BaseActivity {
             }
         });
 
-        llPicAreaWithAddPhoto = (LinearLayout) findViewById(R.id.ll_pic_area);
-        rlPicAreaWithPager = (RelativeLayout) findViewById(R.id.rl_pic_area);
-        rlPicTouch = (RelativeLayout) findViewById(R.id.rl_pic_touch);
+        llPicAreaWithAddPhoto = (LinearLayout) findViewById(R.id.ll_report_write_pic_area);
+        rlPicAreaWithPager = (RelativeLayout) findViewById(R.id.rl_report_write_pic_area);
+        rlPicTouch = (RelativeLayout) findViewById(R.id.rl_report_write_pic_touch);
 
-        etName = (EditText) findViewById(R.id.et_mating_request_name);
-        etBreed = (EditText) findViewById(R.id.et_mating_request_breed);
-        etColor = (EditText) findViewById(R.id.et_mating_request_color);
-        etAge = (EditText) findViewById(R.id.et_mating_request_age);
-        etIntroduce = (EditText) findViewById(R.id.et_mating_request_intro);
-        btGenderMale = (ToggleButton) findViewById(R.id.bt_mating_request_gender_male);
-        btGenderFemale = (ToggleButton) findViewById(R.id.bt_mating_request_gender_female);
+        etName = (EditText) findViewById(R.id.et_report_write_name);
+        etBreed = (EditText) findViewById(R.id.et_report_write_breed);
+        etColor = (EditText) findViewById(R.id.et_report_write_color);
+        etAge = (EditText) findViewById(R.id.et_report_write_age);
+        etLocation = (EditText) findViewById(R.id.et_report_write_location);
+        etMark = (EditText) findViewById(R.id.et_report_write_mark);
+        etPrice = (EditText) findViewById(R.id.et_report_write_price);
+        etEtc = (EditText) findViewById(R.id.et_report_write_etc);
+        etContact = (EditText) findViewById(R.id.et_report_write_contact);
 
-//        View.OnClickListener toggleButtonListener = new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (btGenderMale.isChecked()) {
-//                    btGenderFemale.setChecked(false);
-//                } else {
-//                    btGenderFemale.setChecked(true);
-//                }
-//            }
-//        };
+        btGenderMale = (ToggleButton) findViewById(R.id.bt_report_write_gender_male);
+        btGenderFemale = (ToggleButton) findViewById(R.id.bt_report_write_gender_female);
 
         btGenderMale.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -147,7 +144,7 @@ public class MatingRequestActivity extends BaseActivity {
             }
         });
 
-        tvDone = (TextView) findViewById(R.id.tv_mating_request_done);
+        tvDone = (TextView) findViewById(R.id.tv_report_write_done);
         tvDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,8 +166,8 @@ public class MatingRequestActivity extends BaseActivity {
             }
         });
 
-        tvPageCount = (TextView) findViewById(R.id.tv_mating_request_page_count);
-        pager = (ViewPager) findViewById(R.id.vp_mating_request);
+        tvPageCount = (TextView) findViewById(R.id.tv_report_write_page_count);
+        pager = (ViewPager) findViewById(R.id.vp_report_write);
         paths = new HashMap<>();
         adapter = new MatingRequestViewpagerAdapter(getLayoutInflater());
         pager.setAdapter(adapter);
@@ -213,6 +210,10 @@ public class MatingRequestActivity extends BaseActivity {
             etAge.setFocusableInTouchMode(true);
         } else if (bitmapPaths.size() == 0) {
             errorMessage = "사진을 1장 이상 추가해주세요.";
+        } else if (StringUtils.isBlank(etLocation.getText())) {
+            errorMessage = "실종장소를 입력하세요.";
+        } else if (StringUtils.isBlank(etContact.getText())) {
+            errorMessage = "연락처를 입력하세요.";
         }
 
         if (StringUtils.isNotEmpty(errorMessage)) {
@@ -223,27 +224,40 @@ public class MatingRequestActivity extends BaseActivity {
         return true;
     }
 
+
     private void save() {
         MultipartApi multipartApi = new MultipartApi();
         String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-        String serviceId = "MPMS_01004";
+        String serviceId = "MPMS_11003";
 
         Map<String, String> header = new HashMap<>();
         header.put("url", url);
         header.put("serviceName", serviceId);
 
         Map<String, String> body = new HashMap<>();
-//        body.put();
+        body.put("PET_AR_TYPE", "");
+        body.put("PET_AR_NM", etName.getText().toString());
+        body.put("PET_AR_KND", etBreed.getText().toString());
+        body.put("PET_AR_COLOR", etColor.getText().toString());
+        body.put("PET_AR_SEX", btGenderMale.isChecked() ? "남" : "여");
+        body.put("PET_AR_AGE", etAge.getText().toString());
+        body.put("PET_AR_PLACE", etLocation.getText().toString());
+//        body.put("PET_AR_DATE", "");
+        body.put("PET_AR_CHAR", etMark.getText().toString());
+        body.put("PET_AR_REWARD", etPrice.getText().toString());
+        body.put("PET_AR_DESC", etEtc.getText().toString());
+        body.put("PET_AR_FIND_AT", "N");
 
-//        multipartApi.execute(header, body, paths);
+        multipartApi.execute(header, body, paths);
     }
+
     public class MultipartApi extends GeneralMultipartApi {
 
         @Override
         protected void onPostExecute(List<String> resultList) {
             super.onPostExecute(resultList);
 
-            AlertDialog.Builder alert = new AlertDialog.Builder(MatingRequestActivity.this);
+            AlertDialog.Builder alert = new AlertDialog.Builder(ReportWriteActivity.this);
             alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
 
                 @Override
@@ -290,10 +304,10 @@ public class MatingRequestActivity extends BaseActivity {
                     int count = clipData.getItemCount() > PIC_LIMIT_COUNT ? PIC_LIMIT_COUNT : clipData.getItemCount();
 
                     for (int i = 0; i < count; i++) {
-                            ClipData.Item item = clipData.getItemAt(i);
-                            Uri uri = item.getUri();
-                            paths.put(String.valueOf(i + 1), PicUtil.getPathFromUri(getApplicationContext(), uri));
-                            bitmapPaths.add(PicUtil.getPicture(getApplicationContext(), uri));
+                        ClipData.Item item = clipData.getItemAt(i);
+                        Uri uri = item.getUri();
+                        paths.put(String.valueOf(i + 1), PicUtil.getPathFromUri(getApplicationContext(), uri));
+                        bitmapPaths.add(PicUtil.getPicture(getApplicationContext(), uri));
                     }
                 } else {
                     Uri uri = data.getData();

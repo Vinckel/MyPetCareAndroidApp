@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,28 +11,38 @@
     android:paddingTop="22dp"
     tools:context="petcare.com.mypetcare.Activity.JoinActivity">
 
-    <TextView
-        android:id="@+id/tvPetInfo"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/register_info"
-        android:textColor="@color/optionFont"
-        android:textSize="14sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
 
-    <HorizontalScrollView
-        android:id="@+id/svPic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvPetPic">
+        <TextView
+            android:id="@+id/tvPetInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/register_info"
+            android:textColor="@color/optionFont"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvPetPic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
+            android:text="@string/register_pic"
+            android:textColor="@color/joinDefaultFont"
+            android:textSize="14sp" />
 
         <LinearLayout
+            android:id="@+id/svPic"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <ImageView
@@ -40,7 +50,8 @@
                 android:layout_width="106dp"
                 android:layout_height="106dp"
                 android:adjustViewBounds="true"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                android:src="@drawable/add_photo" />
 
             <ImageView
                 android:id="@+id/ivPic2"
@@ -48,7 +59,8 @@
                 android:layout_height="106dp"
                 android:layout_marginLeft="5dp"
                 android:adjustViewBounds="true"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                android:src="@drawable/add_photo" />
 
             <ImageView
                 android:id="@+id/ivPic3"
@@ -56,113 +68,56 @@
                 android:layout_height="106dp"
                 android:layout_marginLeft="5dp"
                 android:adjustViewBounds="true"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                android:src="@drawable/add_photo" />
         </LinearLayout>
-    </HorizontalScrollView>
 
+        <TextView
+            android:id="@+id/tvPetSpecies"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/register_species"
+            android:textColor="@color/joinDefaultFont"
+            android:textSize="14sp" />
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5"
-        tools:layout_editor_absoluteX="164dp"
-        tools:layout_editor_absoluteY="0dp" />
+        <Button
+            android:id="@+id/btPetSpecies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/dropbox"
+            android:text="@string/join_select_species"
+            android:textColor="@color/spinnerFont" />
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="236dp" />
+        <TextView
+            android:id="@+id/tvPetBirth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/register_birth"
+            android:textColor="@color/joinDefaultFont"
+            android:textSize="14sp" />
 
-    <TextView
-        android:id="@+id/tvPetPic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
-        android:text="@string/register_pic"
-        android:textColor="@color/joinDefaultFont"
-        android:textSize="14sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvPetInfo" />
-
-    <TextView
-        android:id="@+id/tvPetSpecies"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/register_species"
-        android:textColor="@color/joinDefaultFont"
-        android:textSize="14sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/svPic" />
-
-    <Button
-        android:id="@+id/btPetSpecies"
-        android:layout_width="0dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="9dp"
-        android:text="@string/join_select_species"
-        android:textColor="@color/spinnerFont"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvPetSpecies" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="16dp"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="0dp" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_end="16dp"
-        tools:layout_editor_absoluteX="312dp"
-        tools:layout_editor_absoluteY="0dp" />
-
-    <TextView
-        android:id="@+id/tvPetBirth"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/register_birth"
-        android:textColor="@color/joinDefaultFont"
-        android:textSize="14sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btPetSpecies" />
-
-    <Button
-        android:id="@+id/btPetBirth"
-        android:layout_width="0dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/join_select_birth"
-        android:textColor="@color/spinnerFont"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvPetBirth" />
+        <Button
+            android:id="@+id/btPetBirth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/dropbox"
+            android:text="@string/join_select_birth"
+            android:textColor="@color/spinnerFont" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnOk"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="17dp"
         android:background="@color/colorPrimary"
         android:text="@string/register_complete"
         android:textColor="@color/joinDoneBtnFont"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-</android.support.constraint.ConstraintLayout>
+        android:textSize="16sp" />
+</RelativeLayout>
