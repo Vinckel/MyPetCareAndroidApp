@@ -16,11 +16,19 @@
 
 package petcare.com.mypetcare.Activity.SearchFragment;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -43,10 +51,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,11 +79,15 @@ import petcare.com.mypetcare.Adapter.MissingGridViewAdapter;
 import petcare.com.mypetcare.Model.AnnounceInfoListVO;
 import petcare.com.mypetcare.Model.GeoRegionVO;
 import petcare.com.mypetcare.Model.GeoStateVO;
+import petcare.com.mypetcare.Model.HospitalListVO;
 import petcare.com.mypetcare.Model.MatingListVO;
+import petcare.com.mypetcare.Model.ReportCodeVO;
 import petcare.com.mypetcare.Model.ReportListVO;
 import petcare.com.mypetcare.R;
 import petcare.com.mypetcare.Util.GeneralApi;
 import petcare.com.mypetcare.Util.GsonUtil;
+
+import static android.content.Context.LOCATION_SERVICE;
 
 public class SlidingTabsBasicFragment extends Fragment {
     private int hospitalCurrentPosition = 1;
@@ -86,10 +103,12 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static List<GeoRegionVO.GeoRegionObject> regionList;
     private static String selectedState = null;
     private static String selectedRegion = null;
-    private static final String[] titleArr = {"병원", "미용" ,"호텔", "용품", "카페", "장례", "분양", "신고", "공고"};
+    private static final String[] titleArr = {"병원", "미용", "호텔", "용품", "카페", "장례", "분양", "신고", "공고"};
     private static AnnounceGridViewAdapter adapterAnnounce;
     private static AdoptGridViewAdapter adapterMating;
     private static MissingGridViewAdapter adapterMissing;
+    private static MissingGridViewAdapter adapterProtection;
+    private static HospitalListViewAdapter adapterHospital;
     private static List<Integer> pagingCount;
     private static final int NUM_HOSPITAL = 0;
     private static final int NUM_BEAUTY = 1;
@@ -106,6 +125,15 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static final int PAGE_OFFSET = 15;
     private static List<Boolean> pagingLastCheck;
     private static boolean isLoaded = false;
+    private static Map<String, String> reportCodeMap;
+    private static GoogleApiClient googleApiClient;
+    private static double lastLongitude = -1;
+    private static double lastLatitude = -1;
+    private static LocationManager locationManager;
+    private static LocationListener locationListener;
+    private static Spinner spHospital;
+    private static long scrollCooldown = 0L;
+    private static final long SCROLL_MIN_TERM = 500L;
 
     /**
      * A custom {@link ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -167,8 +195,10 @@ public class SlidingTabsBasicFragment extends Fragment {
             }
         });
 
+        reportCodeMap = new HashMap<>();
         pagingCount = new ArrayList<>();
         pagingLastCheck = new ArrayList<>();
+
         for (int i = 0; i < titleArr.length; i++) {
             pagingCount.add(1);
             pagingLastCheck.add(false);
@@ -182,8 +212,53 @@ public class SlidingTabsBasicFragment extends Fragment {
             }
         }, 1000);
 
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                lastLatitude = location.getLatitude();
+                lastLongitude = location.getLongitude();
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+            }
+        };
+
+        locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, locationListener);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationManager.removeUpdates(locationListener);
+        }
+    }
+//    @TargetApi(23)
+//    private void checkPermission() {
+//        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//
+//            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+//        }
+//    }
 
     // BEGIN_INCLUDE (fragment_onviewcreated)
     /**
@@ -205,6 +280,7 @@ public class SlidingTabsBasicFragment extends Fragment {
         Bundle bundle = this.getArguments();
         int startPage = bundle.getInt("startPage");
         mViewPager.setCurrentItem(startPage);
+        mViewPager.setOffscreenPageLimit(1);
 
         if (startPage == NUM_REPORT) {
             ivWrite.setVisibility(View.VISIBLE);
@@ -327,13 +403,6 @@ public class SlidingTabsBasicFragment extends Fragment {
         }
 
         // END_INCLUDE (pageradapter_getpagetitle)
-
-        public class HospitalApi extends GeneralApi {
-            @Override
-            protected void onPostExecute(String result) {
-                super.onPostExecute(result);
-            }
-        }
 
         /**
          * Instantiate the {@link View} which should be displayed at {@code position}. Here we
@@ -518,44 +587,39 @@ public class SlidingTabsBasicFragment extends Fragment {
                     break;
                 case NUM_HOSPITAL:
                     pagingCount.set(NUM_HOSPITAL, 1);
+                    pagingLastCheck.set(NUM_HOSPITAL, false);
                     view = getActivity().getLayoutInflater().inflate(R.layout.fragment_hospital, container, false);
                     container.addView(view);
                     ListView lvHospitalList = (ListView) view.findViewById(R.id.lv_hospital_list);
-                    HospitalListViewAdapter adapter = new HospitalListViewAdapter(view.getContext());
-                    HospitalApi hospitalApi = new HospitalApi();
+                    spHospital = (Spinner) view.findViewById(R.id.sp_hospital_distance);
+                    adapterHospital = new HospitalListViewAdapter(view.getContext());
+                    callHospitalApi(StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1));
 
-                    Map headers = new HashMap<>();
-                    String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-                    String serviceId = "MPMS_02001";
-                    String contentType = "application/json";
-                    headers.put("url", url);
-                    headers.put("serviceName", serviceId);
-
-                    Map params = new HashMap<>();
-//                    params.put("USER_EMAIL", global.get("email"));
-                    params.put("SEARCH_COUNT", SEARCH_COUNT);
-                    params.put("SEARCH_PAGE", hospitalCurrentPosition++);
-
-//                    hospitalApi.execute(headers, params);
-
-                    adapter.addItem("test", "testdesc", "testdesc", R.drawable.ic_menu_camera, Arrays.asList(new String[]{"d", "b"}));
-                    adapter.addItem("test", "testdesc", "testdesc", R.drawable.ic_menu_camera, Arrays.asList(new String[]{"d", "b"}));
-                    adapter.addItem("test", "testdesc", "testdesc", R.drawable.ic_menu_camera, Arrays.asList(new String[]{"d", "b"}));
-                    adapter.addItem("test", "testdesc", "testdesc", R.drawable.ic_menu_camera, Arrays.asList(new String[]{"d", "b"}));
-                    adapter.addItem("test", "testdesc", "testdesc", R.drawable.ic_menu_camera, Arrays.asList(new String[]{"d", "b"}));
-                    adapter.addItem("test", "testdesc", "testdesc", R.drawable.ic_menu_camera, Arrays.asList(new String[]{"d", "b"}));
-                    adapter.addItem("test", "testdesc", "testdesc", R.drawable.ic_menu_camera, Arrays.asList(new String[]{"d", "b"}));
-                    adapter.addItem("test", "testdesc", "testdesc", R.drawable.ic_menu_camera, Arrays.asList(new String[]{"d", "b"}));
-                    lvHospitalList.setAdapter(adapter);
+                    lvHospitalList.setAdapter(adapterHospital);
                     lvHospitalList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Intent intent = new Intent(getActivity(), HospitalDetailActivity.class);
-                            intent.putExtra("id", id);
+                        Intent intent = new Intent(getActivity(), HospitalDetailActivity.class);
+                        intent.putExtra("id", adapterHospital.getItem(position).getId());
 
-                            startActivity(intent);
+                        startActivity(intent);
                         }
                     });
+
+                    lvHospitalList.setOnScrollListener(new AbsListView.OnScrollListener() {
+                    @Override
+                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                        if (firstVisibleItem + visibleItemCount >= totalItemCount && isLoaded) {
+                            Log.d("listview hospital", "reached at bottom");
+                            callHospitalApi(StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1));
+                        }
+                    }
+
+                    @Override
+                    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+                    }
+                });
                     break;
 //                case 6:
 //                    break;
@@ -574,13 +638,11 @@ public class SlidingTabsBasicFragment extends Fragment {
                             switch (tab.getPosition()) {
                                 case 0:
                                     Fragment fragment1 = MissingFragment.newInstance(0);
-                                    getFragmentManager()
-                                            .beginTransaction().replace(R.id.containerLayout, fragment1).commit();
+                                    getFragmentManager().beginTransaction().replace(R.id.containerLayout, fragment1).commit();
                                     break;
                                 default:
                                     Fragment fragment2 = MissingFragment.newInstance(1);
-                                    getFragmentManager()
-                                            .beginTransaction().replace(R.id.containerLayout, fragment2).commit();
+                                    getFragmentManager().beginTransaction().replace(R.id.containerLayout, fragment2).commit();
                                     break;
                             }
                         }
@@ -640,6 +702,39 @@ public class SlidingTabsBasicFragment extends Fragment {
         }
     }
 
+    private void callHospitalApi(String radius) {
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        if (scrollCooldown + SCROLL_MIN_TERM > currentTime) {
+            return;
+        } else {
+            scrollCooldown = currentTime;
+        }
+
+        try {
+            HospitalApi hospitalApi = new HospitalApi();
+
+            Map headers = new HashMap<>();
+            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+            String serviceId = "MPMS_03001";
+            headers.put("url", url);
+            headers.put("serviceName", serviceId);
+
+            Map params = new HashMap<>();
+            params.put("SEARCH_COUNT", SEARCH_COUNT);
+            int currentPage = pagingCount.get(NUM_HOSPITAL);
+            params.put("SEARCH_PAGE", currentPage);
+            params.put("SEARCH_LAT", currentPage);
+            params.put("SEARCH_LON", currentPage);
+            params.put("SEARCH_RADIUS", radius);
+            pagingCount.set(NUM_HOSPITAL, currentPage + 1);
+
+            hospitalApi.execute(headers, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public static class MissingFragment extends Fragment {
         private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -679,20 +774,19 @@ public class SlidingTabsBasicFragment extends Fragment {
                     adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
                     adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
 
-                    MissingListApi missingListApi = new MissingListApi();
-                    Map header = new HashMap<>();
-                    String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-                    String serviceId = "MPMS_11001";
-                    header.put("url", url);
-                    header.put("serviceName", serviceId);
+                    if (MapUtils.isEmpty(reportCodeMap)) {
+                        ReportCodeApi reportCodeApi = new ReportCodeApi();
+                        Map header = new HashMap<>();
+                        String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+                        String serviceId = "MPMS_00003";
+                        header.put("url", url);
+                        header.put("serviceName", serviceId);
 
-                    Map body = new HashMap<>();
-                    body.put("SEARCH_COUNT", PAGE_OFFSET);
-                    int currentPage = pagingCount.get(NUM_REPORT);
-                    body.put("SEARCH_PAGE", currentPage);
-                    pagingCount.set(NUM_REPORT, currentPage + 1);
-
-//                    missingListApi.execute(header, body);
+                        Map body = new HashMap<>();
+                        reportCodeApi.execute(header, body);
+                    } else {
+                        callMissingListApi("실종");
+                    }
 
                     gvMissing.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -705,11 +799,32 @@ public class SlidingTabsBasicFragment extends Fragment {
                     });
                     break;
                 case 1:
+                    callMissingListApi("보호중");
                     rootView = inflater.inflate(R.layout.fragment_missing_list, container, false);
+                    GridView gvProtection = (GridView) rootView.findViewById(R.id.gv_missing_list);
+                    adapterProtection = new MissingGridViewAdapter(getContext(), R.layout.gridview_missing_list);
+                    gvProtection.setAdapter(adapterProtection);
                     break;
             }
             return rootView;
         }
+    }
+
+    private static void callMissingListApi(String status) {
+        MissingListApi missingListApi = new MissingListApi();
+        Map header = new HashMap<>();
+        String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+        String serviceId = "MPMS_11001";
+        header.put("url", url);
+        header.put("serviceName", serviceId);
+
+        Map body = new HashMap<>();
+        body.put("SEARCH_COUNT", PAGE_OFFSET);
+        int currentPage = pagingCount.get(NUM_REPORT);
+        body.put("SEARCH_PAGE", currentPage);
+        body.put("PET_AR_TYPE", reportCodeMap.get(status));
+        pagingCount.set(NUM_REPORT, currentPage + 1);
+        missingListApi.execute(header, body);
     }
 
     private static class MissingListApi extends GeneralApi {
@@ -844,6 +959,55 @@ public class SlidingTabsBasicFragment extends Fragment {
             Toast.makeText(getContext(), "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private static class ReportCodeApi extends GeneralApi {
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            ReportCodeVO reportCodeVO = GsonUtil.fromJson(result, ReportCodeVO.class);
+            if (reportCodeVO.getResultCode() != 0) {
+//                Toast.makeText(, "신고 데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            List<ReportCodeVO.ReportCodeObject> data = reportCodeVO.getData();
+
+            if (CollectionUtils.isEmpty(data) || data.size() < 2) {
+//                Toast.makeText(getActivity(), "신고 데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            reportCodeMap.put("실종", data.get(0).getCode());
+            reportCodeMap.put("보호중", data.get(1).getCode());
+
+            callMissingListApi(reportCodeMap.get("실종"));
+        }
+    }
+
+    private class HospitalApi extends GeneralApi {
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
+            if (hospitalListVO.getResultCode() != 0) {
+                Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
+
+            for (HospitalListVO.HospitalObject hospitalObject : data) {
+                adapterHospital.addItem(hospitalObject.getName(), "", hospitalObject.getDistance() + "km", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
+            }
+
+            adapterHospital.notifyDataSetChanged();
+        }
+    }
+
 
     private class GeoRegionApi extends GeneralApi {
         Spinner spinner;

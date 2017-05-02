@@ -131,13 +131,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 if (ErrorCode == ClientErrorCode) {
                     Toast.makeText(getApplicationContext(), "카카오톡 서버의 네트워크가 불안정합니다. 잠시 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.d("TAG" , "오류로 카카오로그인 실패 ");
+                    Log.d("TAG" , "오류로 카카오로그인 실패");
                 }
             }
 
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
-                Log.d("TAG" , "오류로 카카오로그인 실패 ");
+                Log.d("TAG" , "오류로 카카오로그인 실패");
             }
 
             @Override
@@ -349,15 +349,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED
                 || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED
+                || checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                || checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
-            if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                // Explain to the user why we need to write the permission.
-                Toast.makeText(this, "Read/Write external storage", Toast.LENGTH_SHORT).show();
-            }
+//            if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                // Explain to the user why we need to write the permission.
+//                Toast.makeText(this, "Read/Write external storage", Toast.LENGTH_SHORT).show();
+//            }
 
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_CODE_LOCATION);
 
         } else {

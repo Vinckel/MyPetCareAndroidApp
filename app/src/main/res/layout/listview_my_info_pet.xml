@@ -10,7 +10,6 @@
         android:id="@+id/iv_lv_my_info_pet_img"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/ic_beauty_shop_t"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

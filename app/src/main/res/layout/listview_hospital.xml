@@ -4,12 +4,12 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <ImageView
+    <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/iv_hospital_view"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_alignParentLeft="true"
-        android:src="@drawable/ic_beauty_shop_t" />
+        android:scaleType="centerCrop" />
 
     <LinearLayout
         android:layout_width="match_parent"

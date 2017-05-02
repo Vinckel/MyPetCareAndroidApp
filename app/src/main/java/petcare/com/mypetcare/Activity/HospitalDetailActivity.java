@@ -32,7 +32,7 @@ public class HospitalDetailActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        int id = intent.getIntExtra("id", -1);
+        String id = intent.getStringExtra("id");
 
         setContentView(R.layout.activity_hospital_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

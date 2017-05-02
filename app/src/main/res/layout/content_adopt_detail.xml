@@ -69,7 +69,7 @@
                     android:id="@+id/iv_adopt_detail_map"
                     android:layout_width="50dp"
                     android:layout_height="47dp"
-                    android:src="@drawable/ic_beauty_shop_t"
+                    android:src="@drawable/ic_map_n"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

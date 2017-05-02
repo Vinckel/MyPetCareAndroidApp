@@ -11,18 +11,21 @@ import java.util.List;
  */
 
 public class HospitalListData {
-    public Drawable view;
+
+    public String imgUrl;
     public String name;
     public String desc;
     public List<String> tags;
     public String dist;
 
-    public Drawable getView() {
-        return view;
+    public String id;
+
+    public String getImgUrl() {
+        return imgUrl;
     }
 
-    public void setView(Drawable view) {
-        this.view = view;
+    public void setView(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 
     public String getName() {
@@ -55,5 +58,13 @@ public class HospitalListData {
 
     public void setDist(String dist) {
         this.dist = dist;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 }

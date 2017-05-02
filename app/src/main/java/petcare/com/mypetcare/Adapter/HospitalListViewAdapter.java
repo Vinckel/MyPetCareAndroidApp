@@ -10,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +22,7 @@ import petcare.com.mypetcare.Model.DiaryListViewHolder;
 import petcare.com.mypetcare.Model.HospitalListData;
 import petcare.com.mypetcare.Model.HospitalListViewHolder;
 import petcare.com.mypetcare.R;
+import petcare.com.mypetcare.Util.VolleySingleton;
 
 /**
  * Created by KS on 2017-03-23.
@@ -27,10 +31,12 @@ import petcare.com.mypetcare.R;
 public class HospitalListViewAdapter extends BaseAdapter {
     private Context context = null;
     private ArrayList<HospitalListData> list = new ArrayList<>();
+    private ImageLoader imageLoader;
 
     public HospitalListViewAdapter(Context context) {
         super();
         this.context = context;
+        imageLoader = VolleySingleton.getInstance(this.context).getImageLoader();
     }
 
     @Override
@@ -39,7 +45,7 @@ public class HospitalListViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public HospitalListData getItem(int position) {
         return list.get(position);
     }
 
@@ -62,13 +68,13 @@ public class HospitalListViewAdapter extends BaseAdapter {
         TextView name = (TextView) convertView.findViewById(R.id.tv_hospital_name);
         TextView distance = (TextView) convertView.findViewById(R.id.tv_hospital_distance);
         TextView description = (TextView) convertView.findViewById(R.id.tv_hospital_desc);
-        ImageView view = (ImageView) convertView.findViewById(R.id.iv_hospital_view);
+        NetworkImageView view = (NetworkImageView) convertView.findViewById(R.id.iv_hospital_view);
 //            (LinearLayout) convertView.findViewById(R.id.ll_hostpital_tags);
 
         name.setText(data.getName());
         distance.setText(data.getDist());
         description.setText(data.getDesc());
-        view.setImageDrawable(data.getView());
+        view.setImageUrl(data.getImgUrl(), imageLoader);
 
 //            convertView.setTag(holder);
 //        } else {
@@ -78,14 +84,15 @@ public class HospitalListViewAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void addItem(String name, String desc, String dist, int view, List<String> tags) {
+    public void addItem(String name, String desc, String dist, String imgUrl, List<String> tags, String id) {
         HospitalListData data = new HospitalListData();
 
         data.setName(name);
         data.setDesc(desc);
         data.setDist(dist);
-        data.setView(context.getResources().getDrawable(view));
+        data.setView(imgUrl);
         data.setTags(tags);
+        data.setId(id);
 
         list.add(data);
     }
