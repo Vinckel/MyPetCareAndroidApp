@@ -220,17 +220,22 @@ public class MainActivity extends BaseActivity
     }
 
     private void settingMyInfo() {
-        MyInfoLoadApi myInfoLoadApi = new MyInfoLoadApi();
+        try {
+            MyInfoLoadApi myInfoLoadApi = new MyInfoLoadApi();
 
-        Map headers = new HashMap<>();
-        String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-        String serviceId = "MPMS_01001";
-        headers.put("url", url);
-        headers.put("serviceName", serviceId);
+            Map headers = new HashMap<>();
+            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+            String serviceId = "MPMS_01001";
+            headers.put("url", url);
+            headers.put("serviceName", serviceId);
 
-        Map params = new HashMap<>();
+            Map params = new HashMap<>();
 
-        myInfoLoadApi.execute(headers, params);
+            myInfoLoadApi.execute(headers, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(MainActivity.this, "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 //    @Override

@@ -108,7 +108,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static AdoptGridViewAdapter adapterMating;
     private static MissingGridViewAdapter adapterMissing;
     private static MissingGridViewAdapter adapterProtection;
-    private static HospitalListViewAdapter adapterHospital;
+    private static HospitalListViewAdapter[] adapterHospital;
     private static List<Integer> pagingCount;
     private static final int NUM_HOSPITAL = 0;
     private static final int NUM_BEAUTY = 1;
@@ -134,6 +134,9 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static Spinner spHospital;
     private static long scrollCooldown = 0L;
     private static final long SCROLL_MIN_TERM = 500L;
+    private static HotelApi hotelApi;
+    private static HospitalApi hospitalApi;
+    private static BeautyApi beautyApi;
 
     /**
      * A custom {@link ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -203,6 +206,7 @@ public class SlidingTabsBasicFragment extends Fragment {
             pagingCount.add(1);
             pagingLastCheck.add(false);
         }
+
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
 
@@ -233,6 +237,7 @@ public class SlidingTabsBasicFragment extends Fragment {
         };
 
         locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+        adapterHospital = new HospitalListViewAdapter[6];
 
         return view;
     }
@@ -585,41 +590,48 @@ public class SlidingTabsBasicFragment extends Fragment {
 
                     geoStateApi.execute(headerGeo, bodyGeo);
                     break;
+                case NUM_HOTEL:
+                    view = asdf(container, NUM_HOTEL);
+                    break;
+                case NUM_BEAUTY:
+                    view = asdf(container, NUM_BEAUTY);
+                    break;
                 case NUM_HOSPITAL:
-                    pagingCount.set(NUM_HOSPITAL, 1);
-                    pagingLastCheck.set(NUM_HOSPITAL, false);
-                    view = getActivity().getLayoutInflater().inflate(R.layout.fragment_hospital, container, false);
-                    container.addView(view);
-                    ListView lvHospitalList = (ListView) view.findViewById(R.id.lv_hospital_list);
-                    spHospital = (Spinner) view.findViewById(R.id.sp_hospital_distance);
-                    adapterHospital = new HospitalListViewAdapter(view.getContext());
-                    callHospitalApi(StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1));
-
-                    lvHospitalList.setAdapter(adapterHospital);
-                    lvHospitalList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent intent = new Intent(getActivity(), HospitalDetailActivity.class);
-                        intent.putExtra("id", adapterHospital.getItem(position).getId());
-
-                        startActivity(intent);
-                        }
-                    });
-
-                    lvHospitalList.setOnScrollListener(new AbsListView.OnScrollListener() {
-                    @Override
-                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                        if (firstVisibleItem + visibleItemCount >= totalItemCount && isLoaded) {
-                            Log.d("listview hospital", "reached at bottom");
-                            callHospitalApi(StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1));
-                        }
-                    }
-
-                    @Override
-                    public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-                    }
-                });
+                    view = asdf(container, NUM_HOSPITAL);
+//                    pagingCount.set(NUM_HOSPITAL, 1);
+//                    pagingLastCheck.set(NUM_HOSPITAL, false);
+//                    view = getActivity().getLayoutInflater().inflate(R.layout.fragment_hospital, container, false);
+//                    container.addView(view);
+//                    ListView lvHospitalList = (ListView) view.findViewById(R.id.lv_hospital_list);
+//                    spHospital = (Spinner) view.findViewById(R.id.sp_hospital_distance);
+//                    adapterHospital[NUM_HOSPITAL] = new HospitalListViewAdapter(view.getContext());
+//                    callHospitalApi(StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1));
+//
+//                    lvHospitalList.setAdapter(adapterHospital[NUM_HOSPITAL]);
+//                    lvHospitalList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                        @Override
+//                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                            Intent intent = new Intent(getActivity(), HospitalDetailActivity.class);
+//                            intent.putExtra("id", adapterHospital[NUM_HOSPITAL].getItem(position).getId());
+//
+//                            startActivity(intent);
+//                        }
+//                    });
+//
+//                    lvHospitalList.setOnScrollListener(new AbsListView.OnScrollListener() {
+//                        @Override
+//                        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//                            if (firstVisibleItem + visibleItemCount >= totalItemCount && isLoaded) {
+//                                Log.d("listview hospital", "reached at bottom");
+//                                callHospitalApi(StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1));
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onScrollStateChanged(AbsListView view, int scrollState) {
+//
+//                        }
+//                    });
                     break;
 //                case 6:
 //                    break;
@@ -663,6 +675,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 
                     break;
                 default:
+
                     view = getActivity().getLayoutInflater().inflate(R.layout.pager_item, container, false);
                     // Add the newly created View to the ViewPager
                     container.addView(view);
@@ -702,16 +715,150 @@ public class SlidingTabsBasicFragment extends Fragment {
         }
     }
 
-    private void callHospitalApi(String radius) {
-        long currentTime = Calendar.getInstance().getTimeInMillis();
-        if (scrollCooldown + SCROLL_MIN_TERM > currentTime) {
-            return;
-        } else {
-            scrollCooldown = currentTime;
+    private View asdf(ViewGroup container, final int num) {
+        pagingCount.set(num, 1);
+        pagingLastCheck.set(num, false);
+        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_hospital, container, false);
+        container.addView(view);
+        ListView lvHospitalList = (ListView) view.findViewById(R.id.lv_hospital_list);
+        spHospital = (Spinner) view.findViewById(R.id.sp_hospital_distance);
+        adapterHospital[num] = new HospitalListViewAdapter(view.getContext());
+
+//        cancelAllApis();
+        switch (num) {
+            case NUM_HOTEL:
+                callHotelApi(StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1));
+                break;
+            case NUM_BEAUTY:
+                callBeautyApi(StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1));
+                break;
+            case NUM_HOSPITAL:
+                callHospitalApi(StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1));
+                break;
         }
 
+        lvHospitalList.setAdapter(adapterHospital[num]);
+        lvHospitalList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), HospitalDetailActivity.class);
+                intent.putExtra("id", adapterHospital[num].getItem(position).getId());
+
+                startActivity(intent);
+            }
+        });
+
+        lvHospitalList.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (firstVisibleItem + visibleItemCount >= totalItemCount && isLoaded) {
+                    Log.d("listview hospital", "reached at bottom");
+                    switch (num) {
+                        case NUM_HOTEL:
+                            callHotelApi(StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1));
+                            break;
+                        case NUM_HOSPITAL:
+                            callHospitalApi(StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1));
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+        });
+
+        return view;
+    }
+
+    private void cancelAllApis() {
+//        if (hotelApi != null) {
+//            hotelApi.cancel(true);
+//        }
+//
+//        if (hospitalApi != null) {
+//            hospitalApi.cancel(true);
+//        }
+    }
+
+    private void callHotelApi(String radius) {
+//        long currentTime = Calendar.getInstance().getTimeInMillis();
+//        if (scrollCooldown + SCROLL_MIN_TERM > currentTime) {
+//            return;
+//        } else {
+//            scrollCooldown = currentTime;
+//        }
+
         try {
-            HospitalApi hospitalApi = new HospitalApi();
+            hotelApi = new HotelApi();
+
+            Map headers = new HashMap<>();
+            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+            String serviceId = "MPMS_05001";
+            headers.put("url", url);
+            headers.put("serviceName", serviceId);
+
+            Map params = new HashMap<>();
+            params.put("SEARCH_COUNT", SEARCH_COUNT);
+            int currentPage = pagingCount.get(NUM_HOTEL);
+            params.put("SEARCH_PAGE", currentPage);
+            params.put("SEARCH_LAT", currentPage);
+            params.put("SEARCH_LON", currentPage);
+            params.put("SEARCH_RADIUS", radius);
+            pagingCount.set(NUM_HOTEL, currentPage + 1);
+
+            hotelApi.execute(headers, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void callBeautyApi(String radius) {
+//        long currentTime = Calendar.getInstance().getTimeInMillis();
+//        if (scrollCooldown + SCROLL_MIN_TERM > currentTime) {
+//            return;
+//        } else {
+//            scrollCooldown = currentTime;
+//        }
+
+        try {
+            beautyApi = new BeautyApi();
+
+            Map headers = new HashMap<>();
+            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+            String serviceId = "MPMS_04001";
+            headers.put("url", url);
+            headers.put("serviceName", serviceId);
+
+            Map params = new HashMap<>();
+            params.put("SEARCH_COUNT", SEARCH_COUNT);
+            int currentPage = pagingCount.get(NUM_BEAUTY);
+            params.put("SEARCH_PAGE", currentPage);
+            params.put("SEARCH_LAT", currentPage);
+            params.put("SEARCH_LON", currentPage);
+            params.put("SEARCH_RADIUS", radius);
+            pagingCount.set(NUM_BEAUTY, currentPage + 1);
+
+            beautyApi.execute(headers, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void callHospitalApi(String radius) {
+//        long currentTime = Calendar.getInstance().getTimeInMillis();
+//        if (scrollCooldown + SCROLL_MIN_TERM > currentTime) {
+//            return;
+//        } else {
+//            scrollCooldown = currentTime;
+//        }
+
+        try {
+            hospitalApi = new HospitalApi();
 
             Map headers = new HashMap<>();
             String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
@@ -986,6 +1133,52 @@ public class SlidingTabsBasicFragment extends Fragment {
         }
     }
 
+
+    private class HotelApi extends GeneralApi {
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
+            if (hospitalListVO.getResultCode() != 0) {
+                Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
+
+            for (HospitalListVO.HospitalObject hospitalObject : data) {
+                adapterHospital[NUM_HOTEL].addItem(hospitalObject.getName(), "", hospitalObject.getDistance() + "km", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
+            }
+
+            adapterHospital[NUM_HOTEL].notifyDataSetChanged();
+        }
+    }
+
+    private class BeautyApi extends GeneralApi {
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
+            if (hospitalListVO.getResultCode() != 0) {
+                Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
+
+            for (HospitalListVO.HospitalObject hospitalObject : data) {
+                adapterHospital[NUM_BEAUTY].addItem(hospitalObject.getName(), "", hospitalObject.getDistance() + "km", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
+            }
+
+            adapterHospital[NUM_BEAUTY].notifyDataSetChanged();
+        }
+    }
+
+
     private class HospitalApi extends GeneralApi {
 
         @Override
@@ -1001,13 +1194,12 @@ public class SlidingTabsBasicFragment extends Fragment {
             List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
 
             for (HospitalListVO.HospitalObject hospitalObject : data) {
-                adapterHospital.addItem(hospitalObject.getName(), "", hospitalObject.getDistance() + "km", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
+                adapterHospital[NUM_HOSPITAL].addItem(hospitalObject.getName(), "", hospitalObject.getDistance() + "km", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
             }
 
-            adapterHospital.notifyDataSetChanged();
+            adapterHospital[NUM_HOSPITAL].notifyDataSetChanged();
         }
     }
-
 
     private class GeoRegionApi extends GeneralApi {
         Spinner spinner;

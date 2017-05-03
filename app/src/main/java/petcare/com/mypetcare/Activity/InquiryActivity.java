@@ -8,10 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 
 import petcare.com.mypetcare.R;
 
-public class InquiryActivity extends AppCompatActivity {
+public class InquiryActivity extends BaseActivity {
+    private ImageButton ibBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,14 @@ public class InquiryActivity extends AppCompatActivity {
 
         Toolbar parent = (Toolbar) actionBarView.getParent();
         parent.setContentInsetsAbsolute(0, 0);
+
+        ibBack = (ImageButton) findViewById(R.id.ib_inquiry_back);
+        ibBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
 }
