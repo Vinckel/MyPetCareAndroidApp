@@ -132,11 +132,14 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static LocationManager locationManager;
     private static LocationListener locationListener;
     private static Spinner spHospital;
-    private static long scrollCooldown = 0L;
+    private static long[] scrollCooldown;
     private static final long SCROLL_MIN_TERM = 500L;
     private static HotelApi hotelApi;
     private static HospitalApi hospitalApi;
     private static BeautyApi beautyApi;
+    private static ToolApi toolApi;
+    private static CafeApi cafeApi;
+    private static FuneralApi funeralApi;
 
     /**
      * A custom {@link ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -238,6 +241,11 @@ public class SlidingTabsBasicFragment extends Fragment {
 
         locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
         adapterHospital = new HospitalListViewAdapter[6];
+        scrollCooldown = new long[11];
+
+        for (int i = 0; i < scrollCooldown.length; i++) {
+            scrollCooldown[i] = 0L;
+        }
 
         return view;
     }
@@ -598,6 +606,16 @@ public class SlidingTabsBasicFragment extends Fragment {
                     break;
                 case NUM_HOSPITAL:
                     view = asdf(container, NUM_HOSPITAL);
+                    break;
+                case NUM_TOOL:
+                    view = asdf(container, NUM_TOOL);
+                    break;
+                case NUM_CAFE:
+                    view = asdf(container, NUM_CAFE);
+                    break;
+                case NUM_FUNERAL:
+                    view = asdf(container, NUM_FUNERAL);
+                    break;
 //                    pagingCount.set(NUM_HOSPITAL, 1);
 //                    pagingLastCheck.set(NUM_HOSPITAL, false);
 //                    view = getActivity().getLayoutInflater().inflate(R.layout.fragment_hospital, container, false);
@@ -632,7 +650,6 @@ public class SlidingTabsBasicFragment extends Fragment {
 //
 //                        }
 //                    });
-                    break;
 //                case 6:
 //                    break;
                 case NUM_REPORT:
@@ -723,17 +740,27 @@ public class SlidingTabsBasicFragment extends Fragment {
         ListView lvHospitalList = (ListView) view.findViewById(R.id.lv_hospital_list);
         spHospital = (Spinner) view.findViewById(R.id.sp_hospital_distance);
         adapterHospital[num] = new HospitalListViewAdapter(view.getContext());
+        String radius = StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1);
 
 //        cancelAllApis();
         switch (num) {
             case NUM_HOTEL:
-                callHotelApi(StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1));
+                callHotelApi(radius);
                 break;
             case NUM_BEAUTY:
-                callBeautyApi(StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1));
+                callBeautyApi(radius);
                 break;
             case NUM_HOSPITAL:
-                callHospitalApi(StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1));
+                callHospitalApi(radius);
+                break;
+            case NUM_TOOL:
+                callToolApi(radius);
+                break;
+            case NUM_CAFE:
+                callCafeApi(radius);
+                break;
+            case NUM_FUNERAL:
+                callFuneralApi(radius);
                 break;
         }
 
@@ -784,12 +811,12 @@ public class SlidingTabsBasicFragment extends Fragment {
     }
 
     private void callHotelApi(String radius) {
-//        long currentTime = Calendar.getInstance().getTimeInMillis();
-//        if (scrollCooldown + SCROLL_MIN_TERM > currentTime) {
-//            return;
-//        } else {
-//            scrollCooldown = currentTime;
-//        }
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        if (scrollCooldown[NUM_HOTEL] + SCROLL_MIN_TERM > currentTime) {
+            return;
+        } else {
+            scrollCooldown[NUM_HOTEL] = currentTime;
+        }
 
         try {
             hotelApi = new HotelApi();
@@ -816,13 +843,112 @@ public class SlidingTabsBasicFragment extends Fragment {
         }
     }
 
+    private void callCafeApi(String radius) {
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        if (scrollCooldown[NUM_CAFE] + SCROLL_MIN_TERM > currentTime) {
+            return;
+        } else {
+            scrollCooldown[NUM_CAFE] = currentTime;
+        }
+
+        try {
+            cafeApi = new CafeApi();
+
+            Map headers = new HashMap<>();
+            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+            String serviceId = "MPMS_07001";
+            headers.put("url", url);
+            headers.put("serviceName", serviceId);
+
+            Map params = new HashMap<>();
+            params.put("SEARCH_COUNT", SEARCH_COUNT);
+            int currentPage = pagingCount.get(NUM_CAFE);
+            params.put("SEARCH_PAGE", currentPage);
+            params.put("SEARCH_LAT", currentPage);
+            params.put("SEARCH_LON", currentPage);
+            params.put("SEARCH_RADIUS", radius);
+            pagingCount.set(NUM_CAFE, currentPage + 1);
+
+            cafeApi.execute(headers, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void callFuneralApi(String radius) {
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        if (scrollCooldown[NUM_FUNERAL] + SCROLL_MIN_TERM > currentTime) {
+            return;
+        } else {
+            scrollCooldown[NUM_FUNERAL] = currentTime;
+        }
+
+        try {
+            funeralApi = new FuneralApi();
+
+            Map headers = new HashMap<>();
+            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+            String serviceId = "MPMS_08001";
+            headers.put("url", url);
+            headers.put("serviceName", serviceId);
+
+            Map params = new HashMap<>();
+            params.put("SEARCH_COUNT", SEARCH_COUNT);
+            int currentPage = pagingCount.get(NUM_FUNERAL);
+            params.put("SEARCH_PAGE", currentPage);
+            params.put("SEARCH_LAT", currentPage);
+            params.put("SEARCH_LON", currentPage);
+            params.put("SEARCH_RADIUS", radius);
+            pagingCount.set(NUM_FUNERAL, currentPage + 1);
+
+            funeralApi.execute(headers, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void callToolApi(String radius) {
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        if (scrollCooldown[NUM_TOOL] + SCROLL_MIN_TERM > currentTime) {
+            return;
+        } else {
+            scrollCooldown[NUM_TOOL] = currentTime;
+        }
+
+        try {
+            toolApi = new ToolApi();
+
+            Map headers = new HashMap<>();
+            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+            String serviceId = "MPMS_06001";
+            headers.put("url", url);
+            headers.put("serviceName", serviceId);
+
+            Map params = new HashMap<>();
+            params.put("SEARCH_COUNT", SEARCH_COUNT);
+            int currentPage = pagingCount.get(NUM_TOOL);
+            params.put("SEARCH_PAGE", currentPage);
+            params.put("SEARCH_LAT", currentPage);
+            params.put("SEARCH_LON", currentPage);
+            params.put("SEARCH_RADIUS", radius);
+            pagingCount.set(NUM_TOOL, currentPage + 1);
+
+            toolApi.execute(headers, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void callBeautyApi(String radius) {
-//        long currentTime = Calendar.getInstance().getTimeInMillis();
-//        if (scrollCooldown + SCROLL_MIN_TERM > currentTime) {
-//            return;
-//        } else {
-//            scrollCooldown = currentTime;
-//        }
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        if (scrollCooldown[NUM_BEAUTY] + SCROLL_MIN_TERM > currentTime) {
+            return;
+        } else {
+            scrollCooldown[NUM_BEAUTY] = currentTime;
+        }
 
         try {
             beautyApi = new BeautyApi();
@@ -850,12 +976,12 @@ public class SlidingTabsBasicFragment extends Fragment {
     }
 
     private void callHospitalApi(String radius) {
-//        long currentTime = Calendar.getInstance().getTimeInMillis();
-//        if (scrollCooldown + SCROLL_MIN_TERM > currentTime) {
-//            return;
-//        } else {
-//            scrollCooldown = currentTime;
-//        }
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        if (scrollCooldown[NUM_HOSPITAL] + SCROLL_MIN_TERM > currentTime) {
+            return;
+        } else {
+            scrollCooldown[NUM_HOSPITAL] = currentTime;
+        }
 
         try {
             hospitalApi = new HospitalApi();
@@ -1113,26 +1239,107 @@ public class SlidingTabsBasicFragment extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            ReportCodeVO reportCodeVO = GsonUtil.fromJson(result, ReportCodeVO.class);
-            if (reportCodeVO.getResultCode() != 0) {
-//                Toast.makeText(, "신고 데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
-                return;
+            try {
+                ReportCodeVO reportCodeVO = GsonUtil.fromJson(result, ReportCodeVO.class);
+                if (reportCodeVO.getResultCode() != 0) {
+    //                Toast.makeText(, "신고 데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                List<ReportCodeVO.ReportCodeObject> data = reportCodeVO.getData();
+
+                if (CollectionUtils.isEmpty(data) || data.size() < 2) {
+    //                Toast.makeText(getActivity(), "신고 데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                reportCodeMap.put("실종", data.get(0).getCode());
+                reportCodeMap.put("보호중", data.get(1).getCode());
+
+                callMissingListApi(reportCodeMap.get("실종"));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            List<ReportCodeVO.ReportCodeObject> data = reportCodeVO.getData();
-
-            if (CollectionUtils.isEmpty(data) || data.size() < 2) {
-//                Toast.makeText(getActivity(), "신고 데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            reportCodeMap.put("실종", data.get(0).getCode());
-            reportCodeMap.put("보호중", data.get(1).getCode());
-
-            callMissingListApi(reportCodeMap.get("실종"));
         }
     }
 
+    private class ToolApi extends GeneralApi {
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            try {
+                HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
+                if (hospitalListVO.getResultCode() != 0) {
+                    Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
+
+                for (HospitalListVO.HospitalObject hospitalObject : data) {
+                    adapterHospital[NUM_TOOL].addItem(hospitalObject.getName(), "", StringUtils.isNotBlank(hospitalObject.getDistance()) ? hospitalObject.getDistance() + "km" : "", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
+                }
+
+                adapterHospital[NUM_TOOL].notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class FuneralApi extends GeneralApi {
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            try {
+                HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
+                if (hospitalListVO.getResultCode() != 0) {
+                    Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
+
+                for (HospitalListVO.HospitalObject hospitalObject : data) {
+                    adapterHospital[NUM_FUNERAL].addItem(hospitalObject.getName(), "", StringUtils.isNotBlank(hospitalObject.getDistance()) ? hospitalObject.getDistance() + "km" : "", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
+                }
+
+                adapterHospital[NUM_FUNERAL].notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class CafeApi extends GeneralApi {
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            try {
+                HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
+                if (hospitalListVO.getResultCode() != 0) {
+                    Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
+
+                for (HospitalListVO.HospitalObject hospitalObject : data) {
+                    adapterHospital[NUM_CAFE].addItem(hospitalObject.getName(), "", StringUtils.isNotBlank(hospitalObject.getDistance()) ? hospitalObject.getDistance() + "km" : "", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
+                }
+
+                adapterHospital[NUM_CAFE].notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     private class HotelApi extends GeneralApi {
 
@@ -1140,19 +1347,23 @@ public class SlidingTabsBasicFragment extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
-            if (hospitalListVO.getResultCode() != 0) {
-                Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
-                return;
+            try {
+                HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
+                if (hospitalListVO.getResultCode() != 0) {
+                    Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
+
+                for (HospitalListVO.HospitalObject hospitalObject : data) {
+                    adapterHospital[NUM_HOTEL].addItem(hospitalObject.getName(), "", StringUtils.isNotBlank(hospitalObject.getDistance()) ? hospitalObject.getDistance() + "km" : "", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
+                }
+
+                adapterHospital[NUM_HOTEL].notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
-
-            for (HospitalListVO.HospitalObject hospitalObject : data) {
-                adapterHospital[NUM_HOTEL].addItem(hospitalObject.getName(), "", hospitalObject.getDistance() + "km", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
-            }
-
-            adapterHospital[NUM_HOTEL].notifyDataSetChanged();
         }
     }
 
@@ -1162,19 +1373,23 @@ public class SlidingTabsBasicFragment extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
-            if (hospitalListVO.getResultCode() != 0) {
-                Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
-                return;
+            try {
+                HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
+                if (hospitalListVO.getResultCode() != 0) {
+                    Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
+
+                for (HospitalListVO.HospitalObject hospitalObject : data) {
+                    adapterHospital[NUM_BEAUTY].addItem(hospitalObject.getName(), "", StringUtils.isNotBlank(hospitalObject.getDistance()) ? hospitalObject.getDistance() + "km" : "", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
+                }
+
+                adapterHospital[NUM_BEAUTY].notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
-
-            for (HospitalListVO.HospitalObject hospitalObject : data) {
-                adapterHospital[NUM_BEAUTY].addItem(hospitalObject.getName(), "", hospitalObject.getDistance() + "km", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
-            }
-
-            adapterHospital[NUM_BEAUTY].notifyDataSetChanged();
         }
     }
 
@@ -1185,19 +1400,23 @@ public class SlidingTabsBasicFragment extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
-            if (hospitalListVO.getResultCode() != 0) {
-                Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
-                return;
+            try {
+                HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
+                if (hospitalListVO.getResultCode() != 0) {
+                    Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
+
+                for (HospitalListVO.HospitalObject hospitalObject : data) {
+                    adapterHospital[NUM_HOSPITAL].addItem(hospitalObject.getName(), "", StringUtils.isNotBlank(hospitalObject.getDistance()) ? hospitalObject.getDistance() + "km" : "", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
+                }
+
+                adapterHospital[NUM_HOSPITAL].notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
-
-            for (HospitalListVO.HospitalObject hospitalObject : data) {
-                adapterHospital[NUM_HOSPITAL].addItem(hospitalObject.getName(), "", hospitalObject.getDistance() + "km", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
-            }
-
-            adapterHospital[NUM_HOSPITAL].notifyDataSetChanged();
         }
     }
 
@@ -1212,48 +1431,52 @@ public class SlidingTabsBasicFragment extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            GeoRegionVO geoRegionVO = GsonUtil.fromJson(result, GeoRegionVO.class);
-            if (geoRegionVO.getResultCode() != 0) {
-                Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+            try {
+                GeoRegionVO geoRegionVO = GsonUtil.fromJson(result, GeoRegionVO.class);
+                if (geoRegionVO.getResultCode() != 0) {
+                    Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                    spinner.setAdapter(null);
+                    return;
+                }
+
+                regionList = geoRegionVO.getData();
+                List<String> arr = new ArrayList<>();
+
+                for (GeoRegionVO.GeoRegionObject geo : regionList) {
+                    arr.add(geo.getRegionName());
+                }
+
+                ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String> (getActivity(), android.R.layout.simple_spinner_item, arr)
+                {
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent)
+                    {
+                        return setCentered(super.getView(position, convertView, parent));
+                    }
+
+                    @Override
+                    public View getDropDownView(int position, View convertView, ViewGroup parent)
+                    {
+                        return setCentered(super.getDropDownView(position, convertView, parent));
+                    }
+
+                    private View setCentered(View view)
+                    {
+                        TextView textView = (TextView)view.findViewById(android.R.id.text1);
+                        textView.setGravity(Gravity.CENTER);
+                        return view;
+                    }
+                };
+                spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(null);
-                return;
-            }
+                spinner.setAdapter(spinnerArrayAdapter);
 
-            regionList = geoRegionVO.getData();
-            List<String> arr = new ArrayList<>();
-
-            for (GeoRegionVO.GeoRegionObject geo : regionList) {
-                arr.add(geo.getRegionName());
-            }
-
-            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String> (getActivity(), android.R.layout.simple_spinner_item, arr)
-            {
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent)
-                {
-                    return setCentered(super.getView(position, convertView, parent));
+                if (arr.size() > 0) {
+                    pagingLastCheck.set(NUM_NOTI, false);
+                    selectedRegion = regionList.get(0).getRegionCode();
                 }
-
-                @Override
-                public View getDropDownView(int position, View convertView, ViewGroup parent)
-                {
-                    return setCentered(super.getDropDownView(position, convertView, parent));
-                }
-
-                private View setCentered(View view)
-                {
-                    TextView textView = (TextView)view.findViewById(android.R.id.text1);
-                    textView.setGravity(Gravity.CENTER);
-                    return view;
-                }
-            };
-            spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(null);
-            spinner.setAdapter(spinnerArrayAdapter);
-
-            if (arr.size() > 0) {
-                pagingLastCheck.set(NUM_NOTI, false);
-                selectedRegion = regionList.get(0).getRegionCode();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -1290,30 +1513,34 @@ public class SlidingTabsBasicFragment extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            if (pagingLastCheck.get(NUM_NOTI)) {
-                return ;
-            }
+            try {
+                if (pagingLastCheck.get(NUM_NOTI)) {
+                    return ;
+                }
 
-            AnnounceInfoListVO announceInfoListVO = GsonUtil.fromJson(result, AnnounceInfoListVO.class);
-            if (announceInfoListVO.getResultCode() != 0) {
-                return;
-            }
+                AnnounceInfoListVO announceInfoListVO = GsonUtil.fromJson(result, AnnounceInfoListVO.class);
+                if (announceInfoListVO.getResultCode() != 0) {
+                    return;
+                }
 
-            List<AnnounceInfoListVO.AnnounceInfoObject> dataList = announceInfoListVO.getData();
+                List<AnnounceInfoListVO.AnnounceInfoObject> dataList = announceInfoListVO.getData();
 
-            if (dataList.size() == 0 ) {
-                pagingLastCheck.set(NUM_NOTI, true);
-                return ;
-            }
+                if (dataList.size() == 0 ) {
+                    pagingLastCheck.set(NUM_NOTI, true);
+                    return ;
+                }
 
-            for (AnnounceInfoListVO.AnnounceInfoObject data : dataList) {
-                adapterAnnounce.addItem(data.getThumbUrl());
-            }
+                for (AnnounceInfoListVO.AnnounceInfoObject data : dataList) {
+                    adapterAnnounce.addItem(data.getThumbUrl());
+                }
 
-            adapterAnnounce.notifyDataSetChanged();
+                adapterAnnounce.notifyDataSetChanged();
 
-            if (dataList.size() < PAGE_OFFSET) {
-                pagingLastCheck.set(NUM_NOTI, true);
+                if (dataList.size() < PAGE_OFFSET) {
+                    pagingLastCheck.set(NUM_NOTI, true);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

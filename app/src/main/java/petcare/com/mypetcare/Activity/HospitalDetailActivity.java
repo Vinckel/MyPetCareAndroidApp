@@ -110,7 +110,7 @@ public class HospitalDetailActivity extends BaseActivity {
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                tvPageCount.setText((position + 1) + "/" + urls.size());
+//                tvPageCount.setText((position + 1) + "/" + urls.size());
             }
 
             @Override
