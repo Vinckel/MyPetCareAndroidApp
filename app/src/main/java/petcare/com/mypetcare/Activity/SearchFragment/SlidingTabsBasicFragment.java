@@ -831,8 +831,8 @@ public class SlidingTabsBasicFragment extends Fragment {
             params.put("SEARCH_COUNT", SEARCH_COUNT);
             int currentPage = pagingCount.get(NUM_HOTEL);
             params.put("SEARCH_PAGE", currentPage);
-            params.put("SEARCH_LAT", currentPage);
-            params.put("SEARCH_LON", currentPage);
+            params.put("SEARCH_LAT", lastLatitude);
+            params.put("SEARCH_LON", lastLongitude);
             params.put("SEARCH_RADIUS", radius);
             pagingCount.set(NUM_HOTEL, currentPage + 1);
 
@@ -864,8 +864,8 @@ public class SlidingTabsBasicFragment extends Fragment {
             params.put("SEARCH_COUNT", SEARCH_COUNT);
             int currentPage = pagingCount.get(NUM_CAFE);
             params.put("SEARCH_PAGE", currentPage);
-            params.put("SEARCH_LAT", currentPage);
-            params.put("SEARCH_LON", currentPage);
+            params.put("SEARCH_LAT", lastLatitude);
+            params.put("SEARCH_LON", lastLongitude);
             params.put("SEARCH_RADIUS", radius);
             pagingCount.set(NUM_CAFE, currentPage + 1);
 
@@ -897,8 +897,8 @@ public class SlidingTabsBasicFragment extends Fragment {
             params.put("SEARCH_COUNT", SEARCH_COUNT);
             int currentPage = pagingCount.get(NUM_FUNERAL);
             params.put("SEARCH_PAGE", currentPage);
-            params.put("SEARCH_LAT", currentPage);
-            params.put("SEARCH_LON", currentPage);
+            params.put("SEARCH_LAT", lastLatitude);
+            params.put("SEARCH_LON", lastLongitude);
             params.put("SEARCH_RADIUS", radius);
             pagingCount.set(NUM_FUNERAL, currentPage + 1);
 
@@ -930,8 +930,8 @@ public class SlidingTabsBasicFragment extends Fragment {
             params.put("SEARCH_COUNT", SEARCH_COUNT);
             int currentPage = pagingCount.get(NUM_TOOL);
             params.put("SEARCH_PAGE", currentPage);
-            params.put("SEARCH_LAT", currentPage);
-            params.put("SEARCH_LON", currentPage);
+            params.put("SEARCH_LAT", lastLatitude);
+            params.put("SEARCH_LON", lastLongitude);
             params.put("SEARCH_RADIUS", radius);
             pagingCount.set(NUM_TOOL, currentPage + 1);
 
@@ -963,8 +963,8 @@ public class SlidingTabsBasicFragment extends Fragment {
             params.put("SEARCH_COUNT", SEARCH_COUNT);
             int currentPage = pagingCount.get(NUM_BEAUTY);
             params.put("SEARCH_PAGE", currentPage);
-            params.put("SEARCH_LAT", currentPage);
-            params.put("SEARCH_LON", currentPage);
+            params.put("SEARCH_LAT", lastLatitude);
+            params.put("SEARCH_LON", lastLongitude);
             params.put("SEARCH_RADIUS", radius);
             pagingCount.set(NUM_BEAUTY, currentPage + 1);
 
@@ -996,8 +996,8 @@ public class SlidingTabsBasicFragment extends Fragment {
             params.put("SEARCH_COUNT", SEARCH_COUNT);
             int currentPage = pagingCount.get(NUM_HOSPITAL);
             params.put("SEARCH_PAGE", currentPage);
-            params.put("SEARCH_LAT", currentPage);
-            params.put("SEARCH_LON", currentPage);
+            params.put("SEARCH_LAT", lastLatitude);
+            params.put("SEARCH_LON", lastLongitude);
             params.put("SEARCH_RADIUS", radius);
             pagingCount.set(NUM_HOSPITAL, currentPage + 1);
 
