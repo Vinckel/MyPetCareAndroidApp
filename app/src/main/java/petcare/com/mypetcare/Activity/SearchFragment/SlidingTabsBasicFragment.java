@@ -739,6 +739,40 @@ public class SlidingTabsBasicFragment extends Fragment {
         container.addView(view);
         ListView lvHospitalList = (ListView) view.findViewById(R.id.lv_hospital_list);
         spHospital = (Spinner) view.findViewById(R.id.sp_hospital_distance);
+        spHospital.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String radius = StringUtils.substring(spHospital.getItemAtPosition(position).toString(), 0, 1);
+                pagingCount.set(num, 1);
+                scrollCooldown[num] = 0L;
+                adapterHospital[num].clear();
+                switch (num) {
+                    case NUM_HOTEL:
+                        callHotelApi(radius);
+                        break;
+                    case NUM_BEAUTY:
+                        callBeautyApi(radius);
+                        break;
+                    case NUM_HOSPITAL:
+                        callHospitalApi(radius);
+                        break;
+                    case NUM_TOOL:
+                        callToolApi(radius);
+                        break;
+                    case NUM_CAFE:
+                        callCafeApi(radius);
+                        break;
+                    case NUM_FUNERAL:
+                        callFuneralApi(radius);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         adapterHospital[num] = new HospitalListViewAdapter(view.getContext());
         String radius = StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1);
 
