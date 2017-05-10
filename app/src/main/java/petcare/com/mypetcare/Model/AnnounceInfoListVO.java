@@ -2,6 +2,7 @@ package petcare.com.mypetcare.Model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ public class AnnounceInfoListVO {
     @SerializedName("RESULT_MESSAGE")
     private String resultMessage;
 
-    public class AnnounceInfoObject {
+    public class AnnounceInfoObject implements Serializable {
         @SerializedName("DESERTION_NO")
         private String no;
 

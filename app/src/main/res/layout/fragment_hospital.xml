@@ -13,11 +13,11 @@
 
         <Spinner
             android:id="@+id/sp_hospital_distance"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:entries="@array/city"
             android:layout_height="match_parent" />
 
-        <RelativeLayout
+        <!--<RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -38,7 +38,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_search_n"
                 android:text="button" />
-        </RelativeLayout>
+        </RelativeLayout>-->
     </LinearLayout>
 
     <ListView

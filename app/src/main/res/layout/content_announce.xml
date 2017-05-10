@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:gravity="center_vertical"
-                    android:text="이름"
+                    android:text=""
                     android:textColor="#4a4a4a"
                     android:textSize="20sp"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -81,12 +81,10 @@
                     android:id="@+id/tv_announce_date_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="9dp"
-                    android:layout_marginStart="9dp"
                     android:textColor="#898989"
                     android:textSize="12sp"
                     app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_date"
-                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_date" />
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_announce_location_desc" />
 
                 <TextView
                     android:id="@+id/tv_announce_location"
@@ -103,8 +101,7 @@
                     android:id="@+id/tv_announce_location_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="9dp"
-                    android:layout_marginStart="9dp"
+                    android:layout_marginLeft="10dp"
                     android:textColor="#898989"
                     android:textSize="12sp"
                     app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_location"
@@ -125,12 +122,10 @@
                     android:id="@+id/tv_announce_mark_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="9dp"
-                    android:layout_marginStart="9dp"
                     android:textColor="@color/colorPrimary"
                     android:textSize="12sp"
                     app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_mark"
-                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_mark" />
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_announce_location_desc" />
 
                 <TextView
                     android:id="@+id/tv_announce_price"
@@ -147,12 +142,10 @@
                     android:id="@+id/tv_announce_price_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="9dp"
-                    android:layout_marginStart="9dp"
                     android:textColor="#898989"
                     android:textSize="12sp"
                     app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_price"
-                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_price" />
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_announce_location_desc" />
 
                 <TextView
                     android:id="@+id/tv_announce_etc"
@@ -169,12 +162,10 @@
                     android:id="@+id/tv_announce_etc_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="9dp"
-                    android:layout_marginStart="9dp"
                     android:textColor="#898989"
                     android:textSize="12sp"
                     app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_etc"
-                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_etc" />
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_announce_location_desc" />
 
                 <TextView
                     android:id="@+id/tv_announce_homepage"
@@ -191,12 +182,10 @@
                     android:id="@+id/tv_announce_homepage_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="9dp"
-                    android:layout_marginStart="9dp"
                     android:textColor="#7579e8"
                     android:textSize="12sp"
                     app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_homepage"
-                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_homepage" />
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_announce_location_desc" />
 
                 <ImageView
                     android:id="@+id/iv_announce_line"
@@ -207,8 +196,6 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_announce_homepage" />
-
-
 
 
                 <TextView
@@ -226,13 +213,10 @@
                     android:id="@+id/tv_announce_breed_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="9dp"
-                    android:layout_marginStart="9dp"
-                    android:text="잉글리쉬불독"
                     android:textColor="#898989"
                     android:textSize="12sp"
                     app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_breed"
-                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_breed" />
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_announce_location_desc" />
 
                 <TextView
                     android:id="@+id/tv_announce_color"
@@ -249,12 +233,10 @@
                     android:id="@+id/tv_announce_color_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="9dp"
-                    android:layout_marginStart="9dp"
                     android:textColor="#898989"
                     android:textSize="12sp"
                     app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_color"
-                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_color" />
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_announce_location_desc" />
 
                 <TextView
                     android:id="@+id/tv_announce_gender"
@@ -271,12 +253,10 @@
                     android:id="@+id/tv_announce_gender_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="9dp"
-                    android:layout_marginStart="9dp"
                     android:textColor="#898989"
                     android:textSize="12sp"
                     app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_gender"
-                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_gender" />
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_announce_location_desc" />
 
                 <TextView
                     android:id="@+id/tv_announce_age"
@@ -293,12 +273,10 @@
                     android:id="@+id/tv_announce_age_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="9dp"
-                    android:layout_marginStart="9dp"
                     android:textColor="#898989"
                     android:textSize="12sp"
                     app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_age"
-                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_age" />
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_announce_location_desc" />
 
                 <Button
                     android:id="@+id/bt_announce_call"
@@ -306,7 +284,7 @@
                     android:layout_height="50dp"
                     android:layout_marginTop="42dp"
                     android:background="@color/colorPrimary"
-                    android:text="make a Call"
+                    android:text="전화걸기"
                     android:textColor="@android:color/white"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"

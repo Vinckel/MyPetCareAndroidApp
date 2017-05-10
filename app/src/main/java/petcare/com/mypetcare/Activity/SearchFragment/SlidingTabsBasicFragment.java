@@ -52,6 +52,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -530,7 +532,8 @@ public class SlidingTabsBasicFragment extends Fragment {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             Intent intent = new Intent(getActivity(), AnnounceActivity.class);
-                            intent.putExtra("id", id);
+                            AnnounceInfoListVO.AnnounceInfoObject item = adapterAnnounce.getItem(position);
+                            intent.putExtra("data", item);
 
                             startActivity(intent);
                         }
@@ -577,6 +580,8 @@ public class SlidingTabsBasicFragment extends Fragment {
                                 GeoRegionVO.GeoRegionObject regionObject = regionList.get(position);
                                 selectedRegion = regionObject.getRegionCode();
                                 adapterAnnounce.removeAllItems();
+                                pagingLastCheck.set(NUM_NOTI, false);
+                                pagingCount.set(NUM_NOTI, 1);
                                 callAnnouncePetCallApi();
                             }
                         }
@@ -1559,13 +1564,14 @@ public class SlidingTabsBasicFragment extends Fragment {
 
                 List<AnnounceInfoListVO.AnnounceInfoObject> dataList = announceInfoListVO.getData();
 
-                if (dataList.size() == 0 ) {
+                if (dataList.size() == 0) {
                     pagingLastCheck.set(NUM_NOTI, true);
                     return ;
                 }
 
                 for (AnnounceInfoListVO.AnnounceInfoObject data : dataList) {
-                    adapterAnnounce.addItem(data.getThumbUrl());
+//                    adapterAnnounce.addItem(data.getThumbUrl());
+                    adapterAnnounce.addItem(data);
                 }
 
                 adapterAnnounce.notifyDataSetChanged();

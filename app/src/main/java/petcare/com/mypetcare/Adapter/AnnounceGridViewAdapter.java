@@ -12,6 +12,7 @@ import com.android.volley.toolbox.NetworkImageView;
 import java.util.ArrayList;
 import java.util.List;
 
+import petcare.com.mypetcare.Model.AnnounceInfoListVO;
 import petcare.com.mypetcare.R;
 import petcare.com.mypetcare.Util.VolleySingleton;
 
@@ -20,7 +21,8 @@ import petcare.com.mypetcare.Util.VolleySingleton;
  */
 
 public class AnnounceGridViewAdapter extends BaseAdapter {
-    private List<String> imageUrlList;
+    private List<AnnounceInfoListVO.AnnounceInfoObject> announceInfoObjectList;
+//    private List<String> imageUrlList;
     private LayoutInflater inf;
     private Context context;
     private int layout;
@@ -30,17 +32,17 @@ public class AnnounceGridViewAdapter extends BaseAdapter {
         this.context = context;
         this.layout = layout;
         inf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        imageUrlList = new ArrayList<>();
+        announceInfoObjectList = new ArrayList<>();
     }
 
     @Override
     public int getCount() {
-        return imageUrlList.size();
+        return announceInfoObjectList.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        return imageUrlList.get(position);
+    public AnnounceInfoListVO.AnnounceInfoObject getItem(int position) {
+        return announceInfoObjectList.get(position);
     }
 
     @Override
@@ -48,8 +50,8 @@ public class AnnounceGridViewAdapter extends BaseAdapter {
         return position;
     }
 
-    public void addItem(String url) {
-        imageUrlList.add(url);
+    public void addItem(AnnounceInfoListVO.AnnounceInfoObject announceInfoObject) {
+        announceInfoObjectList.add(announceInfoObject);
     }
 
     @Override
@@ -60,12 +62,12 @@ public class AnnounceGridViewAdapter extends BaseAdapter {
 
         imageLoader = VolleySingleton.getInstance(context).getImageLoader();
         NetworkImageView image = (NetworkImageView) convertView.findViewById(R.id.iv_gridview_announce_list);
-        image.setImageUrl(imageUrlList.get(position), imageLoader);
+        image.setImageUrl(announceInfoObjectList.get(position).getThumbUrl(), imageLoader);
 
         return convertView;
     }
 
     public void removeAllItems() {
-        imageUrlList.clear();
+        announceInfoObjectList.clear();
     }
 }
