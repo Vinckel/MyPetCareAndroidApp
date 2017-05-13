@@ -1,12 +1,14 @@
 package petcare.com.mypetcare.Activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +47,16 @@ public class HospitalDetailActivity extends BaseActivity {
     private TextView tvUrl;
     private TextView tvDescription;
     private Button btCall;
+    private HospitalDetailVO.HospitalObject hospitalObject;
+
+    private static final int NUM_HOSPITAL = 0;
+    private static final int NUM_BEAUTY = 1;
+    private static final int NUM_HOTEL = 2;
+    private static final int NUM_TOOL = 3;
+    private static final int NUM_CAFE = 4;
+    private static final int NUM_FUNERAL = 5;
+    private static final int NUM_ADOPT = 6;
+    private static int currentNum = -1;
 
     private HospitalDetailViewpagerAdapter adapter;
 
@@ -51,6 +65,12 @@ public class HospitalDetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         String id = intent.getStringExtra("id");
+        currentNum = intent.getIntExtra("num", -1);
+
+        if (currentNum < 0) {
+            Toast.makeText(HospitalDetailActivity.this, "정보를 읽어오지 못했습니다.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         setContentView(R.layout.activity_hospital_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tb_hospital_detail);
@@ -124,8 +144,28 @@ public class HospitalDetailActivity extends BaseActivity {
             }
         });
 
-        callHospitalDetailApi(id);
+        switch (currentNum) {
+            case NUM_HOSPITAL:
+                callHospitalDetailApi(id);
+                break;
+            case NUM_BEAUTY:
+                callBeautyDetailApi(id);
+                break;
+            case NUM_HOTEL:
+                callHotelDetailApi(id);
+                break;
+            case NUM_TOOL:
+                callToolDetailApi(id);
+                break;
+            case NUM_CAFE:
+                callCafeDetailApi(id);
+                break;
+            case NUM_FUNERAL:
+                callFuneralDetailApi(id);
+                break;
+        }
     }
+
     private void callHospitalDetailApi(String id) {
         try {
             HospitalDetailApi hospitalDetailApi = new HospitalDetailApi();
@@ -146,6 +186,106 @@ public class HospitalDetailActivity extends BaseActivity {
         }
     }
 
+    private void callBeautyDetailApi(String id) {
+        try {
+            HospitalDetailApi hospitalDetailApi = new HospitalDetailApi();
+
+            Map headers = new HashMap<>();
+            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+            String serviceId = "MPMS_04002";
+            headers.put("url", url);
+            headers.put("serviceName", serviceId);
+
+            Map params = new HashMap<>();
+            params.put("BEAUTYSHOP_ID", id);
+
+            hospitalDetailApi.execute(headers, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(HospitalDetailActivity.this, "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void callHotelDetailApi(String id) {
+        try {
+            HospitalDetailApi hospitalDetailApi = new HospitalDetailApi();
+
+            Map headers = new HashMap<>();
+            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+            String serviceId = "MPMS_05002";
+            headers.put("url", url);
+            headers.put("serviceName", serviceId);
+
+            Map params = new HashMap<>();
+            params.put("HOTEL_ID", id);
+
+            hospitalDetailApi.execute(headers, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(HospitalDetailActivity.this, "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void callToolDetailApi(String id) {
+        try {
+            HospitalDetailApi hospitalDetailApi = new HospitalDetailApi();
+
+            Map headers = new HashMap<>();
+            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+            String serviceId = "MPMS_06002";
+            headers.put("url", url);
+            headers.put("serviceName", serviceId);
+
+            Map params = new HashMap<>();
+            params.put("ARTICLE_ID", id);
+
+            hospitalDetailApi.execute(headers, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(HospitalDetailActivity.this, "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void callCafeDetailApi(String id) {
+        try {
+            HospitalDetailApi hospitalDetailApi = new HospitalDetailApi();
+
+            Map headers = new HashMap<>();
+            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+            String serviceId = "MPMS_07002";
+            headers.put("url", url);
+            headers.put("serviceName", serviceId);
+
+            Map params = new HashMap<>();
+            params.put("CAFE_ID", id);
+
+            hospitalDetailApi.execute(headers, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(HospitalDetailActivity.this, "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void callFuneralDetailApi(String id) {
+        try {
+            HospitalDetailApi hospitalDetailApi = new HospitalDetailApi();
+
+            Map headers = new HashMap<>();
+            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+            String serviceId = "MPMS_08002";
+            headers.put("url", url);
+            headers.put("serviceName", serviceId);
+
+            Map params = new HashMap<>();
+            params.put("FUNERALHALL_ID", id);
+
+            hospitalDetailApi.execute(headers, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(HospitalDetailActivity.this, "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private class HospitalDetailApi extends GeneralApi {
 
         @Override
@@ -155,19 +295,76 @@ public class HospitalDetailActivity extends BaseActivity {
             HospitalDetailVO hospitalDetailVO = GsonUtil.fromJson(result, HospitalDetailVO.class);
             if (hospitalDetailVO.getResultCode() != 0) {
                 Toast.makeText(HospitalDetailActivity.this, "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                finish();
                 return;
             }
 
             List<HospitalDetailVO.HospitalObject> data = hospitalDetailVO.getData();
-            HospitalDetailVO.HospitalObject hospitalObject = data.get(0);
+            hospitalObject = data.get(0);
             tvTitle.setText(hospitalObject.getName());
             tvName.setText(hospitalObject.getName());
 //            tvSubTitle.setText(hospitalObject.getSubTitle());
             tvUrl.setText(hospitalObject.getPlaceUrl());
-            tvDistance.setText(hospitalObject.getDistance() + "km");
+            if (StringUtils.isNotBlank(hospitalObject.getDistance())) {
+                double distance = Double.parseDouble(hospitalObject.getDistance());
+                distance = Math.round(distance / 100f) / 10f;
+                tvDistance.setText(String.format("%.1f", distance) + "km");
+            }
+
             adapter.addItem(hospitalObject.getImgurl());
-            tvPageCount.setText("1/1");
+
+            if (StringUtils.isNotBlank(hospitalObject.getImgurl())) {
+                tvPageCount.setText("1/1");
+            }
+
             adapter.notifyDataSetChanged();
+
+            btCall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                            requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 2);
+                        } else {
+                            String call = hospitalObject.getContact();
+                            if (StringUtils.isNotBlank(call)) {
+                                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + call));
+                                startActivity(intent);
+                            }
+                        }
+                    } else {
+                        String call = hospitalObject.getContact();
+                        if (StringUtils.isNotBlank(call)) {
+                            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + call));
+                            startActivity(intent);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 2: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED && hospitalObject != null) {
+
+                    String call = hospitalObject.getContact();
+                    if (StringUtils.isNotBlank(call)) {
+                        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + call));
+
+                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        }
+
+                        startActivity(intent);
+                    }
+                } else {
+                    Toast.makeText(HospitalDetailActivity.this, "권한이 거부되어 전화를 할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
         }
     }
 }

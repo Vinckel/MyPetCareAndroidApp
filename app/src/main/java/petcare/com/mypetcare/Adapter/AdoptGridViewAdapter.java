@@ -23,6 +23,7 @@ import petcare.com.mypetcare.Util.VolleySingleton;
 
 public class AdoptGridViewAdapter extends BaseAdapter {
     private List<String> imageUrlList;
+    private List<String> idList;
     private LayoutInflater inf;
     private Context context;
     private int layout;
@@ -33,6 +34,7 @@ public class AdoptGridViewAdapter extends BaseAdapter {
         this.layout = layout;
         inf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         imageUrlList = new ArrayList<>();
+        idList = new ArrayList<>();
     }
 
     @Override
@@ -45,12 +47,17 @@ public class AdoptGridViewAdapter extends BaseAdapter {
         return imageUrlList.get(position);
     }
 
+    public String getItemSaleId(int position) {
+        return idList.get(position);
+    }
+
     @Override
     public long getItemId(int position) {
         return position;
     }
 
-    public void addItem(String url) {
+    public void addItem(String id, String url) {
+        idList.add(id);
         imageUrlList.add(url);
     }
 

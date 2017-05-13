@@ -296,6 +296,7 @@ public class MainActivity extends BaseActivity
                 String diary = getApplicationContext().getResources().getString(R.string.nav_diary);
                 String inquiry = getApplicationContext().getResources().getString(R.string.nav_inquiry);
                 String share = getApplicationContext().getResources().getString(R.string.nav_share);
+                String setting = getApplicationContext().getResources().getString(R.string.nav_setting);
 
                 drawer.closeDrawer(GravityCompat.START);
                 Intent intent = null;
@@ -311,6 +312,9 @@ public class MainActivity extends BaseActivity
                     startActivity(intent);
                 } else if (StringUtils.equals(inquiry, selected)) {
                     intent = new Intent(getApplicationContext(), InquiryActivity.class);
+                    startActivity(intent);
+                } else if (StringUtils.equals(setting, selected)) {
+                    intent = new Intent(getApplicationContext(), SettingActivity.class);
                     startActivity(intent);
                 } else if (StringUtils.equals(share, selected)) {
                     shareDialog.show();

@@ -76,4 +76,5 @@
     <string name="title_activity_inquiry">InquiryActivity</string>
     <string name="title_activity_missing_detail">MissingDetailActivity</string>
     <string name="title_activity_report_write">ReportWriteActivity</string>
+    <string name="title_activity_setting">SettingActivity</string>
 </resources>

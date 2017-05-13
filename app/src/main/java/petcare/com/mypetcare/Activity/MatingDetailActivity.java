@@ -66,13 +66,7 @@ public class MatingDetailActivity extends BaseActivity {
         });
 
         pager = (ViewPager) findViewById(R.id.vp_mating_detail);
-        urls = new ArrayList<>();
-        urls.add("http://i.imgur.com/3jXjgTT.jpg");
-        urls.add("http://i.imgur.com/SEBjThb.jpg");
-        urls.add("http://i.imgur.com/SEBjThb.jpg");
-        urls.add("http://i.imgur.com/SEBjThb.jpg");
-        urls.add("http://i.imgur.com/SEBjThb.jpg");
-        AdoptDetailViewpagerAdapter adapter = new AdoptDetailViewpagerAdapter(getLayoutInflater(), urls);
+        AdoptDetailViewpagerAdapter adapter = new AdoptDetailViewpagerAdapter(getLayoutInflater());
         pager.setAdapter(adapter);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

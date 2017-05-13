@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -116,7 +117,13 @@ public class AnnounceActivity extends BaseActivity {
         btCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkPermission();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    checkPermission();
+                } else {
+                    String call = data.getShelterCall();
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + call));
+                    startActivity(intent);
+                }
             }
         });
 
@@ -131,7 +138,7 @@ public class AnnounceActivity extends BaseActivity {
         pager = (ViewPager) findViewById(R.id.vp_announce);
         urls = new ArrayList<>();
         urls.add(data.getImageUrl());
-        AdoptDetailViewpagerAdapter adapter = new AdoptDetailViewpagerAdapter(getLayoutInflater(), urls);
+        AdoptDetailViewpagerAdapter adapter = new AdoptDetailViewpagerAdapter(getLayoutInflater());
         pager.setAdapter(adapter);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

@@ -17,14 +17,13 @@
 package petcare.com.mypetcare.Activity.SearchFragment;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
@@ -52,15 +51,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -78,18 +74,24 @@ import petcare.com.mypetcare.Adapter.AdoptGridViewAdapter;
 import petcare.com.mypetcare.Adapter.AnnounceGridViewAdapter;
 import petcare.com.mypetcare.Adapter.HospitalListViewAdapter;
 import petcare.com.mypetcare.Adapter.MissingGridViewAdapter;
+import petcare.com.mypetcare.Model.AdoptListVO;
 import petcare.com.mypetcare.Model.AnnounceInfoListVO;
+import petcare.com.mypetcare.Model.BeautyListVO;
+import petcare.com.mypetcare.Model.CafeListVO;
+import petcare.com.mypetcare.Model.FuneralListVO;
 import petcare.com.mypetcare.Model.GeoRegionVO;
 import petcare.com.mypetcare.Model.GeoStateVO;
 import petcare.com.mypetcare.Model.HospitalListVO;
 import petcare.com.mypetcare.Model.MatingListVO;
 import petcare.com.mypetcare.Model.ReportCodeVO;
 import petcare.com.mypetcare.Model.ReportListVO;
+import petcare.com.mypetcare.Model.ToolListVO;
 import petcare.com.mypetcare.R;
 import petcare.com.mypetcare.Util.GeneralApi;
 import petcare.com.mypetcare.Util.GsonUtil;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static android.content.Context.MODE_PRIVATE;
 
 public class SlidingTabsBasicFragment extends Fragment {
     private int hospitalCurrentPosition = 1;
@@ -112,6 +114,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static MissingGridViewAdapter adapterProtection;
     private static HospitalListViewAdapter[] adapterHospital;
     private static List<Integer> pagingCount;
+    private static List<Integer> pagingCountAdopt;
     private static final int NUM_HOSPITAL = 0;
     private static final int NUM_BEAUTY = 1;
     private static final int NUM_HOTEL = 2;
@@ -121,20 +124,24 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static final int NUM_ADOPT = 6;
     private static final int NUM_REPORT = 7;
     private static final int NUM_NOTI = 8;
+    private static final int NUM_ADOPT_ADOPT = 0;
+    private static final int NUM_ADOPT_MATING = 1;
     private static boolean isLoading = false;
     private static long currentTime = 0L;
     private static int maxCount = 0;
     private static final int PAGE_OFFSET = 15;
     private static List<Boolean> pagingLastCheck;
+    private static List<Boolean> pagingLastCheckAdopt;
     private static boolean isLoaded = false;
     private static Map<String, String> reportCodeMap;
     private static GoogleApiClient googleApiClient;
-    private static double lastLongitude = -1;
-    private static double lastLatitude = -1;
+    private static double lastLongitude = 127.0276;
+    private static double lastLatitude = 37.497959;
     private static LocationManager locationManager;
     private static LocationListener locationListener;
     private static Spinner spHospital;
     private static long[] scrollCooldown;
+    private static long[] scrollCooldownAdopt;
     private static final long SCROLL_MIN_TERM = 500L;
     private static HotelApi hotelApi;
     private static HospitalApi hospitalApi;
@@ -142,6 +149,11 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static ToolApi toolApi;
     private static CafeApi cafeApi;
     private static FuneralApi funeralApi;
+    private static AdoptApi adoptApi;
+    private static AdoptGridViewAdapter adapterAdopt;
+//    private static long callCooldown; // 액티비티 뜬 후 바로 스크롤 호출 방지
+
+    SharedPreferences pref; // 위치 저장용
 
     /**
      * A custom {@link ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -181,6 +193,8 @@ public class SlidingTabsBasicFragment extends Fragment {
 //        Toolbar parent = (Toolbar) actionBarView.getParent();
         toolbar.setContentInsetsAbsolute(0, 0);
 
+        pref = getActivity().getSharedPreferences("local_auth", MODE_PRIVATE);
+
         ibBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -204,8 +218,15 @@ public class SlidingTabsBasicFragment extends Fragment {
         });
 
         reportCodeMap = new HashMap<>();
-        pagingCount = new ArrayList<>();
         pagingLastCheck = new ArrayList<>();
+        pagingCount = new ArrayList<>();
+
+        pagingLastCheckAdopt = new ArrayList<>();
+        pagingLastCheckAdopt.add(false);
+        pagingLastCheckAdopt.add(false);
+        pagingCountAdopt = new ArrayList<>();
+        pagingCountAdopt.add(1);
+        pagingCountAdopt.add(1);
 
         for (int i = 0; i < titleArr.length; i++) {
             pagingCount.add(1);
@@ -244,6 +265,9 @@ public class SlidingTabsBasicFragment extends Fragment {
         locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
         adapterHospital = new HospitalListViewAdapter[6];
         scrollCooldown = new long[11];
+        scrollCooldownAdopt = new long[2];
+        scrollCooldownAdopt[0] = 0L;
+        scrollCooldownAdopt[1] = 0L;
 
         for (int i = 0; i < scrollCooldown.length; i++) {
             scrollCooldown[i] = 0L;
@@ -255,17 +279,25 @@ public class SlidingTabsBasicFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        lastLongitude = Double.parseDouble(pref.getString("lastLatitude", "37.497959"));
+        lastLongitude = Double.parseDouble(pref.getString("lastLongitude", "127.0276"));
+
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
         }
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        SharedPreferences.Editor edit = pref.edit();
+        edit.putString("lastLatitude", String.valueOf(lastLatitude));
+        edit.putString("lastLongitude", String.valueOf(lastLongitude));
+        edit.commit();
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationManager.removeUpdates(locationListener);
         }
+
     }
 //    @TargetApi(23)
 //    private void checkPermission() {
@@ -433,39 +465,67 @@ public class SlidingTabsBasicFragment extends Fragment {
 //                    break;
 //                case 1:
 //                    break;
+                case NUM_REPORT:
+                    pagingCount.set(NUM_REPORT, 1);
+                    view = getActivity().getLayoutInflater().inflate(R.layout.fragment_report, container, false);
+                    container.addView(view);
+
+                    TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tl_report);
+                    tabLayout.addTab(tabLayout.newTab().setText("실종"));
+                    tabLayout.addTab(tabLayout.newTab().setText("보호중"));
+
+                    tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                        @Override
+                        public void onTabSelected(TabLayout.Tab tab) {
+                            switch (tab.getPosition()) {
+                                case 0:
+                                    Fragment fragment1 = MissingFragment.newInstance(0);
+                                    getFragmentManager().beginTransaction().replace(R.id.containerLayout, fragment1).commit();
+                                    break;
+                                default:
+                                    Fragment fragment2 = MissingFragment.newInstance(1);
+                                    getFragmentManager().beginTransaction().replace(R.id.containerLayout, fragment2).commit();
+                                    break;
+                            }
+                        }
+
+                        @Override
+                        public void onTabUnselected(TabLayout.Tab tab) {
+
+                        }
+
+                        @Override
+                        public void onTabReselected(TabLayout.Tab tab) {
+
+                        }
+                    });
+
+                    Fragment fragment1 = MissingFragment.newInstance(0);
+                    getFragmentManager().beginTransaction().replace(R.id.containerLayout, fragment1).commit();
+
+                    break;
                 case NUM_ADOPT:
                     switch (adoptPageState) {
                         case 1:
-                            view = getActivity().getLayoutInflater().inflate(R.layout.fragment_adopt_list, container, false);
-                            container.addView(view);
 
-                            GridView gvAdopt = (GridView) view.findViewById(R.id.gv_adopt_list);
-                            AdoptGridViewAdapter adapterAdopt = new AdoptGridViewAdapter(getContext(), R.layout.gridview_adopt_list);
-                            gvAdopt.setAdapter(adapterAdopt);
-                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                            adapterAdopt.addItem("http://i.imgur.com/SEBjThb.jpg");
-                            adapterAdopt.addItem("http://i.imgur.com/SEBjThb.jpg");
-                            adapterAdopt.addItem("http://i.imgur.com/SEBjThb.jpg");
-                            adapterAdopt.addItem("http://i.imgur.com/SEBjThb.jpg");
-                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
-                            gvAdopt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    Intent intent = new Intent(getActivity(), AdoptDetailActivity.class);
-                                    intent.putExtra("id", id);
-
-                                    startActivity(intent);
-                                }
-                            });
+                            view = adoptProcess(container, NUM_ADOPT_ADOPT);
+//                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
+//                            adapterAdopt.addItem("http://i.imgur.com/SEBjThb.jpg");
+//                            adapterAdopt.addItem("http://i.imgur.com/SEBjThb.jpg");
+//                            adapterAdopt.addItem("http://i.imgur.com/SEBjThb.jpg");
+//                            adapterAdopt.addItem("http://i.imgur.com/SEBjThb.jpg");
+//                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
+//                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
+//                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
+//                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
+//                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
+//                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
+//                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
 
                             break;
                         case 2:
+                            pagingCountAdopt.set(NUM_ADOPT_MATING, 1);
+                            pagingLastCheckAdopt.set(NUM_ADOPT_MATING, false);
                             view = getActivity().getLayoutInflater().inflate(R.layout.fragment_mating_list, container, false);
                             container.addView(view);
                             tvTitle.setText("교배");
@@ -604,22 +664,22 @@ public class SlidingTabsBasicFragment extends Fragment {
                     geoStateApi.execute(headerGeo, bodyGeo);
                     break;
                 case NUM_HOTEL:
-                    view = asdf(container, NUM_HOTEL);
+                    view = call(container, NUM_HOTEL);
                     break;
                 case NUM_BEAUTY:
-                    view = asdf(container, NUM_BEAUTY);
+                    view = call(container, NUM_BEAUTY);
                     break;
                 case NUM_HOSPITAL:
-                    view = asdf(container, NUM_HOSPITAL);
+                    view = call(container, NUM_HOSPITAL);
                     break;
                 case NUM_TOOL:
-                    view = asdf(container, NUM_TOOL);
+                    view = call(container, NUM_TOOL);
                     break;
                 case NUM_CAFE:
-                    view = asdf(container, NUM_CAFE);
+                    view = call(container, NUM_CAFE);
                     break;
                 case NUM_FUNERAL:
-                    view = asdf(container, NUM_FUNERAL);
+                    view = call(container, NUM_FUNERAL);
                     break;
 //                    pagingCount.set(NUM_HOSPITAL, 1);
 //                    pagingLastCheck.set(NUM_HOSPITAL, false);
@@ -657,45 +717,6 @@ public class SlidingTabsBasicFragment extends Fragment {
 //                    });
 //                case 6:
 //                    break;
-                case NUM_REPORT:
-                    pagingCount.set(NUM_REPORT, 1);
-                    view = getActivity().getLayoutInflater().inflate(R.layout.fragment_report, container, false);
-                    container.addView(view);
-
-                    TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tl_report);
-                    tabLayout.addTab(tabLayout.newTab().setText("실종"));
-                    tabLayout.addTab(tabLayout.newTab().setText("보호중"));
-
-                    tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-                        @Override
-                        public void onTabSelected(TabLayout.Tab tab) {
-                            switch (tab.getPosition()) {
-                                case 0:
-                                    Fragment fragment1 = MissingFragment.newInstance(0);
-                                    getFragmentManager().beginTransaction().replace(R.id.containerLayout, fragment1).commit();
-                                    break;
-                                default:
-                                    Fragment fragment2 = MissingFragment.newInstance(1);
-                                    getFragmentManager().beginTransaction().replace(R.id.containerLayout, fragment2).commit();
-                                    break;
-                            }
-                        }
-
-                        @Override
-                        public void onTabUnselected(TabLayout.Tab tab) {
-
-                        }
-
-                        @Override
-                        public void onTabReselected(TabLayout.Tab tab) {
-
-                        }
-                    });
-
-                    Fragment fragment1 = MissingFragment.newInstance(0);
-                    getFragmentManager().beginTransaction().replace(R.id.containerLayout, fragment1).commit();
-
-                    break;
                 default:
 
                     view = getActivity().getLayoutInflater().inflate(R.layout.pager_item, container, false);
@@ -737,7 +758,100 @@ public class SlidingTabsBasicFragment extends Fragment {
         }
     }
 
-    private View asdf(ViewGroup container, final int num) {
+    private View adoptProcess(ViewGroup container, final int num) {
+        pagingCountAdopt.set(NUM_ADOPT_ADOPT, 1);
+        pagingLastCheckAdopt.set(NUM_ADOPT_ADOPT, false);
+        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_adopt_list, container, false);
+        container.addView(view);
+
+        GridView gvAdopt = (GridView) view.findViewById(R.id.gv_adopt_list);
+
+        // spinner
+
+        adapterAdopt = new AdoptGridViewAdapter(getContext(), R.layout.gridview_adopt_list);
+        gvAdopt.setAdapter(adapterAdopt);
+
+
+        gvAdopt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), AdoptDetailActivity.class);
+                intent.putExtra("id", adapterAdopt.getItemSaleId(position));
+
+                startActivity(intent);
+            }
+        });
+
+        gvAdopt.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (firstVisibleItem + visibleItemCount >= totalItemCount && isLoaded) {
+                    Log.d("listview adopt", "reached at bottom");
+//                    String radius = StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1);
+                    String radius = "1";
+
+                    if (lastLatitude < 0 || lastLongitude < 0) {
+                        Toast.makeText(getContext(), "위치를 받아올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    switch (num) {
+                        case NUM_ADOPT_ADOPT:
+                            callAdoptApi(radius);
+                            break;
+                        case NUM_ADOPT_MATING:
+//                            callAdoptApi(radius);
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+        });
+        callAdoptApi("1");
+
+        return view;
+    }
+
+    private void callAdoptApi(String radius) {
+
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        if (scrollCooldownAdopt[NUM_ADOPT_ADOPT] + SCROLL_MIN_TERM > currentTime) {
+            return;
+        } else {
+            scrollCooldownAdopt[NUM_ADOPT_ADOPT] = currentTime;
+        }
+
+        try {
+            adoptApi = new AdoptApi();
+
+            Map headers = new HashMap<>();
+            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+            String serviceId = "MPMS_09001";
+            headers.put("url", url);
+            headers.put("serviceName", serviceId);
+
+            Map params = new HashMap<>();
+            params.put("SEARCH_COUNT", SEARCH_COUNT);
+            int currentPage = pagingCountAdopt.get(NUM_ADOPT_ADOPT);
+            params.put("SEARCH_PAGE", currentPage);
+            params.put("SEARCH_LAT", lastLatitude);
+            params.put("SEARCH_LON", lastLongitude);
+            params.put("SEARCH_RADIUS", radius);
+            pagingCountAdopt.set(NUM_ADOPT_ADOPT, currentPage + 1);
+
+            adoptApi.execute(headers, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private View call(ViewGroup container, final int num) {
+//        callCooldown = Calendar.getInstance().getTimeInMillis();
         pagingCount.set(num, 1);
         pagingLastCheck.set(num, false);
         View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_hospital, container, false);
@@ -751,6 +865,12 @@ public class SlidingTabsBasicFragment extends Fragment {
                 pagingCount.set(num, 1);
                 scrollCooldown[num] = 0L;
                 adapterHospital[num].clear();
+
+                if (lastLatitude < 0 || lastLongitude < 0) {
+                    Toast.makeText(getContext(), "위치를 받아올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 switch (num) {
                     case NUM_HOTEL:
                         callHotelApi(radius);
@@ -779,29 +899,28 @@ public class SlidingTabsBasicFragment extends Fragment {
             }
         });
         adapterHospital[num] = new HospitalListViewAdapter(view.getContext());
-        String radius = StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1);
 
 //        cancelAllApis();
-        switch (num) {
-            case NUM_HOTEL:
-                callHotelApi(radius);
-                break;
-            case NUM_BEAUTY:
-                callBeautyApi(radius);
-                break;
-            case NUM_HOSPITAL:
-                callHospitalApi(radius);
-                break;
-            case NUM_TOOL:
-                callToolApi(radius);
-                break;
-            case NUM_CAFE:
-                callCafeApi(radius);
-                break;
-            case NUM_FUNERAL:
-                callFuneralApi(radius);
-                break;
-        }
+//        switch (num) {
+//            case NUM_HOTEL:
+//                callHotelApi(radius);
+//                break;
+//            case NUM_BEAUTY:
+//                callBeautyApi(radius);
+//                break;
+//            case NUM_HOSPITAL:
+//                callHospitalApi(radius);
+//                break;
+//            case NUM_TOOL:
+//                callToolApi(radius);
+//                break;
+//            case NUM_CAFE:
+//                callCafeApi(radius);
+//                break;
+//            case NUM_FUNERAL:
+//                callFuneralApi(radius);
+//                break;
+//        }
 
         lvHospitalList.setAdapter(adapterHospital[num]);
         lvHospitalList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -809,6 +928,7 @@ public class SlidingTabsBasicFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), HospitalDetailActivity.class);
                 intent.putExtra("id", adapterHospital[num].getItem(position).getId());
+                intent.putExtra("num", num);
 
                 startActivity(intent);
             }
@@ -819,12 +939,32 @@ public class SlidingTabsBasicFragment extends Fragment {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if (firstVisibleItem + visibleItemCount >= totalItemCount && isLoaded) {
                     Log.d("listview hospital", "reached at bottom");
+                    String radius = StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1);
+
+
+                    if (lastLatitude < 0 || lastLongitude < 0) {
+                        Toast.makeText(getContext(), "위치를 받아올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     switch (num) {
                         case NUM_HOTEL:
-                            callHotelApi(StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1));
+                            callHotelApi(radius);
+                            break;
+                        case NUM_BEAUTY:
+                            callBeautyApi(radius);
                             break;
                         case NUM_HOSPITAL:
-                            callHospitalApi(StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1));
+                            callHospitalApi(radius);
+                            break;
+                        case NUM_TOOL:
+                            callToolApi(radius);
+                            break;
+                        case NUM_CAFE:
+                            callCafeApi(radius);
+                            break;
+                        case NUM_FUNERAL:
+                            callFuneralApi(radius);
                             break;
                     }
                 }
@@ -850,6 +990,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     }
 
     private void callHotelApi(String radius) {
+
         long currentTime = Calendar.getInstance().getTimeInMillis();
         if (scrollCooldown[NUM_HOTEL] + SCROLL_MIN_TERM > currentTime) {
             return;
@@ -1039,6 +1180,8 @@ public class SlidingTabsBasicFragment extends Fragment {
             params.put("SEARCH_LON", lastLongitude);
             params.put("SEARCH_RADIUS", radius);
             pagingCount.set(NUM_HOSPITAL, currentPage + 1);
+            Log.d("latitude", String.valueOf(lastLatitude));
+            Log.d("latitude", String.valueOf(lastLongitude));
 
             hospitalApi.execute(headers, params);
         } catch (Exception e) {
@@ -1172,7 +1315,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             List<MatingListVO.MatingObject> dataList = matingListVO.getData();
             for (MatingListVO.MatingObject data : dataList) {
-                adapterMating.addItem(data.getThumbImgUrl());
+                adapterMating.addItem(data.getId(), data.getThumbImgUrl());
             }
 
             adapterMating.notifyDataSetChanged();
@@ -1309,16 +1452,22 @@ public class SlidingTabsBasicFragment extends Fragment {
             super.onPostExecute(result);
 
             try {
-                HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
-                if (hospitalListVO.getResultCode() != 0) {
+                ToolListVO toolListVO = GsonUtil.fromJson(result, ToolListVO.class);
+                if (toolListVO.getResultCode() != 0) {
                     Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
+                List<ToolListVO.ToolObject> data = toolListVO.getData();
 
-                for (HospitalListVO.HospitalObject hospitalObject : data) {
-                    adapterHospital[NUM_TOOL].addItem(hospitalObject.getName(), "", StringUtils.isNotBlank(hospitalObject.getDistance()) ? hospitalObject.getDistance() + "km" : "", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
+                for (ToolListVO.ToolObject toolObject : data) {
+                    String distanceStr = "";
+                    if (StringUtils.isNotBlank(toolObject.getDistance())) {
+                        double distance = Math.round(Double.parseDouble(toolObject.getDistance()) / 100f) / 10f;
+                        distanceStr = String.format("%.1f", distance) + "km";
+                    }
+
+                    adapterHospital[NUM_TOOL].addItem(toolObject.getName(), "", distanceStr, toolObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, toolObject.getId());
                 }
 
                 adapterHospital[NUM_TOOL].notifyDataSetChanged();
@@ -1335,19 +1484,51 @@ public class SlidingTabsBasicFragment extends Fragment {
             super.onPostExecute(result);
 
             try {
-                HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
-                if (hospitalListVO.getResultCode() != 0) {
+                FuneralListVO funeralListVO = GsonUtil.fromJson(result, FuneralListVO.class);
+                if (funeralListVO.getResultCode() != 0) {
                     Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
+                List<FuneralListVO.FuneralObject> data = funeralListVO.getData();
 
-                for (HospitalListVO.HospitalObject hospitalObject : data) {
-                    adapterHospital[NUM_FUNERAL].addItem(hospitalObject.getName(), "", StringUtils.isNotBlank(hospitalObject.getDistance()) ? hospitalObject.getDistance() + "km" : "", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
+                for (FuneralListVO.FuneralObject funeralObject : data) {
+                    String distanceStr = "";
+                    if (StringUtils.isNotBlank(funeralObject.getDistance())) {
+                        double distance = Math.round(Double.parseDouble(funeralObject.getDistance()) / 100f) / 10f;
+                        distanceStr = String.format("%.1f", distance) + "km";
+                    }
+
+                    adapterHospital[NUM_FUNERAL].addItem(funeralObject.getName(), "", distanceStr, funeralObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, funeralObject.getId());
                 }
 
                 adapterHospital[NUM_FUNERAL].notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class AdoptApi extends GeneralApi {
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            try {
+                AdoptListVO adoptListVO = GsonUtil.fromJson(result, AdoptListVO.class);
+                if (adoptListVO.getResultCode() != 0) {
+                    Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                List<AdoptListVO.AdoptObject> data = adoptListVO.getData();
+
+                for (AdoptListVO.AdoptObject adoptObject : data) {
+                    adapterAdopt.addItem(adoptObject.getId(), adoptObject.getImgUrl());
+                }
+
+                adapterAdopt.notifyDataSetChanged();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1361,16 +1542,22 @@ public class SlidingTabsBasicFragment extends Fragment {
             super.onPostExecute(result);
 
             try {
-                HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
-                if (hospitalListVO.getResultCode() != 0) {
+                CafeListVO cafeListVO = GsonUtil.fromJson(result, CafeListVO.class);
+                if (cafeListVO.getResultCode() != 0) {
                     Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
+                List<CafeListVO.CafeObject> data = cafeListVO.getData();
 
-                for (HospitalListVO.HospitalObject hospitalObject : data) {
-                    adapterHospital[NUM_CAFE].addItem(hospitalObject.getName(), "", StringUtils.isNotBlank(hospitalObject.getDistance()) ? hospitalObject.getDistance() + "km" : "", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
+                for (CafeListVO.CafeObject cafeObject : data) {
+                    String distanceStr = "";
+                    if (StringUtils.isNotBlank(cafeObject.getDistance())) {
+                        double distance = Math.round(Double.parseDouble(cafeObject.getDistance()) / 100f) / 10f;
+                        distanceStr = String.format("%.1f", distance) + "km";
+                    }
+
+                    adapterHospital[NUM_CAFE].addItem(cafeObject.getName(), "", distanceStr, cafeObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, cafeObject.getId());
                 }
 
                 adapterHospital[NUM_CAFE].notifyDataSetChanged();
@@ -1396,7 +1583,13 @@ public class SlidingTabsBasicFragment extends Fragment {
                 List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
 
                 for (HospitalListVO.HospitalObject hospitalObject : data) {
-                    adapterHospital[NUM_HOTEL].addItem(hospitalObject.getName(), "", StringUtils.isNotBlank(hospitalObject.getDistance()) ? hospitalObject.getDistance() + "km" : "", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
+                    String distanceStr = "";
+                    if (StringUtils.isNotBlank(hospitalObject.getDistance())) {
+                        double distance = Math.round(Double.parseDouble(hospitalObject.getDistance()) / 100f) / 10f;
+                        distanceStr = String.format("%.1f", distance) + "km";
+                    }
+
+                    adapterHospital[NUM_HOTEL].addItem(hospitalObject.getName(), "", distanceStr, hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
                 }
 
                 adapterHospital[NUM_HOTEL].notifyDataSetChanged();
@@ -1413,16 +1606,22 @@ public class SlidingTabsBasicFragment extends Fragment {
             super.onPostExecute(result);
 
             try {
-                HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
-                if (hospitalListVO.getResultCode() != 0) {
+                BeautyListVO beautyListVO = GsonUtil.fromJson(result, BeautyListVO.class);
+                if (beautyListVO.getResultCode() != 0) {
                     Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
+                List<BeautyListVO.BeautyObject> data = beautyListVO.getData();
 
-                for (HospitalListVO.HospitalObject hospitalObject : data) {
-                    adapterHospital[NUM_BEAUTY].addItem(hospitalObject.getName(), "", StringUtils.isNotBlank(hospitalObject.getDistance()) ? hospitalObject.getDistance() + "km" : "", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
+                for (BeautyListVO.BeautyObject beautyObject : data) {
+                    String distanceStr = "";
+                    if (StringUtils.isNotBlank(beautyObject.getDistance())) {
+                        double distance = Math.round(Double.parseDouble(beautyObject.getDistance()) / 100f) / 10f;
+                        distanceStr = String.format("%.1f", distance) + "km";
+                    }
+
+                    adapterHospital[NUM_BEAUTY].addItem(beautyObject.getName(), "", distanceStr, beautyObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, beautyObject.getId());
                 }
 
                 adapterHospital[NUM_BEAUTY].notifyDataSetChanged();
@@ -1449,7 +1648,13 @@ public class SlidingTabsBasicFragment extends Fragment {
                 List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
 
                 for (HospitalListVO.HospitalObject hospitalObject : data) {
-                    adapterHospital[NUM_HOSPITAL].addItem(hospitalObject.getName(), "", StringUtils.isNotBlank(hospitalObject.getDistance()) ? hospitalObject.getDistance() + "km" : "", hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
+                    String distanceStr = "";
+                    if (StringUtils.isNotBlank(hospitalObject.getDistance())) {
+                        double distance = Math.round(Double.parseDouble(hospitalObject.getDistance()) / 100f) / 10f;
+                        distanceStr = String.format("%.1f", distance) + "km";
+                    }
+
+                    adapterHospital[NUM_HOSPITAL].addItem(hospitalObject.getName(), "", distanceStr, hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
                 }
 
                 adapterHospital[NUM_HOSPITAL].notifyDataSetChanged();
