@@ -17,6 +17,7 @@
 package petcare.com.mypetcare.Activity.SearchFragment;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -53,7 +54,6 @@ import android.widget.Toast;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -66,7 +66,6 @@ import petcare.com.mypetcare.Activity.AdoptDetailActivity;
 import petcare.com.mypetcare.Activity.AnnounceActivity;
 import petcare.com.mypetcare.Activity.BaseActivity;
 import petcare.com.mypetcare.Activity.HospitalDetailActivity;
-import petcare.com.mypetcare.Activity.MatingDetailActivity;
 import petcare.com.mypetcare.Activity.MatingRequestActivity;
 import petcare.com.mypetcare.Activity.MissingDetailActivity;
 import petcare.com.mypetcare.Activity.ReportWriteActivity;
@@ -83,7 +82,6 @@ import petcare.com.mypetcare.Model.GeoRegionVO;
 import petcare.com.mypetcare.Model.GeoStateVO;
 import petcare.com.mypetcare.Model.HospitalListVO;
 import petcare.com.mypetcare.Model.MatingListVO;
-import petcare.com.mypetcare.Model.ReportCodeVO;
 import petcare.com.mypetcare.Model.ReportListVO;
 import petcare.com.mypetcare.Model.ToolListVO;
 import petcare.com.mypetcare.R;
@@ -115,6 +113,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static HospitalListViewAdapter[] adapterHospital;
     private static List<Integer> pagingCount;
     private static List<Integer> pagingCountAdopt;
+    private static List<Integer> pagingCountReport;
     private static final int NUM_HOSPITAL = 0;
     private static final int NUM_BEAUTY = 1;
     private static final int NUM_HOTEL = 2;
@@ -126,12 +125,15 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static final int NUM_NOTI = 8;
     private static final int NUM_ADOPT_ADOPT = 0;
     private static final int NUM_ADOPT_MATING = 1;
+    private static final int NUM_REPORT_MISSING = 0;
+    private static final int NUM_REPORT_CENTER = 1;
     private static boolean isLoading = false;
     private static long currentTime = 0L;
     private static int maxCount = 0;
     private static final int PAGE_OFFSET = 15;
     private static List<Boolean> pagingLastCheck;
     private static List<Boolean> pagingLastCheckAdopt;
+    private static List<Boolean> pagingLastCheckReport;
     private static boolean isLoaded = false;
     private static Map<String, String> reportCodeMap;
     private static GoogleApiClient googleApiClient;
@@ -142,6 +144,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static Spinner spHospital;
     private static long[] scrollCooldown;
     private static long[] scrollCooldownAdopt;
+    private static long[] scrollCooldownReport;
     private static final long SCROLL_MIN_TERM = 500L;
     private static HotelApi hotelApi;
     private static HospitalApi hospitalApi;
@@ -151,6 +154,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static FuneralApi funeralApi;
     private static AdoptApi adoptApi;
     private static AdoptGridViewAdapter adapterAdopt;
+    private static Context context;
 //    private static long callCooldown; // 액티비티 뜬 후 바로 스크롤 호출 방지
 
     SharedPreferences pref; // 위치 저장용
@@ -189,8 +193,8 @@ public class SlidingTabsBasicFragment extends Fragment {
 
         ActionBar.LayoutParams lp1 = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
         actionBar.setCustomView(actionBarView, lp1);
+        context = getContext();
 
-//        Toolbar parent = (Toolbar) actionBarView.getParent();
         toolbar.setContentInsetsAbsolute(0, 0);
 
         pref = getActivity().getSharedPreferences("local_auth", MODE_PRIVATE);
@@ -227,6 +231,13 @@ public class SlidingTabsBasicFragment extends Fragment {
         pagingCountAdopt = new ArrayList<>();
         pagingCountAdopt.add(1);
         pagingCountAdopt.add(1);
+
+        pagingLastCheckReport = new ArrayList<>();
+        pagingLastCheckReport.add(false);
+        pagingLastCheckReport.add(false);
+        pagingCountReport = new ArrayList<>();
+        pagingCountReport.add(1);
+        pagingCountReport.add(1);
 
         for (int i = 0; i < titleArr.length; i++) {
             pagingCount.add(1);
@@ -265,9 +276,8 @@ public class SlidingTabsBasicFragment extends Fragment {
         locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
         adapterHospital = new HospitalListViewAdapter[6];
         scrollCooldown = new long[11];
-        scrollCooldownAdopt = new long[2];
-        scrollCooldownAdopt[0] = 0L;
-        scrollCooldownAdopt[1] = 0L;
+        scrollCooldownAdopt = new long[] {0L, 0L};
+        scrollCooldownReport = new long[] {0L, 0L};
 
         for (int i = 0; i < scrollCooldown.length; i++) {
             scrollCooldown[i] = 0L;
@@ -507,45 +517,10 @@ public class SlidingTabsBasicFragment extends Fragment {
                 case NUM_ADOPT:
                     switch (adoptPageState) {
                         case 1:
-
                             view = adoptProcess(container, NUM_ADOPT_ADOPT);
-//                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
-//                            adapterAdopt.addItem("http://i.imgur.com/SEBjThb.jpg");
-//                            adapterAdopt.addItem("http://i.imgur.com/SEBjThb.jpg");
-//                            adapterAdopt.addItem("http://i.imgur.com/SEBjThb.jpg");
-//                            adapterAdopt.addItem("http://i.imgur.com/SEBjThb.jpg");
-//                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
-//                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
-//                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
-//                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
-//                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
-//                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
-//                            adapterAdopt.addItem("http://i.imgur.com/3jXjgTT.jpg");
-
                             break;
                         case 2:
-                            pagingCountAdopt.set(NUM_ADOPT_MATING, 1);
-                            pagingLastCheckAdopt.set(NUM_ADOPT_MATING, false);
-                            view = getActivity().getLayoutInflater().inflate(R.layout.fragment_mating_list, container, false);
-                            container.addView(view);
-                            tvTitle.setText("교배");
-
-                            ivWrite.setVisibility(View.VISIBLE);
-
-                            GridView gvMating = (GridView) view.findViewById(R.id.gv_mating_list);
-                            adapterMating = new AdoptGridViewAdapter(getContext(), R.layout.gridview_adopt_list);
-                            gvMating.setAdapter(adapterMating);
-                            callMatingListCallApi();
-                            gvMating.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    Intent intent = new Intent(getActivity(), MatingDetailActivity.class);
-                                    intent.putExtra("id", id);
-
-                                    startActivity(intent);
-                                }
-                            });
-
+                            view = adoptProcess(container, NUM_ADOPT_MATING);
                             break;
                         default:
                             view = getActivity().getLayoutInflater().inflate(R.layout.fragment_adopt, container, false);
@@ -718,7 +693,6 @@ public class SlidingTabsBasicFragment extends Fragment {
 //                case 6:
 //                    break;
                 default:
-
                     view = getActivity().getLayoutInflater().inflate(R.layout.pager_item, container, false);
                     // Add the newly created View to the ViewPager
                     container.addView(view);
@@ -759,18 +733,73 @@ public class SlidingTabsBasicFragment extends Fragment {
     }
 
     private View adoptProcess(ViewGroup container, final int num) {
-        pagingCountAdopt.set(NUM_ADOPT_ADOPT, 1);
-        pagingLastCheckAdopt.set(NUM_ADOPT_ADOPT, false);
-        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_adopt_list, container, false);
-        container.addView(view);
+        pagingCountAdopt.set(num, 1);
+        pagingLastCheckAdopt.set(num, false);
 
-        GridView gvAdopt = (GridView) view.findViewById(R.id.gv_adopt_list);
+        View view = null;
+        GridView gvAdopt = null;
+        switch (num) {
+            case NUM_ADOPT_ADOPT:
+                view = getActivity().getLayoutInflater().inflate(R.layout.fragment_adopt_list, container, false);
+                container.addView(view);
 
-        // spinner
+                gvAdopt = (GridView) view.findViewById(R.id.gv_adopt_list);
+                break;
+            case NUM_ADOPT_MATING:
+                view = getActivity().getLayoutInflater().inflate(R.layout.fragment_mating_list, container, false);
+                container.addView(view);
+
+                gvAdopt = (GridView) view.findViewById(R.id.gv_mating_list);
+
+//                GridView gvAdopt = (GridView) view.findViewById(R.id.gv_adopt_list);
+//
+//                adapterAdopt = new AdoptGridViewAdapter(getContext(), R.layout.gridview_adopt_list);
+//                gvAdopt.setAdapter(adapterAdopt);
+//
+//
+//                gvAdopt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                        Intent intent = new Intent(getActivity(), AdoptDetailActivity.class);
+//                        intent.putExtra("id", adapterAdopt.getItemSaleId(position));
+//
+//                        startActivity(intent);
+//                    }
+//                });
+//
+//                gvAdopt.setOnScrollListener(new AbsListView.OnScrollListener() {
+//                    @Override
+//                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//                        if (firstVisibleItem + visibleItemCount >= totalItemCount && isLoaded) {
+//                            Log.d("listview adopt", "reached at bottom");
+////                    String radius = StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1);
+//                            String radius = "1";
+//
+//                            if (lastLatitude < 0 || lastLongitude < 0) {
+//                                Toast.makeText(getContext(), "위치를 받아올 수 없습니다.", Toast.LENGTH_SHORT).show();
+//                                return;
+//                            }
+//
+//                            switch (num) {
+//                                case NUM_ADOPT_ADOPT:
+//                                    callAdoptApi(radius);
+//                                    break;
+//                                case NUM_ADOPT_MATING:
+////                            callAdoptApi(radius);
+//                                    break;
+//                            }
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onScrollStateChanged(AbsListView view, int scrollState) {
+//                    }
+//                });
+                break;
+        }
 
         adapterAdopt = new AdoptGridViewAdapter(getContext(), R.layout.gridview_adopt_list);
         gvAdopt.setAdapter(adapterAdopt);
-
 
         gvAdopt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -808,16 +837,44 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-
             }
         });
-        callAdoptApi("1");
+
+        switch (num) {
+            case NUM_ADOPT_ADOPT:
+                callAdoptApi("1");
+                break;
+            case NUM_ADOPT_MATING:
+                callMatingApi();
+                break;
+        }
 
         return view;
+
+//        pagingCountAdopt.set(NUM_ADOPT_MATING, 1);
+//        pagingLastCheckAdopt.set(NUM_ADOPT_MATING, false);
+//        view = getActivity().getLayoutInflater().inflate(R.layout.fragment_mating_list, container, false);
+//        container.addView(view);
+//        tvTitle.setText("교배");
+//
+//        ivWrite.setVisibility(View.VISIBLE);
+//
+//        GridView gvMating = (GridView) view.findViewById(R.id.gv_mating_list);
+//        adapterMating = new AdoptGridViewAdapter(getContext(), R.layout.gridview_adopt_list);
+//        gvMating.setAdapter(adapterMating);
+//        callMatingApi();
+//        gvMating.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent intent = new Intent(getActivity(), MatingDetailActivity.class);
+//                intent.putExtra("id", id);
+//
+//                startActivity(intent);
+//            }
+//        });
     }
 
     private void callAdoptApi(String radius) {
-
         long currentTime = Calendar.getInstance().getTimeInMillis();
         if (scrollCooldownAdopt[NUM_ADOPT_ADOPT] + SCROLL_MIN_TERM > currentTime) {
             return;
@@ -1211,50 +1268,10 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             switch (num) {
                 case 0:
-                    rootView = inflater.inflate(R.layout.fragment_missing_list, container, false);
-                    GridView gvMissing = (GridView) rootView.findViewById(R.id.gv_missing_list);
-                    adapterMissing = new MissingGridViewAdapter(getContext(), R.layout.gridview_missing_list);
-                    gvMissing.setAdapter(adapterMissing);
-
-                    adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-                    adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", true, "0.5km");
-                    adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-                    adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-                    adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-                    adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-                    adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", true, "0.5km");
-                    adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-                    adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-                    adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-                    adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-                    adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-
-                    if (MapUtils.isEmpty(reportCodeMap)) {
-                        ReportCodeApi reportCodeApi = new ReportCodeApi();
-                        Map header = new HashMap<>();
-                        String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-                        String serviceId = "MPMS_00003";
-                        header.put("url", url);
-                        header.put("serviceName", serviceId);
-
-                        Map body = new HashMap<>();
-                        reportCodeApi.execute(header, body);
-                    } else {
-                        callMissingListApi("실종");
-                    }
-
-                    gvMissing.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Intent intent = new Intent(getActivity(), MissingDetailActivity.class);
-                            intent.putExtra("id", id);
-
-                            startActivity(intent);
-                        }
-                    });
+                    rootView = reportProcess(inflater, container, NUM_REPORT_MISSING);
                     break;
                 case 1:
-                    callMissingListApi("보호중");
+                    callReportListApi("보호중", NUM_REPORT_CENTER);
                     rootView = inflater.inflate(R.layout.fragment_missing_list, container, false);
                     GridView gvProtection = (GridView) rootView.findViewById(R.id.gv_missing_list);
                     adapterProtection = new MissingGridViewAdapter(getContext(), R.layout.gridview_missing_list);
@@ -1265,7 +1282,78 @@ public class SlidingTabsBasicFragment extends Fragment {
         }
     }
 
-    private static void callMissingListApi(String status) {
+    private static View reportProcess(LayoutInflater inflater, ViewGroup container, final int num) {
+        pagingCountReport.set(num, 1);
+        pagingLastCheckReport.set(num, false);
+
+        View view = null;
+        GridView gvMissing = null;
+
+        view = inflater.inflate(R.layout.fragment_missing_list, container, false);
+//        container.addView(view);
+
+        gvMissing = (GridView) view.findViewById(R.id.gv_missing_list);
+
+
+
+
+        adapterMissing = new MissingGridViewAdapter(context, R.layout.gridview_missing_list);
+        gvMissing.setAdapter(adapterMissing);
+
+        gvMissing.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(context, MissingDetailActivity.class);
+                intent.putExtra("id", id);
+
+                context.startActivity(intent);
+            }
+        });
+//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
+//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", true, "0.5km");
+//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
+//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
+//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
+//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
+//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", true, "0.5km");
+//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
+//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
+//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
+//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
+//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
+
+        switch (num) {
+            case NUM_REPORT_MISSING:
+                callReportListApi("실종", num);
+                break;
+            case NUM_REPORT_CENTER:
+                callReportListApi("보호중", num);
+                break;
+        }
+//        if (MapUtils.isEmpty(reportCodeMap)) {
+//            ReportCodeApi reportCodeApi = new ReportCodeApi();
+//            Map header = new HashMap<>();
+//            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+//            String serviceId = "MPMS_00003";
+//            header.put("url", url);
+//            header.put("serviceName", serviceId);
+//
+//            Map body = new HashMap<>();
+//            reportCodeApi.execute(header, body);
+//        } else {
+//            callReportListApi("실종");
+//        }
+
+        return view;
+    }
+
+    private static void callReportListApi(String status, int num) {
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        if (scrollCooldownReport[num] + SCROLL_MIN_TERM > currentTime) {
+            return;
+        } else {
+            scrollCooldownReport[num] = currentTime;
+        }
         MissingListApi missingListApi = new MissingListApi();
         Map header = new HashMap<>();
         String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
@@ -1275,10 +1363,10 @@ public class SlidingTabsBasicFragment extends Fragment {
 
         Map body = new HashMap<>();
         body.put("SEARCH_COUNT", PAGE_OFFSET);
-        int currentPage = pagingCount.get(NUM_REPORT);
+        int currentPage = pagingCountReport.get(num);
         body.put("SEARCH_PAGE", currentPage);
         body.put("PET_AR_TYPE", reportCodeMap.get(status));
-        pagingCount.set(NUM_REPORT, currentPage + 1);
+        pagingCountReport.set(num, currentPage + 1);
         missingListApi.execute(header, body);
     }
 
@@ -1322,21 +1410,33 @@ public class SlidingTabsBasicFragment extends Fragment {
         }
     }
 
-    private void callMatingListCallApi() {
-        MatingListApi matingListApi = new MatingListApi();
-        Map header = new HashMap<>();
-        String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-        String serviceId = "MPMS_10001";
-        header.put("url", url);
-        header.put("serviceName", serviceId);
+    private void callMatingApi() {
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        if (scrollCooldownAdopt[NUM_ADOPT_MATING] + SCROLL_MIN_TERM > currentTime) {
+            return;
+        } else {
+            scrollCooldownAdopt[NUM_ADOPT_MATING] = currentTime;
+        }
+        try {
+            MatingListApi matingListApi = new MatingListApi();
 
-        Map body = new HashMap<>();
-        body.put("SEARCH_COUNT", PAGE_OFFSET);
-        int currentPage = pagingCount.get(NUM_ADOPT);
-        body.put("SEARCH_PAGE", currentPage);
-        pagingCount.set(NUM_ADOPT, currentPage + 1);
+            Map header = new HashMap<>();
+            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+            String serviceId = "MPMS_10001";
+            header.put("url", url);
+            header.put("serviceName", serviceId);
 
-        matingListApi.execute(header, body);
+            Map body = new HashMap<>();
+            body.put("SEARCH_COUNT", PAGE_OFFSET);
+            int currentPage = pagingCountAdopt.get(NUM_ADOPT_MATING);
+            body.put("SEARCH_PAGE", currentPage);
+            pagingCountAdopt.set(NUM_ADOPT_MATING, currentPage + 1);
+
+            matingListApi.execute(header, body);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private class GeoStateApi extends GeneralApi {
@@ -1415,35 +1515,35 @@ public class SlidingTabsBasicFragment extends Fragment {
         }
     }
 
-    private static class ReportCodeApi extends GeneralApi {
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            try {
-                ReportCodeVO reportCodeVO = GsonUtil.fromJson(result, ReportCodeVO.class);
-                if (reportCodeVO.getResultCode() != 0) {
-    //                Toast.makeText(, "신고 데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                List<ReportCodeVO.ReportCodeObject> data = reportCodeVO.getData();
-
-                if (CollectionUtils.isEmpty(data) || data.size() < 2) {
-    //                Toast.makeText(getActivity(), "신고 데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                reportCodeMap.put("실종", data.get(0).getCode());
-                reportCodeMap.put("보호중", data.get(1).getCode());
-
-                callMissingListApi(reportCodeMap.get("실종"));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    private static class ReportCodeApi extends GeneralApi {
+//
+//        @Override
+//        protected void onPostExecute(String result) {
+//            super.onPostExecute(result);
+//
+//            try {
+//                ReportCodeVO reportCodeVO = GsonUtil.fromJson(result, ReportCodeVO.class);
+//                if (reportCodeVO.getResultCode() != 0) {
+//    //                Toast.makeText(, "신고 데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//
+//                List<ReportCodeVO.ReportCodeObject> data = reportCodeVO.getData();
+//
+//                if (CollectionUtils.isEmpty(data) || data.size() < 2) {
+//    //                Toast.makeText(getActivity(), "신고 데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//
+//                reportCodeMap.put("실종", data.get(0).getCode());
+//                reportCodeMap.put("보호중", data.get(1).getCode());
+//
+//                callReportListApi(reportCodeMap.get("실종"));
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     private class ToolApi extends GeneralApi {
 
