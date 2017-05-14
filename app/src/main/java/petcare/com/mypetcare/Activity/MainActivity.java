@@ -1,12 +1,18 @@
 package petcare.com.mypetcare.Activity;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -28,11 +34,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +55,7 @@ import petcare.com.mypetcare.Util.GsonUtil;
 import petcare.com.mypetcare.Util.VolleySingleton;
 
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final String STORE_URL = "https://play.google.com/store/apps/details?id=petcare.com.mypetcare";
     private DrawerLayout drawer;
     private ImageButton ibHospital;
@@ -66,6 +74,7 @@ public class MainActivity extends BaseActivity
     private ImageLoader imageLoader;
     private LinearLayout llInsure;
     private Dialog shareDialog;
+    private static GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +108,14 @@ public class MainActivity extends BaseActivity
         tvMyInfoPetCount = (TextView) findViewById(R.id.tv_nav_top_pet_count);
         tvMyInfoProfile = (RoundedImageView) findViewById(R.id.iv_nav_top_profile);
         imageLoader = VolleySingleton.getInstance(MainActivity.this).getImageLoader();
+
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
 
         ibHospital.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -264,10 +281,10 @@ public class MainActivity extends BaseActivity
                             startActivity(i);
                             break;
                     }
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(MainActivity.this, "공유에 실패했습니다.", Toast.LENGTH_SHORT).show();
-            }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(MainActivity.this, "공유에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                }
                 shareDialog.dismiss();
             }
         });
@@ -392,6 +409,53 @@ public class MainActivity extends BaseActivity
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (mLastLocation != null) {
+            SharedPreferences pref = getSharedPreferences("local_auth", MODE_PRIVATE);
+            SharedPreferences.Editor edit = pref.edit();
+            double lastLatitude = mLastLocation.getLatitude();
+            double lastLongitude = mLastLocation.getLongitude();
+            edit.putString("lastLatitude", String.valueOf(lastLatitude));
+            edit.putString("lastLongitude", String.valueOf(lastLongitude));
+            edit.commit();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
     }
 
     public class MyInfoLoadApi extends GeneralApi {

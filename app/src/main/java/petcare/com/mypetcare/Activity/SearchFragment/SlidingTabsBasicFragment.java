@@ -139,11 +139,8 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static List<Boolean> pagingLastCheckReport;
     private static boolean isLoaded = false;
     private static Map<String, String> reportCodeMap;
-    private static GoogleApiClient googleApiClient;
     private static double lastLongitude = 127.0276;
     private static double lastLatitude = 37.497959;
-    private static LocationManager locationManager;
-    private static LocationListener locationListener;
     private static Spinner spHospital;
     private static long[] scrollCooldown;
     private static long[] scrollCooldownAdopt;
@@ -257,27 +254,6 @@ public class SlidingTabsBasicFragment extends Fragment {
             }
         }, 1000);
 
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                lastLatitude = location.getLatitude();
-                lastLongitude = location.getLongitude();
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-            }
-        };
-
-        locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
         adapterHospital = new HospitalListViewAdapter[6];
         scrollCooldown = new long[11];
         scrollCooldownAdopt = new long[] {0L, 0L};
@@ -295,24 +271,16 @@ public class SlidingTabsBasicFragment extends Fragment {
         super.onResume();
         lastLongitude = Double.parseDouble(pref.getString("lastLatitude", "37.497959"));
         lastLongitude = Double.parseDouble(pref.getString("lastLongitude", "127.0276"));
-
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
-        }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        SharedPreferences.Editor edit = pref.edit();
-        edit.putString("lastLatitude", String.valueOf(lastLatitude));
-        edit.putString("lastLongitude", String.valueOf(lastLongitude));
-        edit.commit();
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager.removeUpdates(locationListener);
-        }
-
-    }
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        SharedPreferences.Editor edit = pref.edit();
+//        edit.putString("lastLatitude", String.valueOf(lastLatitude));
+//        edit.putString("lastLongitude", String.valueOf(lastLongitude));
+//        edit.commit();
+//    }
 //    @TargetApi(23)
 //    private void checkPermission() {
 //        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
