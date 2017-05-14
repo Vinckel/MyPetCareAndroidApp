@@ -66,16 +66,20 @@ public class MyInfoPetListViewAdapter extends BaseAdapter {
         name.setText(data.getName());
 
         String birthStr = data.getBirth();
-        Integer year = Integer.parseInt(StringUtils.substring(birthStr, 0, 4));
-        Integer month = Integer.parseInt(StringUtils.substring(birthStr, 4, 6));
-        Integer date = Integer.parseInt(StringUtils.substring(birthStr, 6, 8));
+        if (StringUtils.isNotBlank(birthStr)) {
+            Integer year = Integer.parseInt(StringUtils.substring(birthStr, 0, 4));
+            Integer month = Integer.parseInt(StringUtils.substring(birthStr, 4, 6));
+            Integer date = Integer.parseInt(StringUtils.substring(birthStr, 6, 8));
 
-        birthStr = year + "년 " + month + "월";
-        if (date > 0) {
-            birthStr += (" " + date + "일");
+            birthStr = year + "년 " + month + "월";
+            if (date > 0) {
+                birthStr += (" " + date + "일");
+            }
+
+            birth.setText(birthStr);
+        } else {
+            birth.setText("알 수 없음");
         }
-
-        birth.setText(birthStr);
         imageLoader.get(data.getImageUrl(), new ImageLoader.ImageListener() {
 
             @Override

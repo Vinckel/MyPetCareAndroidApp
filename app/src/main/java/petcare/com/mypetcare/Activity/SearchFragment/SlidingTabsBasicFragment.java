@@ -385,6 +385,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(getActivity(), ReportWriteActivity.class);
+                            intent.putExtra("arType", reportCodeMap.get("실종"));
                             startActivity(intent);
                         }
                     });

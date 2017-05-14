@@ -59,7 +59,9 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="16sp"
-                android:text="V1.0 최신 버전입니다" />
+                android:text="알 수 없음"
+                android:textColor="#9b9b9b"
+                android:textSize="14sp" />
         </RelativeLayout>
 
         <TextView
@@ -193,14 +195,14 @@
                 android:text="푸시 알림 동의" />
 
             <android.support.v7.widget.SwitchCompat
-                android:enabled="false"
                 android:id="@+id/sw_setting_push"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:theme="@style/AppSwitch"
-                android:layout_marginRight="16sp" />
+                android:layout_marginRight="16sp"
+                android:enabled="false"
+                android:theme="@style/AppSwitch" />
         </RelativeLayout>
     </LinearLayout>
 </ScrollView>
