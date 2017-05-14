@@ -57,6 +57,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -157,6 +158,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static AdoptApi adoptApi;
     private static AdoptGridViewAdapter adapterAdopt;
     private static Context context;
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 //    private static long callCooldown; // 액티비티 뜬 후 바로 스크롤 호출 방지
 
     SharedPreferences pref; // 위치 저장용
@@ -1836,8 +1838,12 @@ public class SlidingTabsBasicFragment extends Fragment {
         int currentPage = pagingCount.get(NUM_NOTI);
         bodyGeo.put("SEARCH_PAGE", currentPage);
         pagingCount.set(NUM_NOTI, currentPage + 1);
-        bodyGeo.put("BGN_DE", "20170101");
-        bodyGeo.put("END_DE", "20170331");
+        Calendar c = Calendar.getInstance();
+        String endDateStr = sdf.format(c.getTime());
+        c.add(Calendar.MONTH, -3);
+        String startDateStr = sdf.format(c.getTime());
+        bodyGeo.put("BGN_DE", startDateStr);
+        bodyGeo.put("END_DE", endDateStr);
 
         announcePetCallApi.execute(headerGeo, bodyGeo);
     }

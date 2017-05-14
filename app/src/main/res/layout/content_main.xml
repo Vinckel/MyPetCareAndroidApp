@@ -277,7 +277,7 @@
                 android:id="@+id/btnInsure"
                 android:layout_width="42dp"
                 android:layout_height="42dp"
-                android:background="@drawable/ic_insurance_n" />
+                android:background="@drawable/ic_insurance_w" />
 
             <TextView
                 android:id="@+id/tvInsure"

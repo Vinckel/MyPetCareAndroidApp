@@ -25,6 +25,7 @@
             android:textSize="13sp" />
 
         <RelativeLayout
+            android:id="@+id/rl_setting_version"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white">
@@ -72,6 +73,7 @@
             android:textSize="13sp" />
 
         <RelativeLayout
+            android:id="@+id/rl_setting_terms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white">

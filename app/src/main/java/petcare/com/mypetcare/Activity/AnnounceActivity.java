@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.List;
 
 import petcare.com.mypetcare.Adapter.AdoptDetailViewpagerAdapter;
+import petcare.com.mypetcare.Adapter.AnnounceDetailViewpagerAdapter;
 import petcare.com.mypetcare.Model.AnnounceInfoListVO;
 import petcare.com.mypetcare.R;
 
@@ -54,6 +55,7 @@ public class AnnounceActivity extends BaseActivity {
     private TextView tvGender;
     private TextView tvAge;
     private Button btCall;
+    private AnnounceDetailViewpagerAdapter adapter;
 
     private AnnounceInfoListVO.AnnounceInfoObject data;
 
@@ -136,14 +138,14 @@ public class AnnounceActivity extends BaseActivity {
             }
         });
         pager = (ViewPager) findViewById(R.id.vp_announce);
-        urls = new ArrayList<>();
-        urls.add(data.getImageUrl());
-        AdoptDetailViewpagerAdapter adapter = new AdoptDetailViewpagerAdapter(getLayoutInflater());
+        adapter = new AnnounceDetailViewpagerAdapter(getLayoutInflater());
         pager.setAdapter(adapter);
+        adapter.addItem(data.getImageUrl());
+        adapter.notifyDataSetChanged();
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                tvPageCount.setText((position + 1) + "/" + urls.size());
+                tvPageCount.setText((position + 1) + "/" + adapter.getCount());
             }
 
             @Override
