@@ -57,6 +57,9 @@ public class HospitalDetailActivity extends BaseActivity {
     private static final int NUM_FUNERAL = 5;
     private static final int NUM_ADOPT = 6;
     private static int currentNum = -1;
+    private static double longitude = -1.0;
+    private static double latitude = -1.0;
+    private static String name = "";
 
     private HospitalDetailViewpagerAdapter adapter;
 
@@ -95,7 +98,14 @@ public class HospitalDetailActivity extends BaseActivity {
         ivMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (longitude < 0 || latitude < 0) {
+                    return ;
+                }
                 Intent intent = new Intent(getApplicationContext(), HospitalMapActivity.class);
+                intent.putExtra("longitude", longitude);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("name", name);
+
                 startActivity(intent);
             }
         });
@@ -310,6 +320,10 @@ public class HospitalDetailActivity extends BaseActivity {
                 distance = Math.round(distance / 100f) / 10f;
                 tvDistance.setText(String.format("%.1f", distance) + "km");
             }
+
+            latitude = hospitalObject.getLatitude();
+            longitude = hospitalObject.getLongitude();
+            name = hospitalObject.getName();
 
             adapter.addItem(hospitalObject.getImgurl());
 

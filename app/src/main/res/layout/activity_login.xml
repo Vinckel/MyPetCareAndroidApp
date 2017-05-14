@@ -49,7 +49,7 @@
                 android:id="@+id/bt_login_facebook_fake"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:src="@drawable/ic_launcher" />
+                android:src="@drawable/btn_facebook" />
         </FrameLayout>
 
 
@@ -85,7 +85,7 @@
                 android:id="@+id/bt_login_naver_fake"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:src="@drawable/ic_launcher" />
+                android:src="@drawable/btn_naver" />
         </FrameLayout>
 
         <!--<Button

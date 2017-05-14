@@ -24,6 +24,9 @@ public class MatingDetailActivity extends BaseActivity {
     private TextView tvPageCount;
     private List<String> urls;
     private ImageView ivMap;
+    private static double longitude = -1.0;
+    private static double latitude = -1.0;
+    private static String name = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +54,13 @@ public class MatingDetailActivity extends BaseActivity {
         ivMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (longitude < 0 || latitude < 0) {
+                    return ;
+                }
                 Intent intent = new Intent(getApplicationContext(), HospitalMapActivity.class);
+                intent.putExtra("longitude", longitude);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("name", name);
 
                 startActivity(intent);
             }

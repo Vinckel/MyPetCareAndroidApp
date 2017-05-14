@@ -51,6 +51,9 @@ public class AdoptDetailActivity extends BaseActivity {
     private TextView tvPrice;
     private TextView tvDescription;
     private Button btCall;
+    private static double longitude = -1.0;
+    private static double latitude = -1.0;
+    private static String name = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +88,13 @@ public class AdoptDetailActivity extends BaseActivity {
         ivMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (longitude < 0 || latitude < 0) {
+                    return ;
+                }
                 Intent intent = new Intent(getApplicationContext(), HospitalMapActivity.class);
+                intent.putExtra("longitude", longitude);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("name", name);
 
                 startActivity(intent);
             }
@@ -175,6 +184,9 @@ public class AdoptDetailActivity extends BaseActivity {
 //            tvName.setText(adoptObject.getName());
 //            tvSubTitle.setText(hospitalObject.getSubTitle());
             tvUrl.setText(adoptObject.getPlaceUrl());
+            latitude = adoptObject.getLatitude();
+            longitude = adoptObject.getLongitude();
+            name = adoptObject.getName();
 //            if (StringUtils.isNotBlank(adoptObject.getDistance())) {
 //                double distance = Double.parseDouble(adoptObject.getDistance());
 //                distance = Math.round(distance / 100f) / 10f;
