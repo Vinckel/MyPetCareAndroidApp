@@ -1,14 +1,20 @@
 package petcare.com.mypetcare.Activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,6 +27,8 @@ public class SettingActivity extends AppCompatActivity {
     private ImageButton ibBack;
     private RelativeLayout rlTerms;
     private TextView tvVersion;
+    private SwitchCompat swLogin;
+    SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +52,40 @@ public class SettingActivity extends AppCompatActivity {
         Toolbar parent = (Toolbar) actionBarView.getParent();
         parent.setContentInsetsAbsolute(0, 0);
 
+        pref = getSharedPreferences("local_auth", MODE_PRIVATE);
+
         ibBack = (ImageButton) findViewById(R.id.ib_setting_back);
         rlTerms = (RelativeLayout) findViewById(R.id.rl_setting_terms);
         tvVersion = (TextView) findViewById(R.id.tv_setting_version);
+        swLogin = (SwitchCompat) findViewById(R.id.sw_setting_login);
+
+        boolean isAutoLogin = pref.getBoolean("autoLogin", true);
+        swLogin.setChecked(isAutoLogin);
+        swLogin.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked) {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(SettingActivity.this);
+                    alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+
+                    alert.setMessage("자동 로그인이 해제되었습니다.\n재로그인 시 동일 계정으로 로그인해주세요.");
+                    alert.setCancelable(false);
+                    AlertDialog alertDialog = alert.create();
+                    alertDialog.show();
+                    Button btDone = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                    btDone.setTextColor(getResources().getColor(R.color.normalFont));
+                }
+
+                SharedPreferences.Editor edit = pref.edit();
+                edit.putBoolean("autoLogin", isChecked);
+                edit.commit();
+            }
+        });
 
         rlTerms.setOnClickListener(new View.OnClickListener() {
             @Override

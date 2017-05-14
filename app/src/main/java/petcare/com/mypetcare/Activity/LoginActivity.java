@@ -168,7 +168,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             checkPermission();
         }
 
-        if (checkEmail()) {
+        if (checkEmail() && pref.getBoolean("autoLogin", true)) {
             goToMain();
         }
         initializeNaverAPI();
@@ -282,6 +282,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void goToMain() {
+        if (!pref.contains("autoLogin")) {
+            SharedPreferences.Editor edit = pref.edit();
+            edit.putBoolean("autoLogin", true);
+            edit.commit();
+        }
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         finish();

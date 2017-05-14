@@ -148,13 +148,14 @@
                 android:layout_marginTop="15sp"
                 android:text="로그인 상태 유지" />
 
-            <Switch
+            <android.support.v7.widget.SwitchCompat
                 android:id="@+id/sw_setting_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="16sp" />
+                android:layout_marginRight="16sp"
+                android:checked="false" />
         </RelativeLayout>
 
         <TextView
@@ -201,8 +202,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="16sp"
-                android:enabled="false"
-                android:theme="@style/AppSwitch" />
+                android:enabled="false" />
         </RelativeLayout>
     </LinearLayout>
 </ScrollView>
