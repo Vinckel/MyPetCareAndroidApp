@@ -54,6 +54,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -82,6 +83,7 @@ import petcare.com.mypetcare.Model.GeoRegionVO;
 import petcare.com.mypetcare.Model.GeoStateVO;
 import petcare.com.mypetcare.Model.HospitalListVO;
 import petcare.com.mypetcare.Model.MatingListVO;
+import petcare.com.mypetcare.Model.ReportCodeVO;
 import petcare.com.mypetcare.Model.ReportListVO;
 import petcare.com.mypetcare.Model.ToolListVO;
 import petcare.com.mypetcare.R;
@@ -346,6 +348,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), ReportWriteActivity.class);
+                    intent.putExtra("arType", reportCodeMap.get("실종"));
                     startActivity(intent);
                 }
             });
@@ -471,10 +474,6 @@ public class SlidingTabsBasicFragment extends Fragment {
             View view = null;
 
             switch (position) {
-//                case 0:
-//                    break;
-//                case 1:
-//                    break;
                 case NUM_REPORT:
                     pagingCount.set(NUM_REPORT, 1);
                     view = getActivity().getLayoutInflater().inflate(R.layout.fragment_report, container, false);
@@ -530,6 +529,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                                 @Override
                                 public void onClick(View v) {
                                     adoptPageState = 1;
+                                    tvTitle.setText("업체 분양");
                                     notifyDataSetChanged();
                                 }
                             });
@@ -539,6 +539,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                                 public void onClick(View v) {
                                     adoptPageState = 2;
                                     ivWrite.setOnClickListener(null);
+
                                     ivWrite.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
@@ -546,6 +547,9 @@ public class SlidingTabsBasicFragment extends Fragment {
                                             startActivity(intent);
                                         }
                                     });
+
+                                    tvTitle.setText("교배");
+                                    ivWrite.setVisibility(View.VISIBLE);
                                     notifyDataSetChanged();
                                 }
                             });
@@ -1269,13 +1273,25 @@ public class SlidingTabsBasicFragment extends Fragment {
             switch (num) {
                 case 0:
                     rootView = reportProcess(inflater, container, NUM_REPORT_MISSING);
+                    if (MapUtils.isEmpty(reportCodeMap)) {
+                        ReportCodeApi reportCodeApi = new ReportCodeApi();
+                        Map header = new HashMap<>();
+                        String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+                        String serviceId = "MPMS_00003";
+                        header.put("url", url);
+                        header.put("serviceName", serviceId);
+
+                        Map body = new HashMap<>();
+                        reportCodeApi.execute(header, body);
+                    }
                     break;
                 case 1:
-                    callReportListApi("보호중", NUM_REPORT_CENTER);
-                    rootView = inflater.inflate(R.layout.fragment_missing_list, container, false);
-                    GridView gvProtection = (GridView) rootView.findViewById(R.id.gv_missing_list);
-                    adapterProtection = new MissingGridViewAdapter(getContext(), R.layout.gridview_missing_list);
-                    gvProtection.setAdapter(adapterProtection);
+                    rootView = reportProcess(inflater, container, NUM_REPORT_CENTER);
+//                    callReportListApi("보호중", NUM_REPORT_CENTER);
+//                    rootView = inflater.inflate(R.layout.fragment_missing_list, container, false);
+//                    GridView gvProtection = (GridView) rootView.findViewById(R.id.gv_missing_list);
+//                    adapterProtection = new MissingGridViewAdapter(getContext(), R.layout.gridview_missing_list);
+//                    gvProtection.setAdapter(adapterProtection);
                     break;
             }
             return rootView;
@@ -1290,8 +1306,6 @@ public class SlidingTabsBasicFragment extends Fragment {
         GridView gvMissing = null;
 
         view = inflater.inflate(R.layout.fragment_missing_list, container, false);
-//        container.addView(view);
-
         gvMissing = (GridView) view.findViewById(R.id.gv_missing_list);
 
 
@@ -1304,45 +1318,22 @@ public class SlidingTabsBasicFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(context, MissingDetailActivity.class);
-                intent.putExtra("id", id);
+                intent.putExtra("id", adapterMissing.getItem(position).getId());
 
                 context.startActivity(intent);
             }
         });
-//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", true, "0.5km");
-//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", true, "0.5km");
-//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
-//        adapterMissing.addItem("http://i.imgur.com/3jXjgTT.jpg", false, "0.5km");
 
-        switch (num) {
-            case NUM_REPORT_MISSING:
-                callReportListApi("실종", num);
-                break;
-            case NUM_REPORT_CENTER:
-                callReportListApi("보호중", num);
-                break;
+        if (MapUtils.isNotEmpty(reportCodeMap)) {
+            switch (num) {
+                case NUM_REPORT_MISSING:
+                    callReportListApi(reportCodeMap.get("실종"), num);
+                    break;
+                case NUM_REPORT_CENTER:
+                    callReportListApi(reportCodeMap.get("보호중"), num);
+                    break;
+            }
         }
-//        if (MapUtils.isEmpty(reportCodeMap)) {
-//            ReportCodeApi reportCodeApi = new ReportCodeApi();
-//            Map header = new HashMap<>();
-//            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-//            String serviceId = "MPMS_00003";
-//            header.put("url", url);
-//            header.put("serviceName", serviceId);
-//
-//            Map body = new HashMap<>();
-//            reportCodeApi.execute(header, body);
-//        } else {
-//            callReportListApi("실종");
-//        }
 
         return view;
     }
@@ -1365,7 +1356,7 @@ public class SlidingTabsBasicFragment extends Fragment {
         body.put("SEARCH_COUNT", PAGE_OFFSET);
         int currentPage = pagingCountReport.get(num);
         body.put("SEARCH_PAGE", currentPage);
-        body.put("PET_AR_TYPE", reportCodeMap.get(status));
+        body.put("PET_AR_TYPE", status);
         pagingCountReport.set(num, currentPage + 1);
         missingListApi.execute(header, body);
     }
@@ -1383,7 +1374,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             List<ReportListVO.ReportPetObject> dataList = reportListVO.getData();
             for (ReportListVO.ReportPetObject data : dataList) {
-                adapterMissing.addItem(data.getThumbImgUrl(), data.isFound(), data.getLocation());
+                adapterMissing.addItem(data.getId(), data.getThumbImgUrl(), data.isFound(), data.getLocation());
             }
 
             adapterMissing.notifyDataSetChanged();
@@ -1515,35 +1506,35 @@ public class SlidingTabsBasicFragment extends Fragment {
         }
     }
 
-//    private static class ReportCodeApi extends GeneralApi {
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//            super.onPostExecute(result);
-//
-//            try {
-//                ReportCodeVO reportCodeVO = GsonUtil.fromJson(result, ReportCodeVO.class);
-//                if (reportCodeVO.getResultCode() != 0) {
-//    //                Toast.makeText(, "신고 데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//
-//                List<ReportCodeVO.ReportCodeObject> data = reportCodeVO.getData();
-//
-//                if (CollectionUtils.isEmpty(data) || data.size() < 2) {
-//    //                Toast.makeText(getActivity(), "신고 데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//
-//                reportCodeMap.put("실종", data.get(0).getCode());
-//                reportCodeMap.put("보호중", data.get(1).getCode());
-//
-//                callReportListApi(reportCodeMap.get("실종"));
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    private static class ReportCodeApi extends GeneralApi {
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            try {
+                ReportCodeVO reportCodeVO = GsonUtil.fromJson(result, ReportCodeVO.class);
+                if (reportCodeVO.getResultCode() != 0) {
+//                    Toast.makeText(, "신고 데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                List<ReportCodeVO.ReportCodeObject> data = reportCodeVO.getData();
+
+                if (CollectionUtils.isEmpty(data) || data.size() < 2) {
+    //                Toast.makeText(getActivity(), "신고 데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                reportCodeMap.put("실종", data.get(0).getCode());
+                reportCodeMap.put("보호중", data.get(1).getCode());
+
+                callReportListApi(reportCodeMap.get("실종"), NUM_REPORT_MISSING);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     private class ToolApi extends GeneralApi {
 

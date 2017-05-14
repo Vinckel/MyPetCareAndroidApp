@@ -233,9 +233,14 @@ public class MatingRequestActivity extends BaseActivity {
         header.put("serviceName", serviceId);
 
         Map<String, String> body = new HashMap<>();
-//        body.put();
+        body.put("PET_CB_NM", etName.getText().toString());
+        body.put("PET_CB_KND", etBreed.getText().toString());
+        body.put("PET_CB_COLOR", etColor.getText().toString());
+        body.put("PET_CB_SEX", btGenderMale.isChecked() ? "남" : "여");
+        body.put("PET_CB_AGE", etAge.getText().toString());
+        body.put("PET_CB_DESC", etIntroduce.getText().toString());
 
-//        multipartApi.execute(header, body, paths);
+        multipartApi.execute(header, body, paths);
     }
     public class MultipartApi extends GeneralMultipartApi {
 

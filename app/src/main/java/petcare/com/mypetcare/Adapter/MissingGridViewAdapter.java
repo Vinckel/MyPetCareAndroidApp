@@ -41,7 +41,7 @@ public class MissingGridViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public MissingData getItem(int position) {
         return dataList.get(position);
     }
 
@@ -50,8 +50,9 @@ public class MissingGridViewAdapter extends BaseAdapter {
         return position;
     }
 
-    public void addItem(String url, boolean isFound, String distance) {
+    public void addItem(String id, String url, boolean isFound, String distance) {
         MissingData data = new MissingData();
+        data.setId(id);
         data.setUrl(url);
         data.setDistance(distance);
         data.setFound(isFound);

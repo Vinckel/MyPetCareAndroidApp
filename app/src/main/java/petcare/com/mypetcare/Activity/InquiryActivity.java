@@ -32,6 +32,7 @@ public class InquiryActivity extends BaseActivity {
     private TextView tvDone;
     private EditText etEmail;
     private EditText etInquiry;
+    private Button btDone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,7 @@ public class InquiryActivity extends BaseActivity {
         tvDone = (TextView) findViewById(R.id.tv_inquiry_done);
         etEmail = (EditText) findViewById(R.id.et_inquiry_email);
         etInquiry = (EditText) findViewById(R.id.et_inquiry_content);
+        btDone = (Button) findViewById(R.id.bt_inquiry_register);
 
         ibBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,14 +73,17 @@ public class InquiryActivity extends BaseActivity {
             etEmail.setText(global.getEmail());
         }
 
-        tvDone.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (validate()) {
                     save();
                 }
             }
-        });
+        };
+
+        tvDone.setOnClickListener(listener);
+        btDone.setOnClickListener(listener);
 
     }
 

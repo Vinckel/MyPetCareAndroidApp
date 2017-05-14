@@ -69,6 +69,8 @@ public class ReportWriteActivity extends BaseActivity {
     private EditText etEtc;
     private EditText etContact;
 
+    private static String arType = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +92,14 @@ public class ReportWriteActivity extends BaseActivity {
 
         Toolbar parent = (Toolbar) actionBarView.getParent();
         parent.setContentInsetsAbsolute(0, 0);
+
+        arType = getIntent().getStringExtra("arType");
+
+        if (StringUtils.isBlank(arType)) {
+            Toast.makeText(ReportWriteActivity.this, "다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         ibBack = (ImageButton) findViewById(R.id.ib_report_write_back);
         ibBack.setOnClickListener(new View.OnClickListener() {
@@ -235,7 +245,7 @@ public class ReportWriteActivity extends BaseActivity {
         header.put("serviceName", serviceId);
 
         Map<String, String> body = new HashMap<>();
-        body.put("PET_AR_TYPE", "");
+        body.put("PET_AR_TYPE", arType);
         body.put("PET_AR_NM", etName.getText().toString());
         body.put("PET_AR_KND", etBreed.getText().toString());
         body.put("PET_AR_COLOR", etColor.getText().toString());
