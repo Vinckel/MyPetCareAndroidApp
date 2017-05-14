@@ -1,16 +1,12 @@
 package petcare.com.mypetcare.Activity;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -18,13 +14,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,10 +26,14 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,6 +48,7 @@ import petcare.com.mypetcare.Util.VolleySingleton;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private static final String STORE_URL = "https://play.google.com/store/apps/details?id=petcare.com.mypetcare";
     private DrawerLayout drawer;
     private ImageButton ibHospital;
     private ImageButton ibBeauty;
@@ -206,8 +205,71 @@ public class MainActivity extends BaseActivity
         lvPopup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Toast.makeText(getApplicationContext(), "테스트" + position, Toast.LENGTH_SHORT).show();
-//                shareDialog.dismiss();
+                try {
+                    Toast.makeText(getApplicationContext(), "" + position, Toast.LENGTH_SHORT).show();
+                    String message = "";
+                    PackageManager manager = getBaseContext().getPackageManager();
+                    Intent i = null;
+                    String encodedText = null;
+                    Uri uri = null;
+
+                    switch (position) {
+                        case 0: // kakaotalk
+                            i = new Intent(Intent.ACTION_SEND);
+                            i.setType("text/plain");
+                            i.setPackage("com.kakao.talk");
+                            i.putExtra(Intent.EXTRA_TEXT, STORE_URL);
+                            startActivity(i);
+                            break;
+                        case 1: // facebook
+                            ShareLinkContent content = new ShareLinkContent.Builder()
+                                    .setContentUrl(Uri.parse(STORE_URL))
+                                    .build();
+                            ShareDialog.show(MainActivity.this, content);
+                            break;
+                        case 2: // line
+                            i = manager.getLaunchIntentForPackage("jp.naver.line.android");
+
+                            if (i == null) {
+                                i = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=jp.naver.line.android"));
+                                startActivity(i);
+                                break;
+                            }
+
+                            encodedText = URLEncoder.encode(STORE_URL, "utf-8");
+                            uri = Uri.parse("line://msg/text/" + encodedText);
+                            i = new Intent(Intent.ACTION_VIEW, uri);
+                            startActivity(i);
+                            break;
+                        case 3: // band
+                            i = manager.getLaunchIntentForPackage("com.nhn.android.band");
+
+                            if (i == null) {
+                                i = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.nhn.android.band"));
+                                startActivity(i);
+                                break;
+                            }
+
+                            encodedText = URLEncoder.encode(STORE_URL, "utf-8");
+                            uri = Uri.parse("bandapp://create/post?text=" + encodedText);
+                            i = new Intent(Intent.ACTION_VIEW, uri);
+                            startActivity(i);
+                            break;
+                        case 4: // email
+                            i = new Intent(Intent.ACTION_SENDTO);
+                            i.setType("*/*");
+                            i.setData(Uri.parse("mailto:"));
+                            i.putExtra(Intent.EXTRA_EMAIL, "");
+                            i.putExtra(Intent.EXTRA_SUBJECT, STORE_URL);
+                            i.putExtra(Intent.EXTRA_TEXT, STORE_URL);
+                            startActivity(i);
+                            break;
+                    }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(MainActivity.this, "공유에 실패했습니다.", Toast.LENGTH_SHORT).show();
+            }
+                shareDialog.dismiss();
             }
         });
         lvPopup.setAdapter(adapterShare);
@@ -340,7 +402,7 @@ public class MainActivity extends BaseActivity
             MyInfoVO myInfoVO = GsonUtil.fromJson(result, MyInfoVO.class);
 
             if (myInfoVO.getResultCode() != 0) {
-                return ;
+                return;
             }
             MyInfoVO.MyInfoObject info = myInfoVO.getData().get(0);
             String userName = info.getUserName();

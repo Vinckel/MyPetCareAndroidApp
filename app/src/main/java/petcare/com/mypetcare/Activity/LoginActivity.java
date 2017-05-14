@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -63,6 +65,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     protected static Global global = null;
     private ISessionCallback iSessionCallback;
     private OAuthLogin mOAuthLoginModule;
+    private ImageView btNaverFake;
+    private ImageView btKakaoFake;
+    private ImageView btFacebookFake;
+    private OAuthLoginButton naverLoginButton;
 
     private void saveEmail(String email) {
         SharedPreferences.Editor edit = pref.edit();
@@ -171,6 +177,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if (checkEmail() && pref.getBoolean("autoLogin", true)) {
             goToMain();
         }
+
         initializeNaverAPI();
 
         iSessionCallback = new SessionCallback();
@@ -178,8 +185,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 //        Session.getCurrentSession().checkAndImplicitOpen();
 //        Session.getCurrentSession().open(AuthType.KAKAO_TALK, LoginActivity.this);
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-        googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
+//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+//        googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
 
 //        Button btGoogle = (Button) findViewById(R.id.bt_login_google);
 //        btGoogle.setOnClickListener(new View.OnClickListener() {
@@ -189,42 +196,49 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 //            }
 //        });
 
-        SignInButton signInButton = (SignInButton) findViewById(R.id.bt_login_google);
-        signInButton.setSize(SignInButton.COLOR_AUTO);
-        signInButton.setScopes(gso.getScopeArray());
+//        SignInButton signInButton = (SignInButton) findViewById(R.id.bt_login_google);
+//        signInButton.setSize(SignInButton.COLOR_AUTO);
+//        signInButton.setScopes(gso.getScopeArray());
 
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signIn();
-            }
-        });
+//        signInButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                signIn();
+//            }
+//        });
 
-        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
+//        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
 
-        if (opr.isDone()) {
-            // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
-            // and the GoogleSignInResult will be available instantly.
-            Log.d("google", "Got cached sign-in");
-            GoogleSignInResult result = opr.get();
-            handleSignInResult(result);
-        } else {
-            // If the user has not previously signed in on this device or the sign-in has expired,
-            // this asynchronous branch will attempt to sign in the user silently.  Cross-device
-            // single sign-on will occur in this branch.
-//            showProgressDialog();
-            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
-                @Override
-                public void onResult(GoogleSignInResult googleSignInResult) {
-//                    hideProgressDialog();
-                    handleSignInResult(googleSignInResult);
-                }
-            });
-        }
+//        if (opr.isDone()) {
+//            // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
+//            // and the GoogleSignInResult will be available instantly.
+//            Log.d("google", "Got cached sign-in");
+//            GoogleSignInResult result = opr.get();
+//            handleSignInResult(result);
+//        } else {
+//            // If the user has not previously signed in on this device or the sign-in has expired,
+//            // this asynchronous branch will attempt to sign in the user silently.  Cross-device
+//            // single sign-on will occur in this branch.
+////            showProgressDialog();
+//            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+//                @Override
+//                public void onResult(GoogleSignInResult googleSignInResult) {
+////                    hideProgressDialog();
+//                    handleSignInResult(googleSignInResult);
+//                }
+//            });
+//        }
 
         callbackManager = CallbackManager.Factory.create();
 
-        LoginButton fbLogin = (LoginButton) findViewById(R.id.bt_login_facebook);
+        final LoginButton fbLogin = (LoginButton) findViewById(R.id.bt_login_facebook);
+        btFacebookFake = (ImageView) findViewById(R.id.bt_login_facebook_fake);
+        btFacebookFake.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fbLogin.performClick();
+            }
+        });
         fbLogin.setReadPermissions("email");
         fbLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -322,7 +336,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         );
 
         // 네이버 로그인 버튼 리스너 등록
-        OAuthLoginButton naverLoginButton = (OAuthLoginButton) findViewById(R.id.bt_login_naver);
+        naverLoginButton = (OAuthLoginButton) findViewById(R.id.bt_login_naver);
+        btNaverFake = (ImageView) findViewById(R.id.bt_login_naver_fake);
+        btNaverFake.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                naverLoginButton.performClick();
+            }
+        });
         naverLoginButton.setOAuthLoginHandler(new OAuthLoginHandler() {
             @Override
             public void run(boolean b) {

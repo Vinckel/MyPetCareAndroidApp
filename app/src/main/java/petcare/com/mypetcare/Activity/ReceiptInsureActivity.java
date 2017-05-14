@@ -14,9 +14,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -37,6 +41,11 @@ public class ReceiptInsureActivity extends BaseActivity {
 
     private ImageButton ibBack;
     private TextView tvDone;
+    private Button btDone;
+    private EditText etName;
+    private EditText etTime;
+    private EditText etSymptom;
+    private EditText etContact;
 
     private boolean isPicChanged = false;
 
@@ -67,6 +76,12 @@ public class ReceiptInsureActivity extends BaseActivity {
         ivPicAttach3 = (ImageView) findViewById(R.id.iv_receipt_insure_attach_3);
         ibBack = (ImageButton) findViewById(R.id.ib_receipt_insure_back);
         tvDone = (TextView) findViewById(R.id.tv_receipt_insure_done);
+        btDone = (Button) findViewById(R.id.bt_receipt_insure_done);
+
+        etName = (EditText) findViewById(R.id.et_receipt_insure_name);
+        etTime = (EditText) findViewById(R.id.et_receipt_insure_time);
+        etSymptom = (EditText) findViewById(R.id.et_receipt_insure_symptom);
+        etContact = (EditText) findViewById(R.id.et_receipt_insure_contact);
 
         ibBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,15 +89,17 @@ public class ReceiptInsureActivity extends BaseActivity {
                 finish();
             }
         });
-
-        tvDone.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (validate()) {
                     save();
                 }
             }
-        });
+        };
+
+        tvDone.setOnClickListener(listener);
+        btDone.setOnClickListener(listener);
 
         ivPicAttach1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,6 +188,23 @@ public class ReceiptInsureActivity extends BaseActivity {
     }
 
     private boolean validate() {
+        String errorMessage = "";
+
+        if (StringUtils.isBlank(etName.getText())) {
+            errorMessage = "성함을 적어주세요.";
+        } else if (StringUtils.isBlank(etTime.getText())) {
+            errorMessage = "치료 일시를 적어주세요.";
+        } else if (StringUtils.isBlank(etSymptom.getText())) {
+            errorMessage = "증상을 적어주세요.";
+        } else if (StringUtils.isBlank(etContact.getText())) {
+            errorMessage = "연락처를 적어주세요.";
+        }
+
+        if (StringUtils.isNotEmpty(errorMessage)) {
+            Toast.makeText(ReceiptInsureActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         return true;
     }
 
@@ -188,8 +222,8 @@ public class ReceiptInsureActivity extends BaseActivity {
         header.put("serviceName", serviceId);
 
         Map<String, String> body = new HashMap<>();
-//        body.put("PET_BIRTH", birthForSave);
-//        body.put("PET_KND_CD", petCodeForSave);
+//        body.put("PET_TYPE", etName.getText().toString());
+//        body.put("PET_BIRTH", etTime,);
 
         Map<String, String> files = new HashMap<>();
         if (pic1ImagePath != null) {

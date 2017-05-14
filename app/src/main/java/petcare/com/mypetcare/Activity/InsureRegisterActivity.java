@@ -110,27 +110,31 @@ public class InsureRegisterActivity extends BaseActivity {
 
         InsureRegisterApi insureRegisterApi = new InsureRegisterApi();
         String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-        String serviceId = "MPMS_01004";
+        String serviceId = "MPMS_13001";
 
         Map<String, String> header = new HashMap<>();
         header.put("url", url);
         header.put("serviceName", serviceId);
 
         Map<String, String> body = new HashMap<>();
-//        body.put();
+        body.put("INSUR_EMAIL", etEmail.getText().toString());
+        body.put("INSUR_NAME", "");
+        body.put("PET_TYPE", etBreed.getText().toString());
+        body.put("PET_BIRTH", etBirth.getText().toString());
+        body.put("INSUR_TEL", etContact.getText().toString());
 
-//        insureRegisterApi.execute(header, body);
+        insureRegisterApi.execute(header, body);
     }
 
     private boolean validate() {
         String message = null;
-        if (StringUtils.isEmpty(etBreed.getText())) {
+        if (StringUtils.isBlank(etBreed.getText())) {
             message = "종을 입력해주세요.";
-        } else if (StringUtils.isEmpty(etBirth.getText())) {
+        } else if (StringUtils.isBlank(etBirth.getText())) {
             message = "출생일을 입력해주세요.";
-        } else if (StringUtils.isEmpty(etEmail.getText())) {
+        } else if (StringUtils.isBlank(etEmail.getText())) {
             message = "이메일을 입력해주세요.";
-        } else if (StringUtils.isEmpty(etContact.getText())) {
+        } else if (StringUtils.isBlank(etContact.getText())) {
             message = "연락처를 입력해주세요.";
         }
 

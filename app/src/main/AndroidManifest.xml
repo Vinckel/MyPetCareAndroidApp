@@ -149,6 +149,9 @@
             android:name=".Activity.TermsActivity"
             android:label="@string/title_activity_terms"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-    </application>
 
+        <provider android:authorities="com.facebook.app.FacebookContentProvider287973501627698"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
+    </application>
 </manifest>
