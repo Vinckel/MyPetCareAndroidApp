@@ -206,7 +206,6 @@ public class MainActivity extends BaseActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
-                    Toast.makeText(getApplicationContext(), "" + position, Toast.LENGTH_SHORT).show();
                     String message = "";
                     PackageManager manager = getBaseContext().getPackageManager();
                     Intent i = null;

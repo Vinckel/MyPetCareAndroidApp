@@ -18,12 +18,6 @@ import petcare.com.mypetcare.Util.HttpConn;
  */
 public class ExampleUnitTest {
     @Test
-    public void HttpConnectionTest() throws Exception {
-        HttpConn test = new HttpConn();
-        test.execute();
-    }
-
-    @Test
     public void addition_isCorrect() throws Exception {
         String url = "http://220.73.175.100:8080/MPMS/mob/auth.service";
         ObjectMapper obj = new ObjectMapper();

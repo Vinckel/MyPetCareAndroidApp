@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -38,12 +36,9 @@ import java.util.Map;
 import petcare.com.mypetcare.Adapter.DiaryListViewAdapter;
 import petcare.com.mypetcare.Model.DiaryListData;
 import petcare.com.mypetcare.Model.DiaryListVO;
-import petcare.com.mypetcare.Model.HttpResultVO;
 import petcare.com.mypetcare.R;
 import petcare.com.mypetcare.Util.GeneralApi;
-import petcare.com.mypetcare.Util.Global;
 import petcare.com.mypetcare.Util.GsonUtil;
-import petcare.com.mypetcare.Util.HttpConn;
 
 public class DiaryListActivity extends BaseActivity {
     private ImageView ivWrite;

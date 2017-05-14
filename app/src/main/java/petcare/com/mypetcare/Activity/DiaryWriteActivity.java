@@ -20,13 +20,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
-import petcare.com.mypetcare.Model.HttpResultVO;
 import petcare.com.mypetcare.R;
-import petcare.com.mypetcare.Util.HttpConn;
 
 public class DiaryWriteActivity extends BaseActivity {
     private ImageButton ibBack;
@@ -124,34 +119,34 @@ public class DiaryWriteActivity extends BaseActivity {
                     return;
                 }
 
-                HttpConn diaryWriteApi = new HttpConn();
-                diaryWriteApi.setContext(global);
-
-                String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-                String serviceId;
-
-                if (isNew) {
-                    serviceId = "MPMS_02002";
-                } else {
-                    serviceId = "MPMS_02003";
-                }
-
-                String contentType = "application/json";
-
-                Map params = new HashMap<>();
-                params.put("USER_EMAIL", global.get("email"));
-                if (!isNew) {
-                    params.put("PET_JOURNAL_SN", no);
-                }
-                params.put("PET_JOURNAL_CN", encContent);
-                HttpResultVO httpResultVO = null;
-                try {
-                    httpResultVO = diaryWriteApi.execute(contentType, url, serviceId, params, global.getToken()).get();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
+//                HttpConn diaryWriteApi = new HttpConn();
+//                diaryWriteApi.setContext(global);
+//
+//                String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+//                String serviceId;
+//
+//                if (isNew) {
+//                    serviceId = "MPMS_02002";
+//                } else {
+//                    serviceId = "MPMS_02003";
+//                }
+//
+//                String contentType = "application/json";
+//
+//                Map params = new HashMap<>();
+//                params.put("USER_EMAIL", global.get("email"));
+//                if (!isNew) {
+//                    params.put("PET_JOURNAL_SN", no);
+//                }
+//                params.put("PET_JOURNAL_CN", encContent);
+//                HttpResultVO httpResultVO = null;
+//                try {
+//                    httpResultVO = diaryWriteApi.execute(contentType, url, serviceId, params, global.getToken()).get();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                } catch (ExecutionException e) {
+//                    e.printStackTrace();
+//                }
 
                 finish();
             }
