@@ -3,6 +3,7 @@ package petcare.com.mypetcare.Util;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.multidex.MultiDex;
 
 import com.kakao.auth.ApprovalType;
 import com.kakao.auth.AuthType;
@@ -28,6 +29,13 @@ public class Global extends Application {
     private static final long DAY_TO_MILLISECONDS = 86400000;
     private static final long HOUR_TO_MILLISECONDS = 3600000;
     SharedPreferences pref;
+
+    // for api below 19
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     @Override
     public void onCreate() {

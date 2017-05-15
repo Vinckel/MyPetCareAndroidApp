@@ -16,19 +16,13 @@
 
 package petcare.com.mypetcare.Activity.SearchFragment;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -50,8 +44,6 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -83,6 +75,7 @@ import petcare.com.mypetcare.Model.FuneralListVO;
 import petcare.com.mypetcare.Model.GeoRegionVO;
 import petcare.com.mypetcare.Model.GeoStateVO;
 import petcare.com.mypetcare.Model.HospitalListVO;
+import petcare.com.mypetcare.Model.HotelListVO;
 import petcare.com.mypetcare.Model.MatingListVO;
 import petcare.com.mypetcare.Model.ReportCodeVO;
 import petcare.com.mypetcare.Model.ReportListVO;
@@ -91,7 +84,6 @@ import petcare.com.mypetcare.R;
 import petcare.com.mypetcare.Util.GeneralApi;
 import petcare.com.mypetcare.Util.GsonUtil;
 
-import static android.content.Context.LOCATION_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 
 public class SlidingTabsBasicFragment extends Fragment {
@@ -137,7 +129,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static List<Boolean> pagingLastCheck;
     private static List<Boolean> pagingLastCheckAdopt;
     private static List<Boolean> pagingLastCheckReport;
-    private static boolean isLoaded = false;
+    private static boolean[] isLoaded;
     private static Map<String, String> reportCodeMap;
     private static double lastLongitude = 127.0276;
     private static double lastLatitude = 37.497959;
@@ -245,14 +237,20 @@ public class SlidingTabsBasicFragment extends Fragment {
             pagingLastCheck.add(false);
         }
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
 
-            @Override
-            public void run() {
-                isLoaded = true;
-            }
-        }, 1000);
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//                isLoaded = true;
+//            }
+//        }, 51000);
+
+        isLoaded = new boolean[9];
+        for (int i = 0; i < isLoaded.length; i++) {
+            isLoaded[i] = false;
+        }
 
         adapterHospital = new HospitalListViewAdapter[6];
         scrollCooldown = new long[11];
@@ -552,7 +550,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                     gvAnnounce.setOnScrollListener(new AbsListView.OnScrollListener() {
                         @Override
                         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                            if (firstVisibleItem + visibleItemCount >= totalItemCount && isLoaded) {
+                            if (firstVisibleItem + visibleItemCount >= totalItemCount && adapterAnnounce.getCount() > 0) {
                                 Log.d("gridview", "reached at bottom");
                                 callAnnouncePetCallApi();
                             }
@@ -710,6 +708,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     private View adoptProcess(ViewGroup container, final int num) {
         pagingCountAdopt.set(num, 1);
         pagingLastCheckAdopt.set(num, false);
+        isLoaded[NUM_ADOPT] = false;
 
         View view = null;
         GridView gvAdopt = null;
@@ -789,9 +788,8 @@ public class SlidingTabsBasicFragment extends Fragment {
         gvAdopt.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (firstVisibleItem + visibleItemCount >= totalItemCount && isLoaded) {
+                if (firstVisibleItem + visibleItemCount >= totalItemCount && adapterAdopt.getCount() > 0) {
                     Log.d("listview adopt", "reached at bottom");
-//                    String radius = StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1);
                     String radius = "1";
 
                     if (lastLatitude < 0 || lastLongitude < 0) {
@@ -969,7 +967,7 @@ public class SlidingTabsBasicFragment extends Fragment {
         lvHospitalList.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (firstVisibleItem + visibleItemCount >= totalItemCount && isLoaded) {
+                if (firstVisibleItem + visibleItemCount >= totalItemCount && adapterHospital[num].getCount() > 0) {
                     Log.d("listview hospital", "reached at bottom");
                     String radius = StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1);
 
@@ -1636,22 +1634,22 @@ public class SlidingTabsBasicFragment extends Fragment {
             super.onPostExecute(result);
 
             try {
-                HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
-                if (hospitalListVO.getResultCode() != 0) {
+                HotelListVO hotelListVO = GsonUtil.fromJson(result, HotelListVO.class);
+                if (hotelListVO.getResultCode() != 0) {
                     Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
+                List<HotelListVO.HotelObject> data = hotelListVO.getData();
 
-                for (HospitalListVO.HospitalObject hospitalObject : data) {
+                for (HotelListVO.HotelObject hotelObject : data) {
                     String distanceStr = "";
-                    if (StringUtils.isNotBlank(hospitalObject.getDistance())) {
-                        double distance = Math.round(Double.parseDouble(hospitalObject.getDistance()) / 100f) / 10f;
+                    if (StringUtils.isNotBlank(hotelObject.getDistance())) {
+                        double distance = Math.round(Double.parseDouble(hotelObject.getDistance()) / 100f) / 10f;
                         distanceStr = String.format("%.1f", distance) + "km";
                     }
 
-                    adapterHospital[NUM_HOTEL].addItem(hospitalObject.getName(), "", distanceStr, hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
+                    adapterHospital[NUM_HOTEL].addItem(hotelObject.getName(), "", distanceStr, hotelObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hotelObject.getId());
                 }
 
                 adapterHospital[NUM_HOTEL].notifyDataSetChanged();

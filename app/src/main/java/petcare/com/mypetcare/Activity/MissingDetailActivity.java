@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -15,17 +16,21 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import petcare.com.mypetcare.Adapter.HospitalDetailViewpagerAdapter;
 import petcare.com.mypetcare.Model.MissingDetailVO;
 import petcare.com.mypetcare.R;
 import petcare.com.mypetcare.Util.GeneralApi;
 import petcare.com.mypetcare.Util.GsonUtil;
 
 public class MissingDetailActivity extends BaseActivity {
+    private ViewPager pager;
     private TextView tvTitle;
     private TextView tvName;
     private TextView tvFound;
@@ -38,9 +43,11 @@ public class MissingDetailActivity extends BaseActivity {
     private TextView tvColor;
     private TextView tvGender;
     private TextView tvAge;
+    private TextView tvPageCount;
     private Button btCall;
 
     private MissingDetailVO.ReportPetObject petObject;
+    private HospitalDetailViewpagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +90,7 @@ public class MissingDetailActivity extends BaseActivity {
         tvColor = (TextView) findViewById(R.id.tv_missing_detail_color_desc);
         tvGender = (TextView) findViewById(R.id.tv_missing_detail_gender_desc);
         tvAge = (TextView) findViewById(R.id.tv_missing_detail_age_desc);
+        tvPageCount = (TextView) findViewById(R.id.tv_missing_detail_page_count);
         btCall = (Button) findViewById(R.id.bt_missing_detail_call);
 
         MissingDetailApi missingDetailApi = new MissingDetailApi();
@@ -125,6 +133,36 @@ public class MissingDetailActivity extends BaseActivity {
             tvColor.setText(petObject.getColor());
             tvGender.setText(petObject.getGender());
             tvAge.setText(petObject.getAge());
+            pager = (ViewPager) findViewById(R.id.vp_missing_detail);
+
+            adapter = new HospitalDetailViewpagerAdapter(getLayoutInflater());
+
+            List<MissingDetailVO.ReportPetObject.PetImageObject> imgData = petObject.getImgData();
+
+            if (CollectionUtils.isNotEmpty(imgData)) {
+                for (MissingDetailVO.ReportPetObject.PetImageObject imageObject : imgData) {
+                    adapter.addItem(imageObject.getPetImgUrl());
+                }
+                tvPageCount.setText("1/" + adapter.getCount());
+            }
+            adapter.notifyDataSetChanged();
+            pager.setAdapter(adapter);
+            pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                    tvPageCount.setText((position + 1) + "/" + adapter.getCount());
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
 
             btCall.setOnClickListener(new View.OnClickListener() {
                 @Override

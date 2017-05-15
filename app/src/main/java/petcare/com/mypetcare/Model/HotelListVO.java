@@ -13,7 +13,7 @@ public class HotelListVO {
     private Integer resultCode;
 
     @SerializedName("DATA")
-    private List<HospitalObject> data;
+    private List<HotelObject> data;
 
     @SerializedName("RESULT_MESSAGE")
     private String resultMessage;
@@ -27,7 +27,7 @@ public class HotelListVO {
     @SerializedName("SEARCH_PAGE")
     private Integer page;
 
-    public class HospitalObject {
+    public class HotelObject {
         @SerializedName("HOTEL_ID")
         private String id;
 
@@ -68,7 +68,7 @@ public class HotelListVO {
         return resultCode;
     }
 
-    public List<HospitalObject> getData() {
+    public List<HotelObject> getData() {
         return data;
     }
 
