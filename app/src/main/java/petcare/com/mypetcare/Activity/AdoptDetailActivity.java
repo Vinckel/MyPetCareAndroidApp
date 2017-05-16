@@ -53,6 +53,9 @@ public class AdoptDetailActivity extends BaseActivity {
     private Button btCall;
     private static double longitude = -1.0;
     private static double latitude = -1.0;
+    private static double searchLongitude = -1.0;
+    private static double searchLatitude = -1.0;
+    private static String radius = "";
     private static String name = "";
 
     @Override
@@ -78,6 +81,10 @@ public class AdoptDetailActivity extends BaseActivity {
         parent.setContentInsetsAbsolute(0, 0);
 
         String id = getIntent().getStringExtra("id");
+        searchLongitude = getIntent().getDoubleExtra("id", -1.0);
+        searchLatitude = getIntent().getDoubleExtra("id", -1.0);
+        radius = getIntent().getStringExtra("radius");
+
         if (StringUtils.isBlank(id)) {
             Toast.makeText(AdoptDetailActivity.this, "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
             finish();
@@ -155,7 +162,10 @@ public class AdoptDetailActivity extends BaseActivity {
             headers.put("serviceName", serviceId);
 
             Map params = new HashMap<>();
-            params.put("SALE_ID", id);
+            params.put("ID", id);
+            params.put("SEARCH_LON", searchLongitude);
+            params.put("SEARCH_LAT", searchLatitude);
+            params.put("SEARCH_RADIUS", radius);
 
             adoptDetailApi.execute(headers, params);
         } catch (Exception e) {

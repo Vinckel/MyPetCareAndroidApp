@@ -28,7 +28,7 @@ public class HospitalListVO {
     private Integer page;
 
     public class HospitalObject {
-        @SerializedName("HOSP_ID")
+        @SerializedName("ID")
         private String id;
 
         @SerializedName("TITLE")
@@ -42,6 +42,27 @@ public class HospitalListVO {
 
         @SerializedName("DIRECTION")
         private String direction;
+
+        @SerializedName("SEARCH_RADIUS")
+        private String radius;
+
+        @SerializedName("SEARCH_LAT")
+        private Double latitude;
+
+        @SerializedName("SEARCH_LON")
+        private Double longitude;
+
+        public String getRadius() {
+            return radius;
+        }
+
+        public Double getLatitude() {
+            return latitude;
+        }
+
+        public Double getLongitude() {
+            return longitude;
+        }
 
         public String getId() {
             return id;

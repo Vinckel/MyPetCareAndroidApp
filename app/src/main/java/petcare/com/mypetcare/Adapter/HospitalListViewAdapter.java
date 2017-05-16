@@ -84,7 +84,7 @@ public class HospitalListViewAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void addItem(String name, String desc, String dist, String imgUrl, List<String> tags, String id) {
+    public void addItem(String name, String desc, String dist, String imgUrl, List<String> tags, String id, Double longitude, Double latitude, String radius) {
         HospitalListData data = new HospitalListData();
 
         data.setName(name);
@@ -93,6 +93,9 @@ public class HospitalListViewAdapter extends BaseAdapter {
         data.setView(imgUrl);
         data.setTags(tags);
         data.setId(id);
+        data.setLongitude(longitude);
+        data.setLatitude(latitude);
+        data.setRadius(radius);
 
         list.add(data);
     }

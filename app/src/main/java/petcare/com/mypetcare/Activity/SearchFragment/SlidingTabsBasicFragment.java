@@ -66,6 +66,7 @@ import petcare.com.mypetcare.Activity.ReportWriteActivity;
 import petcare.com.mypetcare.Adapter.AdoptGridViewAdapter;
 import petcare.com.mypetcare.Adapter.AnnounceGridViewAdapter;
 import petcare.com.mypetcare.Adapter.HospitalListViewAdapter;
+import petcare.com.mypetcare.Adapter.MatingGridViewAdapter;
 import petcare.com.mypetcare.Adapter.MissingGridViewAdapter;
 import petcare.com.mypetcare.Model.AdoptListVO;
 import petcare.com.mypetcare.Model.AnnounceInfoListVO;
@@ -102,7 +103,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static String selectedRegion = null;
     private static final String[] titleArr = {"병원", "미용", "호텔", "용품", "카페", "장례", "분양", "신고", "공고"};
     private static AnnounceGridViewAdapter adapterAnnounce;
-    private static AdoptGridViewAdapter adapterMating;
+    private static MatingGridViewAdapter adapterMating;
     private static MissingGridViewAdapter adapterMissing;
     private static MissingGridViewAdapter adapterProtection;
     private static HospitalListViewAdapter[] adapterHospital;
@@ -145,6 +146,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static CafeApi cafeApi;
     private static FuneralApi funeralApi;
     private static AdoptApi adoptApi;
+    private static MissingListApi missingListApi;
     private static AdoptGridViewAdapter adapterAdopt;
     private static Context context;
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -790,7 +792,7 @@ public class SlidingTabsBasicFragment extends Fragment {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if (firstVisibleItem + visibleItemCount >= totalItemCount && adapterAdopt.getCount() > 0) {
                     Log.d("listview adopt", "reached at bottom");
-                    String radius = "1";
+                    String radius = "1000";
 
                     if (lastLatitude < 0 || lastLongitude < 0) {
                         Toast.makeText(getContext(), "위치를 받아올 수 없습니다.", Toast.LENGTH_SHORT).show();
@@ -802,7 +804,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                             callAdoptApi(radius);
                             break;
                         case NUM_ADOPT_MATING:
-//                            callAdoptApi(radius);
+//                            callMatingApi();
                             break;
                     }
                 }
@@ -891,7 +893,7 @@ public class SlidingTabsBasicFragment extends Fragment {
         spHospital.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String radius = StringUtils.substring(spHospital.getItemAtPosition(position).toString(), 0, 1);
+                String radius = StringUtils.substring(spHospital.getItemAtPosition(position).toString(), 0, 1) + "000";
                 pagingCount.set(num, 1);
                 scrollCooldown[num] = 0L;
                 adapterHospital[num].clear();
@@ -958,6 +960,9 @@ public class SlidingTabsBasicFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), HospitalDetailActivity.class);
                 intent.putExtra("id", adapterHospital[num].getItem(position).getId());
+                intent.putExtra("searchLongitude", adapterHospital[num].getItem(position).getLongitude());
+                intent.putExtra("searchLatitude", adapterHospital[num].getItem(position).getLatitude());
+                intent.putExtra("radius", adapterHospital[num].getItem(position).getRadius());
                 intent.putExtra("num", num);
 
                 startActivity(intent);
@@ -1271,6 +1276,10 @@ public class SlidingTabsBasicFragment extends Fragment {
         pagingCountReport.set(num, 1);
         pagingLastCheckReport.set(num, false);
 
+        if (missingListApi != null) {
+            missingListApi.cancel(true);
+        }
+
         View view = null;
         GridView gvMissing = null;
 
@@ -1314,7 +1323,8 @@ public class SlidingTabsBasicFragment extends Fragment {
         } else {
             scrollCooldownReport[num] = currentTime;
         }
-        MissingListApi missingListApi = new MissingListApi();
+
+        missingListApi = new MissingListApi();
         Map header = new HashMap<>();
         String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
         String serviceId = "MPMS_11001";
@@ -1337,6 +1347,10 @@ public class SlidingTabsBasicFragment extends Fragment {
             super.onPostExecute(result);
 
             ReportListVO reportListVO = GsonUtil.fromJson(result, ReportListVO.class);
+            if (reportListVO.getResultCode() == -1001) {
+                return;
+            }
+
             if (reportListVO.getResultCode() != 0) {
                 return;
             }
@@ -1357,6 +1371,10 @@ public class SlidingTabsBasicFragment extends Fragment {
             super.onPostExecute(result);
 
             MatingListVO matingListVO = GsonUtil.fromJson(result, MatingListVO.class);
+            if (matingListVO.getResultCode() == -1001) {
+                return;
+            }
+
             if (matingListVO.getResultCode() != 0) {
                 return;
             }
@@ -1513,6 +1531,10 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             try {
                 ToolListVO toolListVO = GsonUtil.fromJson(result, ToolListVO.class);
+                if (toolListVO.getResultCode() == -1001) {
+                    return;
+                }
+
                 if (toolListVO.getResultCode() != 0) {
                     Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
                     return;
@@ -1527,7 +1549,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                         distanceStr = String.format("%.1f", distance) + "km";
                     }
 
-                    adapterHospital[NUM_TOOL].addItem(toolObject.getName(), "", distanceStr, toolObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, toolObject.getId());
+                    adapterHospital[NUM_TOOL].addItem(toolObject.getName(), "", distanceStr, toolObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, toolObject.getId(), toolObject.getLongitude(), toolObject.getLatitude(), toolObject.getRadius());
                 }
 
                 adapterHospital[NUM_TOOL].notifyDataSetChanged();
@@ -1545,6 +1567,10 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             try {
                 FuneralListVO funeralListVO = GsonUtil.fromJson(result, FuneralListVO.class);
+                if (funeralListVO.getResultCode() == -1001) {
+                    return;
+                }
+
                 if (funeralListVO.getResultCode() != 0) {
                     Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
                     return;
@@ -1559,7 +1585,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                         distanceStr = String.format("%.1f", distance) + "km";
                     }
 
-                    adapterHospital[NUM_FUNERAL].addItem(funeralObject.getName(), "", distanceStr, funeralObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, funeralObject.getId());
+                    adapterHospital[NUM_FUNERAL].addItem(funeralObject.getName(), "", distanceStr, funeralObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, funeralObject.getId(), funeralObject.getLongitude(), funeralObject.getLatitude(), funeralObject.getRadius());
                 }
 
                 adapterHospital[NUM_FUNERAL].notifyDataSetChanged();
@@ -1577,6 +1603,10 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             try {
                 AdoptListVO adoptListVO = GsonUtil.fromJson(result, AdoptListVO.class);
+                if (adoptListVO.getResultCode() == -1001) {
+                    return;
+                }
+
                 if (adoptListVO.getResultCode() != 0) {
                     Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
                     return;
@@ -1585,7 +1615,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                 List<AdoptListVO.AdoptObject> data = adoptListVO.getData();
 
                 for (AdoptListVO.AdoptObject adoptObject : data) {
-                    adapterAdopt.addItem(adoptObject.getId(), adoptObject.getImgUrl());
+                    adapterAdopt.addItem(adoptObject.getId(), adoptObject.getImgUrl(), adoptObject.getLongitude(), adoptObject.getLatitude(), adoptObject.getRadius());
                 }
 
                 adapterAdopt.notifyDataSetChanged();
@@ -1603,6 +1633,10 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             try {
                 CafeListVO cafeListVO = GsonUtil.fromJson(result, CafeListVO.class);
+                if (cafeListVO.getResultCode() == -1001) {
+                    return;
+                }
+
                 if (cafeListVO.getResultCode() != 0) {
                     Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
                     return;
@@ -1617,7 +1651,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                         distanceStr = String.format("%.1f", distance) + "km";
                     }
 
-                    adapterHospital[NUM_CAFE].addItem(cafeObject.getName(), "", distanceStr, cafeObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, cafeObject.getId());
+                    adapterHospital[NUM_CAFE].addItem(cafeObject.getName(), "", distanceStr, cafeObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, cafeObject.getId(), cafeObject.getLongitude(), cafeObject.getLatitude(), cafeObject.getRadius());
                 }
 
                 adapterHospital[NUM_CAFE].notifyDataSetChanged();
@@ -1635,6 +1669,10 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             try {
                 HotelListVO hotelListVO = GsonUtil.fromJson(result, HotelListVO.class);
+                if (hotelListVO.getResultCode() == -1001) {
+                    return;
+                }
+
                 if (hotelListVO.getResultCode() != 0) {
                     Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
                     return;
@@ -1649,7 +1687,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                         distanceStr = String.format("%.1f", distance) + "km";
                     }
 
-                    adapterHospital[NUM_HOTEL].addItem(hotelObject.getName(), "", distanceStr, hotelObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hotelObject.getId());
+                    adapterHospital[NUM_HOTEL].addItem(hotelObject.getName(), "", distanceStr, hotelObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hotelObject.getId(), hotelObject.getLongitude(), hotelObject.getLatitude(), hotelObject.getRadius());
                 }
 
                 adapterHospital[NUM_HOTEL].notifyDataSetChanged();
@@ -1667,6 +1705,10 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             try {
                 BeautyListVO beautyListVO = GsonUtil.fromJson(result, BeautyListVO.class);
+                if (beautyListVO.getResultCode() == -1001) {
+                    return;
+                }
+
                 if (beautyListVO.getResultCode() != 0) {
                     Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
                     return;
@@ -1681,7 +1723,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                         distanceStr = String.format("%.1f", distance) + "km";
                     }
 
-                    adapterHospital[NUM_BEAUTY].addItem(beautyObject.getName(), "", distanceStr, beautyObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, beautyObject.getId());
+                    adapterHospital[NUM_BEAUTY].addItem(beautyObject.getName(), "", distanceStr, beautyObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, beautyObject.getId(), beautyObject.getLongitude(), beautyObject.getLatitude(), beautyObject.getRadius());
                 }
 
                 adapterHospital[NUM_BEAUTY].notifyDataSetChanged();
@@ -1691,7 +1733,6 @@ public class SlidingTabsBasicFragment extends Fragment {
         }
     }
 
-
     private class HospitalApi extends GeneralApi {
 
         @Override
@@ -1700,6 +1741,10 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             try {
                 HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
+                if (hospitalListVO.getResultCode() == -1001) {
+                    return;
+                }
+
                 if (hospitalListVO.getResultCode() != 0) {
                     Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
                     return;
@@ -1714,7 +1759,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                         distanceStr = String.format("%.1f", distance) + "km";
                     }
 
-                    adapterHospital[NUM_HOSPITAL].addItem(hospitalObject.getName(), "", distanceStr, hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId());
+                    adapterHospital[NUM_HOSPITAL].addItem(hospitalObject.getName(), "", distanceStr, hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId(), hospitalObject.getLongitude(), hospitalObject.getLatitude(), hospitalObject.getRadius());
                 }
 
                 adapterHospital[NUM_HOSPITAL].notifyDataSetChanged();

@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -13,41 +12,41 @@ import com.android.volley.toolbox.NetworkImageView;
 import java.util.ArrayList;
 import java.util.List;
 
-import petcare.com.mypetcare.Activity.CustomView.GridViewItem;
-import petcare.com.mypetcare.Model.AdoptListData;
 import petcare.com.mypetcare.R;
 import petcare.com.mypetcare.Util.VolleySingleton;
 
 /**
- * Created by KS on 2017-04-13.
+ * Created by KS on 2017-05-16.
  */
 
-public class AdoptGridViewAdapter extends BaseAdapter {
-    private List<AdoptListData> list;
+public class MatingGridViewAdapter extends BaseAdapter {
+    private List<String> imageUrlList;
+    private List<String> idList;
     private LayoutInflater inf;
     private Context context;
     private int layout;
     private ImageLoader imageLoader;
 
-    public AdoptGridViewAdapter(Context context, int layout) {
+    public MatingGridViewAdapter(Context context, int layout) {
         this.context = context;
         this.layout = layout;
         inf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        list = new ArrayList<>();
+        imageUrlList = new ArrayList<>();
+        idList = new ArrayList<>();
     }
 
     @Override
     public int getCount() {
-        return list.size();
+        return imageUrlList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return list.get(position);
+        return imageUrlList.get(position);
     }
 
     public String getItemSaleId(int position) {
-        return list.get(position).getId();
+        return idList.get(position);
     }
 
     @Override
@@ -55,14 +54,9 @@ public class AdoptGridViewAdapter extends BaseAdapter {
         return position;
     }
 
-    public void addItem(String id, String url, Double longitude, Double latitude, String radius) {
-        AdoptListData data = new AdoptListData();
-        data.setId(id);
-        data.setImgUrl(url);
-        data.setLongitude(longitude);
-        data.setLatitude(latitude);
-        data.setRadius(radius);
-        list.add(data);
+    public void addItem(String id, String url) {
+        idList.add(id);
+        imageUrlList.add(url);
     }
 
     @Override
@@ -73,7 +67,7 @@ public class AdoptGridViewAdapter extends BaseAdapter {
 
         imageLoader = VolleySingleton.getInstance(context).getImageLoader();
         NetworkImageView image = (NetworkImageView) convertView.findViewById(R.id.iv_gridview_adopt_list);
-        image.setImageUrl(list.get(position).getImgUrl(), imageLoader);
+        image.setImageUrl(imageUrlList.get(position), imageLoader);
 
         return convertView;
     }

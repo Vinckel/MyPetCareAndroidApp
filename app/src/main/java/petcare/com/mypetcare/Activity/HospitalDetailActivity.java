@@ -27,7 +27,6 @@ import java.util.Map;
 
 import petcare.com.mypetcare.Adapter.HospitalDetailViewpagerAdapter;
 import petcare.com.mypetcare.Model.HospitalDetailVO;
-import petcare.com.mypetcare.Model.HospitalListVO;
 import petcare.com.mypetcare.R;
 import petcare.com.mypetcare.Util.GeneralApi;
 import petcare.com.mypetcare.Util.GsonUtil;
@@ -59,6 +58,9 @@ public class HospitalDetailActivity extends BaseActivity {
     private static int currentNum = -1;
     private static double longitude = -1.0;
     private static double latitude = -1.0;
+    private static double searchLongitude = -1.0;
+    private static double searchLatitude = -1.0;
+    private static String radius = "";
     private static String name = "";
 
     private HospitalDetailViewpagerAdapter adapter;
@@ -68,6 +70,9 @@ public class HospitalDetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         String id = intent.getStringExtra("id");
+        searchLongitude = intent.getDoubleExtra("searchLongitude", -1.0);
+        searchLatitude = intent.getDoubleExtra("searchLatitude", -1.0);
+        radius = intent.getStringExtra("radius");
         currentNum = intent.getIntExtra("num", -1);
 
         if (currentNum < 0) {
@@ -98,12 +103,12 @@ public class HospitalDetailActivity extends BaseActivity {
         ivMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (longitude < 0 || latitude < 0) {
+                if (HospitalDetailActivity.longitude < 0 || HospitalDetailActivity.latitude < 0) {
                     return ;
                 }
                 Intent intent = new Intent(getApplicationContext(), HospitalMapActivity.class);
-                intent.putExtra("longitude", longitude);
-                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", HospitalDetailActivity.longitude);
+                intent.putExtra("latitude", HospitalDetailActivity.latitude);
                 intent.putExtra("name", name);
 
                 startActivity(intent);
@@ -187,7 +192,10 @@ public class HospitalDetailActivity extends BaseActivity {
             headers.put("serviceName", serviceId);
 
             Map params = new HashMap<>();
-            params.put("HOSP_ID", id);
+            params.put("ID", id);
+            params.put("SEARCH_LON", searchLongitude);
+            params.put("SEARCH_LAT", searchLatitude);
+            params.put("SEARCH_RADIUS", radius);
 
             hospitalDetailApi.execute(headers, params);
         } catch (Exception e) {
@@ -207,7 +215,10 @@ public class HospitalDetailActivity extends BaseActivity {
             headers.put("serviceName", serviceId);
 
             Map params = new HashMap<>();
-            params.put("BEAUTYSHOP_ID", id);
+            params.put("ID", id);
+            params.put("SEARCH_LON", searchLongitude);
+            params.put("SEARCH_LAT", searchLatitude);
+            params.put("SEARCH_RADIUS", radius);
 
             hospitalDetailApi.execute(headers, params);
         } catch (Exception e) {
@@ -227,7 +238,10 @@ public class HospitalDetailActivity extends BaseActivity {
             headers.put("serviceName", serviceId);
 
             Map params = new HashMap<>();
-            params.put("HOTEL_ID", id);
+            params.put("ID", id);
+            params.put("SEARCH_LON", searchLongitude);
+            params.put("SEARCH_LAT", searchLatitude);
+            params.put("SEARCH_RADIUS", radius);
 
             hospitalDetailApi.execute(headers, params);
         } catch (Exception e) {
@@ -247,7 +261,10 @@ public class HospitalDetailActivity extends BaseActivity {
             headers.put("serviceName", serviceId);
 
             Map params = new HashMap<>();
-            params.put("ARTICLE_ID", id);
+            params.put("ID", id);
+            params.put("SEARCH_LON", searchLongitude);
+            params.put("SEARCH_LAT", searchLatitude);
+            params.put("SEARCH_RADIUS", radius);
 
             hospitalDetailApi.execute(headers, params);
         } catch (Exception e) {
@@ -267,7 +284,10 @@ public class HospitalDetailActivity extends BaseActivity {
             headers.put("serviceName", serviceId);
 
             Map params = new HashMap<>();
-            params.put("CAFE_ID", id);
+            params.put("ID", id);
+            params.put("SEARCH_LON", searchLongitude);
+            params.put("SEARCH_LAT", searchLatitude);
+            params.put("SEARCH_RADIUS", radius);
 
             hospitalDetailApi.execute(headers, params);
         } catch (Exception e) {
@@ -287,7 +307,10 @@ public class HospitalDetailActivity extends BaseActivity {
             headers.put("serviceName", serviceId);
 
             Map params = new HashMap<>();
-            params.put("FUNERALHALL_ID", id);
+            params.put("ID", id);
+            params.put("SEARCH_LON", searchLongitude);
+            params.put("SEARCH_LAT", searchLatitude);
+            params.put("SEARCH_RADIUS", radius);
 
             hospitalDetailApi.execute(headers, params);
         } catch (Exception e) {
@@ -321,8 +344,8 @@ public class HospitalDetailActivity extends BaseActivity {
                 tvDistance.setText(String.format("%.1f", distance) + "km");
             }
 
-            latitude = hospitalObject.getLatitude();
-            longitude = hospitalObject.getLongitude();
+            latitude = hospitalObject.getSearchLatitude();
+            longitude = hospitalObject.getSearchLongitude();
             name = hospitalObject.getName();
 
             adapter.addItem(hospitalObject.getImgurl());

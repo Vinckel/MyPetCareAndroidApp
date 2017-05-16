@@ -28,7 +28,7 @@ public class AdoptListVO {
     private Integer page;
 
     public class AdoptObject {
-        @SerializedName("SALE_ID")
+        @SerializedName("ID")
         private String id;
 
         @SerializedName("TITLE")
@@ -42,6 +42,27 @@ public class AdoptListVO {
 
         @SerializedName("DIRECTION")
         private String direction;
+
+        @SerializedName("SEARCH_RADIUS")
+        private String radius;
+
+        @SerializedName("SEARCH_LAT")
+        private Double latitude;
+
+        @SerializedName("SEARCH_LON")
+        private Double longitude;
+
+        public String getRadius() {
+            return radius;
+        }
+
+        public Double getLatitude() {
+            return latitude;
+        }
+
+        public Double getLongitude() {
+            return longitude;
+        }
 
         public String getId() {
             return id;

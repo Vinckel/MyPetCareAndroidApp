@@ -19,9 +19,6 @@ public class HospitalDetailVO {
     private String resultMessage;
 
     public class HospitalObject {
-        @SerializedName("HOSP_ID")
-        private String id;
-
         @SerializedName("ID")
         private String locationId;
 
@@ -61,8 +58,17 @@ public class HospitalDetailVO {
         @SerializedName("DIRECTION")
         private String direction;
 
-        public String getId() {
-            return id;
+        @SerializedName("SEARCH_RADIUS")
+        private String radius;
+
+        @SerializedName("SEARCH_LAT")
+        private Double searchLatitude;
+
+        @SerializedName("SEARCH_LON")
+        private Double searchLongitude;
+
+        public String getRadius() {
+            return radius;
         }
 
         public String getLocationId() {
@@ -73,12 +79,12 @@ public class HospitalDetailVO {
             return name;
         }
 
-        public Double getLatitude() {
-            return latitude;
+        public Double getSearchLatitude() {
+            return searchLatitude;
         }
 
-        public Double getLongitude() {
-            return longitude;
+        public Double getSearchLongitude() {
+            return searchLongitude;
         }
 
         public String getCategory() {
@@ -107,6 +113,14 @@ public class HospitalDetailVO {
 
         public String getPlaceUrl() {
             return placeUrl;
+        }
+
+        public Double getLatitude() {
+            return latitude;
+        }
+
+        public Double getLongitude() {
+            return longitude;
         }
 
         public String getDistance() {
