@@ -2,12 +2,15 @@ package petcare.com.mypetcare.Activity;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -46,6 +49,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import petcare.com.mypetcare.Activity.CustomView.RoundedImageView;
 import petcare.com.mypetcare.Adapter.JoinPopupListViewAdapter;
@@ -81,6 +86,11 @@ public class MainActivity extends BaseActivity
     private ProgressBar progressBar;
     private RelativeLayout rlDim;
     private ActionBarDrawerToggle toggle;
+    private Timer mTimer;
+    private TimerTask timerTask;
+    private static double lastLongitude = -1.0;
+    private static double lastLatitude = -1.0;
+    private static boolean isGpsOn = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -298,6 +308,13 @@ public class MainActivity extends BaseActivity
             }
         });
         lvPopup.setAdapter(adapterShare);
+
+        LocationManager locManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        isGpsOn = locManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        if (!isGpsOn) {
+            Toast.makeText(MainActivity.this, "GPS가 꺼져 있습니다. GPS를 ON해주세요.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -422,28 +439,54 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-        if (mLastLocation != null) {
-            SharedPreferences pref = getSharedPreferences("local_auth", MODE_PRIVATE);
-            SharedPreferences.Editor edit = pref.edit();
-            double lastLatitude = mLastLocation.getLatitude();
-            double lastLongitude = mLastLocation.getLongitude();
-            edit.putString("lastLatitude", String.valueOf(lastLatitude));
-            edit.putString("lastLongitude", String.valueOf(lastLongitude));
-            onLoadingDone();
-            edit.commit();
-        }
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int i = 0;
+
+                while (true) {
+                    if (i > 10) {
+                        Toast.makeText(MainActivity.this, "위치 정보를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+
+                    if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        break;
+                    }
+
+                    Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                            mGoogleApiClient);
+
+                    if (mLastLocation != null) {
+                        SharedPreferences pref = getSharedPreferences("local_auth", MODE_PRIVATE);
+                        SharedPreferences.Editor edit = pref.edit();
+                        lastLatitude = mLastLocation.getLatitude();
+                        lastLongitude = mLastLocation.getLongitude();
+                        edit.putString("lastLatitude", String.valueOf(lastLatitude));
+                        edit.putString("lastLongitude", String.valueOf(lastLongitude));
+
+                        onLoadingDone();
+                        break;
+                    }
+
+                    try {
+                        Thread.sleep(500L);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    i++;
+                }
+            }
+        }, 500);
     }
 
     @Override
@@ -498,9 +541,15 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void onStart() {
-        mGoogleApiClient.connect();
+        if(isGpsOn) {
+            mGoogleApiClient.connect();
+        }
+
         super.onStart();
-        onLoadingStart();
+
+        if ((lastLatitude < 0 || lastLongitude < 0) && isGpsOn) {
+            onLoadingStart();
+        }
     }
 
     @Override

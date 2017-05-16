@@ -22,8 +22,8 @@
     <string name="join_select_species">반려동물 종류를 선택해주세요</string>
     <string name="join_select_birth">반려동물 생일을 선택해주세요</string>
 
-    <string name="splash_subtitle">당신의 반쪽 돌보미</string>
-    <string name="splash_title">My Pet +</string>
+    <string name="splash_subtitle">당신의 반쪽을 위한 현명한 선택</string>
+    <string name="splash_title">내여PET</string>
 
     <string name="main_hospital">병원</string>
     <string name="main_beauty">미용</string>
