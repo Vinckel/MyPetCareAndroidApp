@@ -27,6 +27,8 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,6 +69,7 @@ public class MainActivity extends BaseActivity
     private ImageButton ibAdopt;
     private ImageButton ibReport;
     private ImageButton ibNoti;
+    private ImageButton ibHamburger;
     private ConstraintLayout clMyInfoArea;
     private TextView tvMyInfoName;
     private TextView tvMyInfoPetCount;
@@ -75,6 +78,9 @@ public class MainActivity extends BaseActivity
     private LinearLayout llInsure;
     private Dialog shareDialog;
     private static GoogleApiClient mGoogleApiClient;
+    private ProgressBar progressBar;
+    private RelativeLayout rlDim;
+    private ActionBarDrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +90,7 @@ public class MainActivity extends BaseActivity
         setSupportActionBar(toolbar);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         toggle.setDrawerIndicatorEnabled(false);
         drawer.setDrawerListener(toggle);
@@ -103,6 +109,9 @@ public class MainActivity extends BaseActivity
         ibReport = (ImageButton) findViewById(R.id.btnReport);
         ibNoti = (ImageButton) findViewById(R.id.btnNoti);
         llInsure = (LinearLayout) findViewById(R.id.llInsure);
+
+        progressBar = (ProgressBar) findViewById(R.id.pb_main);
+        rlDim = (RelativeLayout) findViewById(R.id.rl_main_dim);
 
         tvMyInfoName = (TextView) findViewById(R.id.tv_nav_top_name);
         tvMyInfoPetCount = (TextView) findViewById(R.id.tv_nav_top_pet_count);
@@ -338,7 +347,7 @@ public class MainActivity extends BaseActivity
         Toolbar parent = (Toolbar) actionbarView.getParent();
         parent.setContentInsetsAbsolute(0, 0);
 
-        ImageButton ibHamburger = (ImageButton) findViewById(R.id.ibHeaderHamburger);
+        ibHamburger = (ImageButton) findViewById(R.id.ibHeaderHamburger);
         ibHamburger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -432,6 +441,7 @@ public class MainActivity extends BaseActivity
             double lastLongitude = mLastLocation.getLongitude();
             edit.putString("lastLatitude", String.valueOf(lastLatitude));
             edit.putString("lastLongitude", String.valueOf(lastLongitude));
+            onLoadingDone();
             edit.commit();
         }
     }
@@ -446,10 +456,51 @@ public class MainActivity extends BaseActivity
 
     }
 
+    public void onLoadingStart() {
+        ibHospital.setEnabled(false);
+        ibBeauty.setEnabled(false);
+        ibHotel.setEnabled(false);
+        ibShop.setEnabled(false);
+        ibCafe.setEnabled(false);
+        ibFuneral.setEnabled(false);
+        ibAdopt.setEnabled(false);
+        ibReport.setEnabled(false);
+        ibNoti.setEnabled(false);
+        rlDim.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+        ibHamburger.setEnabled(false);
+
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        toggle.onDrawerStateChanged(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+//        toggle.setDrawerIndicatorEnabled(false);
+        toggle.syncState();
+    }
+
+    public void onLoadingDone() {
+        ibHospital.setEnabled(true);
+        ibBeauty.setEnabled(true);
+        ibHotel.setEnabled(true);
+        ibShop.setEnabled(true);
+        ibCafe.setEnabled(true);
+        ibFuneral.setEnabled(true);
+        ibAdopt.setEnabled(true);
+        ibReport.setEnabled(true);
+        ibNoti.setEnabled(true);
+        rlDim.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
+        ibHamburger.setEnabled(true);
+
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        toggle.onDrawerStateChanged(DrawerLayout.LOCK_MODE_UNLOCKED);
+//        toggle.setDrawerIndicatorEnabled(true);
+        toggle.syncState();
+    }
+
     @Override
     protected void onStart() {
         mGoogleApiClient.connect();
         super.onStart();
+        onLoadingStart();
     }
 
     @Override

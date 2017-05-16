@@ -7,7 +7,7 @@ import android.os.Handler;
 import petcare.com.mypetcare.R;
 
 public class SplashActivity extends BaseActivity {
-    private static final int SPLASH_SECOND = 200;
+    private static final int SPLASH_SECOND = 1500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
