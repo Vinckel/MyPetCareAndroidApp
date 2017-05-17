@@ -62,6 +62,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private SharedPreferences pref;
     private GoogleApiClient googleApiClient;
     private static final int RC_SIGN_IN = 9001; // google
+    private static final int FIRST_LOGIN = 1; // google
     protected static Global global = null;
     private ISessionCallback iSessionCallback;
     private OAuthLogin mOAuthLoginModule;
@@ -296,11 +297,23 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void goToMain() {
+        if (!pref.contains("firstLogin")) {
+            SharedPreferences.Editor edit = pref.edit();
+            edit.putBoolean("firstLogin", false);
+            edit.commit();
+
+            Intent intent = new Intent(LoginActivity.this, JoinActivity.class);
+            startActivityForResult(intent, FIRST_LOGIN);
+
+            return;
+        }
+
         if (!pref.contains("autoLogin")) {
             SharedPreferences.Editor edit = pref.edit();
             edit.putBoolean("autoLogin", true);
             edit.commit();
         }
+
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
@@ -315,9 +328,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
         }
-        if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
-            return;
+
+        if (requestCode == FIRST_LOGIN) {
+            goToMain();
         }
+//        if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
+//            return;
+//        }
     }
 
     @Override

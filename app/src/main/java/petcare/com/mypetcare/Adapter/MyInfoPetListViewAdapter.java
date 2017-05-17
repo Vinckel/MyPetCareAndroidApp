@@ -80,20 +80,22 @@ public class MyInfoPetListViewAdapter extends BaseAdapter {
         } else {
             birth.setText("알 수 없음");
         }
-        imageLoader.get(data.getImageUrl(), new ImageLoader.ImageListener() {
+        if (StringUtils.isNotBlank(data.getImageUrl())) {
+            imageLoader.get(data.getImageUrl(), new ImageLoader.ImageListener() {
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("error", "Image Load Error: " + error.getMessage());
-            }
-
-            @Override
-            public void onResponse(ImageLoader.ImageContainer response, boolean arg1) {
-                if (response.getBitmap() != null) {
-                    image.setImageBitmap(response.getBitmap());
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("error", "Image Load Error: " + error.getMessage());
                 }
-            }
-        });
+
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean arg1) {
+                    if (response.getBitmap() != null) {
+                        image.setImageBitmap(response.getBitmap());
+                    }
+                }
+            });
+        }
 
         return convertView;
     }
