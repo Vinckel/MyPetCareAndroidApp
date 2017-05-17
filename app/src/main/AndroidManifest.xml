@@ -38,13 +38,13 @@
             android:name=".Activity.SplashActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            </activity>
+        </activity>
         <activity
             android:name=".Activity.DiaryListActivity"
             android:label="@string/title_activity_diary"
@@ -58,20 +58,26 @@
         <activity
             android:name=".Activity.SearchActivity"
             android:label="@string/title_activity_search"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.SearchFragment.MainActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.HospitalDetailActivity"
             android:label="@string/title_activity_hospital_detail"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.HospitalMapActivity"
             android:label="@string/title_activity_hospital_map"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Activity.LoginActivity"
+        <activity
+            android:name=".Activity.LoginActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.nhn.android.naverlogin.ui.OAuthLoginActivity"
@@ -82,77 +88,95 @@
         <activity
             android:name=".Activity.AdoptDetailActivity"
             android:label="@string/title_activity_adopt_detail"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.MatingDetailActivity"
             android:label="@string/title_activity_mating"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.MatingRequestActivity"
             android:label="@string/title_activity_mating_request"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".Activity.MyInfoActivity"
             android:label="@string/title_activity_my_info"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".Activity.AnnounceActivity"
             android:label="@string/title_activity_announce"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.InsureInfoActivity"
             android:label="@string/title_activity_insure_info"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.AssuredDamageActivity"
             android:label="@string/title_activity_assured_damage"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.NotAssuredDamageActivity"
             android:label="@string/title_activity_not_assured"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.PriceSampleActivity"
             android:label="@string/title_activity_price_sample"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.PlanActivity"
             android:label="@string/title_activity_plan"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.InsureRegisterActivity"
             android:label="@string/title_activity_insure_register"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.ReceiptInsureActivity"
             android:label="@string/title_activity_receipt_insure"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.InquiryActivity"
             android:label="@string/title_activity_inquiry"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.MissingDetailActivity"
             android:label="@string/title_activity_missing_detail"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.ReportWriteActivity"
             android:label="@string/title_activity_report_write"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".Activity.SettingActivity"
             android:label="@string/title_activity_setting"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.TermsActivity"
             android:label="@string/title_activity_terms"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
-        <provider android:authorities="com.facebook.app.FacebookContentProvider287973501627698"
+        <provider
             android:name="com.facebook.FacebookContentProvider"
-            android:exported="true"/>
+            android:authorities="com.facebook.app.FacebookContentProvider287973501627698"
+            android:exported="true" />
     </application>
 </manifest>

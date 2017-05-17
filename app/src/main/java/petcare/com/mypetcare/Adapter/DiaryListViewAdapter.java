@@ -33,7 +33,7 @@ public class DiaryListViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public DiaryListData getItem(int position) {
         return list.get(position);
     }
 

@@ -4,15 +4,13 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -39,9 +37,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -62,7 +58,7 @@ import petcare.com.mypetcare.Util.GsonUtil;
 import petcare.com.mypetcare.Util.VolleySingleton;
 
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
     private static final String STORE_URL = "https://play.google.com/store/apps/details?id=petcare.com.mypetcare";
     private DrawerLayout drawer;
     private ImageButton ibHospital;
@@ -91,6 +87,8 @@ public class MainActivity extends BaseActivity
     private static double lastLongitude = -1.0;
     private static double lastLatitude = -1.0;
     private static boolean isGpsOn = true;
+    private LocationListener locationListener;
+    private LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,13 +126,13 @@ public class MainActivity extends BaseActivity
         tvMyInfoProfile = (RoundedImageView) findViewById(R.id.iv_nav_top_profile);
         imageLoader = VolleySingleton.getInstance(MainActivity.this).getImageLoader();
 
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
+//        if (mGoogleApiClient == null) {
+//            mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                    .addConnectionCallbacks(this)
+//                    .addOnConnectionFailedListener(this)
+//                    .addApi(LocationServices.API)
+//                    .build();
+//        }
 
         ibHospital.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -309,11 +307,85 @@ public class MainActivity extends BaseActivity
         });
         lvPopup.setAdapter(adapterShare);
 
-        LocationManager locManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        isGpsOn = locManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        isGpsOn = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!isGpsOn) {
-            Toast.makeText(MainActivity.this, "GPS가 꺼져 있습니다. GPS를 ON해주세요.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "GPS가 꺼져 있습니다. GPS를 켜주세요.", Toast.LENGTH_SHORT).show();
+        } else {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 1);
+                }
+                return;
+            }
+
+            locationListener = new LocationListener() {
+                public void onLocationChanged(Location location) {
+                    lastLatitude = location.getLatitude();
+                    lastLongitude = location.getLongitude();
+                    Log.d("gps", "long: " + lastLongitude + "\tlati: " + lastLatitude);
+                    onLoadingDone();
+                    locationManager.removeUpdates(this);
+                }
+
+                public void onProviderDisabled(String provider) {
+                }
+
+                public void onProviderEnabled(String provider) {
+                }
+
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                }
+            };
+//            Criteria criteria = new Criteria();
+//            criteria.setAccuracy(Criteria.ACCURACY_LOW);
+//            criteria.setPowerRequirement(Criteria.POWER_LOW);
+//            criteria.setAltitudeRequired(false);
+//            criteria.setBearingRequired(false);
+//            String provider = locationManager.getBestProvider(criteria, true);
+//            locationManager.requestLocationUpdates(provider, 0, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 2: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    }
+
+                    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                    locationListener = new LocationListener() {
+                        public void onLocationChanged(Location location) {
+                            lastLatitude = location.getLatitude();
+                            lastLongitude = location.getLongitude();
+                            Log.d("gps", "long: " + lastLongitude + "\tlati: " + lastLatitude);
+                            onLoadingDone();
+                            locationManager.removeUpdates(this);
+                        }
+
+                        public void onProviderDisabled(String provider) {
+                        }
+
+                        public void onProviderEnabled(String provider) {
+                        }
+
+                        public void onStatusChanged(String provider, int status, Bundle extras) {
+                        }
+                    };
+
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                } else {
+                    Toast.makeText(MainActivity.this, "권한이 거부되어 현위치를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
         }
     }
 
@@ -341,12 +413,6 @@ public class MainActivity extends BaseActivity
             Toast.makeText(MainActivity.this, "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
         }
     }
-
-//    @Override
-//    public boolean onPrepareOptionsMenu(Menu menu) {
-////        setLogo();
-//        return super.onPrepareOptionsMenu(menu);
-//    }
 
     private void setCustomActionBar() {
         ActionBar actionBar = getSupportActionBar();
@@ -437,68 +503,6 @@ public class MainActivity extends BaseActivity
         });
     }
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                int i = 0;
-
-                while (true) {
-                    if (i > 10) {
-                        Toast.makeText(MainActivity.this, "위치 정보를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show();
-                        break;
-                    }
-
-                    if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        break;
-                    }
-
-                    Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                            mGoogleApiClient);
-
-                    if (mLastLocation != null) {
-                        SharedPreferences pref = getSharedPreferences("local_auth", MODE_PRIVATE);
-                        SharedPreferences.Editor edit = pref.edit();
-                        lastLatitude = mLastLocation.getLatitude();
-                        lastLongitude = mLastLocation.getLongitude();
-                        edit.putString("lastLatitude", String.valueOf(lastLatitude));
-                        edit.putString("lastLongitude", String.valueOf(lastLongitude));
-
-                        onLoadingDone();
-                        break;
-                    }
-
-                    try {
-                        Thread.sleep(500L);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    i++;
-                }
-            }
-        }, 500);
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
     public void onLoadingStart() {
         ibHospital.setEnabled(false);
         ibBeauty.setEnabled(false);
@@ -541,21 +545,11 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void onStart() {
-        if(isGpsOn) {
-            mGoogleApiClient.connect();
-        }
-
         super.onStart();
 
         if ((lastLatitude < 0 || lastLongitude < 0) && isGpsOn) {
             onLoadingStart();
         }
-    }
-
-    @Override
-    protected void onStop() {
-        mGoogleApiClient.disconnect();
-        super.onStop();
     }
 
     public class MyInfoLoadApi extends GeneralApi {
@@ -609,20 +603,6 @@ public class MainActivity extends BaseActivity
         if (id == R.id.nav_addinfo) {
             Toast.makeText(getApplicationContext(), "test", Toast.LENGTH_SHORT).show();
         }
-
-//        if (id == R.id.nav_camera) {
-//            // Handle the camera action
-//        } else if (id == R.id.nav_gallery) {
-//
-//        } else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

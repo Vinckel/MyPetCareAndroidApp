@@ -7,8 +7,11 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -77,88 +80,88 @@ public class DiaryListActivity extends BaseActivity {
         parent.setContentInsetsAbsolute(0, 0);
 
         lvDiary = (ListView) findViewById(R.id.lv_diary_list);
-
-        lvDiary.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                datapopupCurrentData = (DiaryListData) lvDiary.getItemAtPosition(position);
-//                Dialog d = new Dialog(DiaryListActivity.this);
-//                d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        registerForContextMenu(lvDiary);
+//        lvDiary.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                datapopupCurrentData = (DiaryListData) lvDiary.getItemAtPosition(position);
+////                Dialog d = new Dialog(DiaryListActivity.this);
+////                d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+////                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+////                View inf = inflater.inflate(R.layout.popupwindow_diary_list, null);
+////                d.setContentView(inf);
+////                d.show();
+////                TextView tt = (TextView) inf.findViewById(R.id.tv_popup_diary_list_edit);
+////                tt.setOnClickListener(new View.OnClickListener() {
+////                    @Override
+////                    public void onClick(View v) {
+////                        d.hide();
+////                    }
+////                });
+//
+//                popup = new PopupWindow(view);
 //                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//                View inf = inflater.inflate(R.layout.popupwindow_diary_list, null);
-//                d.setContentView(inf);
-//                d.show();
-//                TextView tt = (TextView) inf.findViewById(R.id.tv_popup_diary_list_edit);
-//                tt.setOnClickListener(new View.OnClickListener() {
+//                View v = inflater.inflate(R.layout.popupwindow_diary_list, null);
+//                popup.setContentView(v);
+//                popup.setTouchable(true);
+//                popup.setFocusable(true);
+//                popup.setOutsideTouchable(true);
+//                popup.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+//                popup.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+//                popup.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+//                popup.showAsDropDown(view, 550, 0);
+//                popup.setAnimationStyle(R.style.AlertDialogCustom);
+//                popup.showAtLocation(findViewById(R.id.ll_diary_list), Gravity.CENTER, 0, 0);
+//
+//                TextView edit = (TextView) v.findViewById(R.id.tv_popup_diary_list_edit);
+//                TextView remove = (TextView) v.findViewById(R.id.tv_popup_diary_list_delete);
+//
+//                edit.setOnClickListener(new View.OnClickListener() {
 //                    @Override
 //                    public void onClick(View v) {
-//                        d.hide();
+//                        if (datapopupCurrentData == null) {
+//                            return;
+//                        }
+//
+//                        Intent intent = new Intent(DiaryListActivity.this, DiaryWriteActivity.class);
+//                        intent.putExtra("isNew", false);
+//                        intent.putExtra("content", datapopupCurrentData.getContent());
+//                        intent.putExtra("date", SDF_INTENT.format(datapopupCurrentData.getRawDate()));
+//                        intent.putExtra("no", datapopupCurrentData.getNo());
+//
+//                        popup.dismiss();
+//                        startActivity(intent);
 //                    }
 //                });
-
-                popup = new PopupWindow(view);
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View v = inflater.inflate(R.layout.popupwindow_diary_list, null);
-                popup.setContentView(v);
-                popup.setTouchable(true);
-                popup.setFocusable(true);
-                popup.setOutsideTouchable(true);
-                popup.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-                popup.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-                popup.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-                popup.showAsDropDown(view, 550, 0);
-                popup.setAnimationStyle(R.style.AlertDialogCustom);
-                popup.showAtLocation(findViewById(R.id.ll_diary_list), Gravity.CENTER, 0, 0);
-
-                TextView edit = (TextView) v.findViewById(R.id.tv_popup_diary_list_edit);
-                TextView remove = (TextView) v.findViewById(R.id.tv_popup_diary_list_delete);
-
-                edit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (datapopupCurrentData == null) {
-                            return;
-                        }
-
-                        Intent intent = new Intent(DiaryListActivity.this, DiaryWriteActivity.class);
-                        intent.putExtra("isNew", false);
-                        intent.putExtra("content", datapopupCurrentData.getContent());
-                        intent.putExtra("date", SDF_INTENT.format(datapopupCurrentData.getRawDate()));
-                        intent.putExtra("no", datapopupCurrentData.getNo());
-
-                        popup.dismiss();
-                        startActivity(intent);
-                    }
-                });
-                remove.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (datapopupCurrentData == null) {
-                            return;
-                        }
-
-                        DiaryRemoveApi diaryRemoveApi = new DiaryRemoveApi();
-
-                        Map headers = new HashMap<>();
-                        String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-                        String serviceId = "MPMS_02004";
-                        String contentType = "application/json";
-                        headers.put("url", url);
-                        headers.put("serviceName", serviceId);
-
-                        Map params = new HashMap<>();
-                        params.put("PET_JOURNAL_SN", datapopupCurrentData.getNo());
-
-                        diaryRemoveApi.execute(headers, params);
-
-                        Toast.makeText(DiaryListActivity.this, "삭제되었습니다.", Toast.LENGTH_SHORT).show();
-                        popup.dismiss();
-                    }
-                });
-
-                return false;
-            }
-        });
+//                remove.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        if (datapopupCurrentData == null) {
+//                            return;
+//                        }
+//
+//                        DiaryRemoveApi diaryRemoveApi = new DiaryRemoveApi();
+//
+//                        Map headers = new HashMap<>();
+//                        String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+//                        String serviceId = "MPMS_02004";
+//                        String contentType = "application/json";
+//                        headers.put("url", url);
+//                        headers.put("serviceName", serviceId);
+//
+//                        Map params = new HashMap<>();
+//                        params.put("PET_JOURNAL_SN", datapopupCurrentData.getNo());
+//
+//                        diaryRemoveApi.execute(headers, params);
+//
+//                        Toast.makeText(DiaryListActivity.this, "삭제되었습니다.", Toast.LENGTH_SHORT).show();
+//                        popup.dismiss();
+//                    }
+//                });
+//
+//                return false;
+//            }
+//        });
 
         lvDiary.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -222,6 +225,52 @@ public class DiaryListActivity extends BaseActivity {
     }
 
     @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+
+        menu.add(Menu.NONE, 0, Menu.NONE, "수정");
+        menu.add(Menu.NONE, 1, Menu.NONE, "삭제");
+
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int index = info.position;
+        DiaryListData data = adapter.getItem(index);
+
+        switch (item.getItemId()) {
+            case 0:
+
+                Intent intent = new Intent(DiaryListActivity.this, DiaryWriteActivity.class);
+                intent.putExtra("isNew", false);
+                intent.putExtra("content", data.getContent());
+                intent.putExtra("date", SDF_INTENT.format(data.getRawDate()));
+                intent.putExtra("no", data.getNo());
+
+                startActivity(intent);
+                break;
+            case 1:
+                DiaryRemoveApi diaryRemoveApi = new DiaryRemoveApi();
+//
+                Map headers = new HashMap<>();
+                String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+                String serviceId = "MPMS_02004";
+                headers.put("url", url);
+                headers.put("serviceName", serviceId);
+
+                Map params = new HashMap<>();
+                params.put("PET_JOURNAL_SN", data.getNo());
+
+                diaryRemoveApi.execute(headers, params);
+                break;
+        }
+
+        return super.onContextItemSelected(item);
+    }
+
+    @Override
     public void onResume() {
         moreLoading = false;
         super.onResume();
@@ -258,7 +307,11 @@ public class DiaryListActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            adapter.notifyDataSetChanged();
+            Toast.makeText(DiaryListActivity.this, "삭제되었습니다.", Toast.LENGTH_SHORT).show();
+            adapter.clear();
+            moreLoading = false;
+            currentPosition = 1;
+            moreItems();
         }
     }
 

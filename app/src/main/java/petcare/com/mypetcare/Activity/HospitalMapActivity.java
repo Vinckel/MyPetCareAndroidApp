@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,6 +27,7 @@ public class HospitalMapActivity extends BaseActivity
     private static double longitude = -1.0;
     private static String name = null;
     private static MapPoint customMarkerPoint = null;
+    private ImageButton ibBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,15 @@ public class HospitalMapActivity extends BaseActivity
         }
 
         tvTitle = (TextView) findViewById(R.id.tv_hospital_map_title);
+        ibBack = (ImageButton) findViewById(R.id.ib_hospital_map_back);
+
+        ibBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         tvTitle.setText(name);
 
         MapView mapView = new MapView(HospitalMapActivity.this);

@@ -6,7 +6,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,8 +23,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import petcare.com.mypetcare.Model.CommonResult;
+import petcare.com.mypetcare.Model.HospitalDetailVO;
 import petcare.com.mypetcare.R;
+import petcare.com.mypetcare.Util.GeneralApi;
+import petcare.com.mypetcare.Util.GsonUtil;
 
 public class DiaryWriteActivity extends BaseActivity {
     private ImageButton ibBack;
@@ -43,8 +52,6 @@ public class DiaryWriteActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         isNew = intent.getBooleanExtra("isNew", true);
-
-//        final int writeTargetNo = intent.getIntExtra("writeTargetNo", 1);
 
         setContentView(R.layout.activity_diary_write);
         Toolbar toolbar = (Toolbar) findViewById(R.id.diary_write_toolbar);
@@ -92,17 +99,12 @@ public class DiaryWriteActivity extends BaseActivity {
                 if (etContent.getLineCount() > 3) {
                     etContent.setText(specialRequests);
                     etContent.setSelection(lastSpecialRequestsCursorPosition);
-                }
-                else
+                } else
                     specialRequests = etContent.getText().toString();
 
                 etContent.addTextChangedListener(this);
             }
         });
-
-//        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//        imm.showSoftInput(etContent, InputMethodManager.SHOW_FORCED);
-//        imm.showSoftInputFromInputMethod (etContent.getApplicationWindowToken(),InputMethodManager.SHOW_FORCED);
 
         tvDate = (TextView) findViewById(R.id.tv_diary_write_date);
         tvDate.setText(SDF.format(new Date()));
@@ -118,6 +120,8 @@ public class DiaryWriteActivity extends BaseActivity {
                     Toast.makeText(getApplicationContext(), "내용에 허용되지 않는 특수문자가 포함되어 있습니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                callDiaryWriteApi(isNew, no, encContent);
 
 //                HttpConn diaryWriteApi = new HttpConn();
 //                diaryWriteApi.setContext(global);
@@ -162,6 +166,50 @@ public class DiaryWriteActivity extends BaseActivity {
             etContent.setText(intent.getStringExtra("content"));
             no = intent.getIntExtra("no", -1);
             tvDate.setText(intent.getStringExtra("date"));
+        }
+    }
+
+    private void callDiaryWriteApi(boolean isNew, Integer no, String contents) {
+        try {
+            DiaryWriteApi diaryWriteApi = new DiaryWriteApi();
+
+            Map headers = new HashMap<>();
+            Map params = new HashMap<>();
+            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+            String serviceId = null;
+
+            params.put("PET_JOURNAL_CN", contents);
+
+            if (isNew) {
+                serviceId = "MPMS_02002";
+                params.put("PET_JOURNAL_SN", no);
+            } else {
+                serviceId = "MPMS_02003";
+            }
+
+            headers.put("url", url);
+            headers.put("serviceName", serviceId);
+
+            diaryWriteApi.execute(headers, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(DiaryWriteActivity.this, "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private class DiaryWriteApi extends GeneralApi {
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            CommonResult commonResult = GsonUtil.fromJson(result, CommonResult.class);
+            if (commonResult.getResultCode() != 0) {
+                Toast.makeText(DiaryWriteActivity.this, "등록하지 못했습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            finish();
         }
     }
 }
