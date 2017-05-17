@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -89,6 +90,7 @@ public class MainActivity extends BaseActivity
     private static boolean isGpsOn = true;
     private LocationListener locationListener;
     private LocationManager locationManager;
+    private SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +127,7 @@ public class MainActivity extends BaseActivity
         tvMyInfoPetCount = (TextView) findViewById(R.id.tv_nav_top_pet_count);
         tvMyInfoProfile = (RoundedImageView) findViewById(R.id.iv_nav_top_profile);
         imageLoader = VolleySingleton.getInstance(MainActivity.this).getImageLoader();
+        pref = getSharedPreferences("local_auth", MODE_PRIVATE);
 
 //        if (mGoogleApiClient == null) {
 //            mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -324,6 +327,12 @@ public class MainActivity extends BaseActivity
                 public void onLocationChanged(Location location) {
                     lastLatitude = location.getLatitude();
                     lastLongitude = location.getLongitude();
+
+                    SharedPreferences.Editor edit = pref.edit();
+                    edit.putString("lastLatitude", String.valueOf(lastLatitude));
+                    edit.putString("lastLongitude", String.valueOf(lastLongitude));
+                    edit.commit();
+
                     Log.d("gps", "long: " + lastLongitude + "\tlati: " + lastLatitude);
                     onLoadingDone();
                     locationManager.removeUpdates(this);
@@ -364,6 +373,12 @@ public class MainActivity extends BaseActivity
                         public void onLocationChanged(Location location) {
                             lastLatitude = location.getLatitude();
                             lastLongitude = location.getLongitude();
+
+                            SharedPreferences.Editor edit = pref.edit();
+                            edit.putString("lastLatitude", String.valueOf(lastLatitude));
+                            edit.putString("lastLongitude", String.valueOf(lastLongitude));
+                            edit.commit();
+
                             Log.d("gps", "long: " + lastLongitude + "\tlati: " + lastLatitude);
                             onLoadingDone();
                             locationManager.removeUpdates(this);
