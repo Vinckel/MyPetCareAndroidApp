@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +46,7 @@ public class MissingDetailActivity extends BaseActivity {
     private TextView tvAge;
     private TextView tvPageCount;
     private Button btCall;
+    private ImageButton ibBack;
 
     private MissingDetailVO.ReportPetObject petObject;
     private HospitalDetailViewpagerAdapter adapter;
@@ -92,6 +94,13 @@ public class MissingDetailActivity extends BaseActivity {
         tvAge = (TextView) findViewById(R.id.tv_missing_detail_age_desc);
         tvPageCount = (TextView) findViewById(R.id.tv_missing_detail_page_count);
         btCall = (Button) findViewById(R.id.bt_missing_detail_call);
+        ibBack = (ImageButton) findViewById(R.id.ib_missing_detail_back);
+        ibBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         MissingDetailApi missingDetailApi = new MissingDetailApi();
         String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
