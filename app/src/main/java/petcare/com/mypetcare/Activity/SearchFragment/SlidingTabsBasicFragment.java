@@ -269,7 +269,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        lastLongitude = Double.parseDouble(pref.getString("lastLatitude", "37.497959"));
+        lastLatitude = Double.parseDouble(pref.getString("lastLatitude", "37.497959"));
         lastLongitude = Double.parseDouble(pref.getString("lastLongitude", "127.0276"));
     }
 

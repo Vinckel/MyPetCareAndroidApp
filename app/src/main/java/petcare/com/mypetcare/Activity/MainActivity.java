@@ -336,6 +336,10 @@ public class MainActivity extends BaseActivity
                     Log.d("gps", "long: " + lastLongitude + "\tlati: " + lastLatitude);
                     onLoadingDone();
                     locationManager.removeUpdates(this);
+
+//                    String url = "http://maps.google.com/maps?q=" + lastLatitude + "," + lastLongitude;
+//                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//                    startActivity(intent);
                 }
 
                 public void onProviderDisabled(String provider) {
@@ -382,7 +386,12 @@ public class MainActivity extends BaseActivity
                             Log.d("gps", "long: " + lastLongitude + "\tlati: " + lastLatitude);
                             onLoadingDone();
                             locationManager.removeUpdates(this);
+
+//                            String url = "http://maps.google.com/maps?q=" + lastLatitude + "," + lastLongitude;
+//                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//                            startActivity(intent);
                         }
+
 
                         public void onProviderDisabled(String provider) {
                         }
