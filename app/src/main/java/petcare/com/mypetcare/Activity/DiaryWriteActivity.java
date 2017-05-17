@@ -180,10 +180,10 @@ public class DiaryWriteActivity extends BaseActivity {
 
             params.put("PET_JOURNAL_CN", contents);
 
-            if (isNew) {
+            if (!isNew) {
                 serviceId = "MPMS_02002";
-                params.put("PET_JOURNAL_SN", no);
             } else {
+                params.put("PET_JOURNAL_SN", no);
                 serviceId = "MPMS_02003";
             }
 
