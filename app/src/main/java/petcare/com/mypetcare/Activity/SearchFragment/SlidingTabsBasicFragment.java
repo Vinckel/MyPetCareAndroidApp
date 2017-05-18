@@ -60,6 +60,7 @@ import petcare.com.mypetcare.Activity.AdoptDetailActivity;
 import petcare.com.mypetcare.Activity.AnnounceActivity;
 import petcare.com.mypetcare.Activity.BaseActivity;
 import petcare.com.mypetcare.Activity.HospitalDetailActivity;
+import petcare.com.mypetcare.Activity.MatingDetailActivity;
 import petcare.com.mypetcare.Activity.MatingRequestActivity;
 import petcare.com.mypetcare.Activity.MissingDetailActivity;
 import petcare.com.mypetcare.Activity.ReportWriteActivity;
@@ -147,7 +148,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static FuneralApi funeralApi;
     private static AdoptApi adoptApi;
     private static MissingListApi missingListApi;
-    private static AdoptGridViewAdapter adapterAdopt;
+//    private static AdoptGridViewAdapter adapterAdopt;
     private static Context context;
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 //    private static long callCooldown; // 액티비티 뜬 후 바로 스크롤 호출 방지
@@ -777,14 +778,15 @@ public class SlidingTabsBasicFragment extends Fragment {
                 break;
         }
 
-        adapterAdopt = new AdoptGridViewAdapter(getContext(), R.layout.gridview_adopt_list);
-        gvAdopt.setAdapter(adapterAdopt);
+//        adapterAdopt = new AdoptGridViewAdapter(getContext(), R.layout.gridview_adopt_list);
+        adapterMating = new MatingGridViewAdapter(getContext(), R.layout.gridview_adopt_list);
+        gvAdopt.setAdapter(adapterMating);
 
         gvAdopt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), AdoptDetailActivity.class);
-                intent.putExtra("id", adapterAdopt.getItemSaleId(position));
+                Intent intent = new Intent(getActivity(), MatingDetailActivity.class);
+                intent.putExtra("id", adapterMating.getItemSaleId(position));
 
                 startActivity(intent);
             }
@@ -793,7 +795,7 @@ public class SlidingTabsBasicFragment extends Fragment {
         gvAdopt.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (firstVisibleItem + visibleItemCount >= totalItemCount && adapterAdopt.getCount() > 0) {
+                if (firstVisibleItem + visibleItemCount >= totalItemCount && adapterMating.getCount() > 0) {
                     Log.d("listview adopt", "reached at bottom");
                     String radius = "1000";
 
@@ -804,10 +806,10 @@ public class SlidingTabsBasicFragment extends Fragment {
 
                     switch (num) {
                         case NUM_ADOPT_ADOPT:
-                            callAdoptApi(radius);
+//                            callAdoptApi(radius);
                             break;
                         case NUM_ADOPT_MATING:
-//                            callMatingApi();
+                            callMatingApi();
                             break;
                     }
                 }
@@ -820,7 +822,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 
         switch (num) {
             case NUM_ADOPT_ADOPT:
-                callAdoptApi("1");
+//                callAdoptApi("1");
                 break;
             case NUM_ADOPT_MATING:
                 callMatingApi();
@@ -1387,7 +1389,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             List<MatingListVO.MatingObject> dataList = matingListVO.getData();
             for (MatingListVO.MatingObject data : dataList) {
-                adapterMating.addItem(data.getId(), data.getThumbImgUrl());
+                adapterMating.addItem(data.getId(), data.getThumbImgUrl(), data.getGender());
             }
 
             adapterMating.notifyDataSetChanged();

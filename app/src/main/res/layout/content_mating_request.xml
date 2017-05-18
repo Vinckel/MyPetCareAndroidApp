@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:text="Name"
+                    android:text="이름"
                     android:textColor="#4a4a4a"
                     android:textSize="14sp" />
 
@@ -107,7 +107,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_below="@id/tv_mating_request_name"
                     android:background="@android:color/transparent"
-                    android:hint="Input name"
+                    android:hint="이름을 적어주세요."
                     android:maxLength="15"
                     android:singleLine="true"
                     android:paddingBottom="10dp"
@@ -135,7 +135,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:text="Breed"
+                    android:text="견종"
                     android:textColor="#4a4a4a"
                     android:textSize="14sp" />
 
@@ -146,7 +146,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_below="@id/tv_mating_request_breed"
                     android:background="@android:color/transparent"
-                    android:hint="Input breed"
+                    android:hint="견종을 적어주세요."
                     android:maxLength="15"
                     android:singleLine="true"
                     android:paddingBottom="10dp"
@@ -174,7 +174,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:text="Color"
+                    android:text="컬러"
                     android:textColor="#4a4a4a"
                     android:textSize="14sp" />
 
@@ -185,7 +185,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_below="@id/tv_mating_request_color"
                     android:background="@android:color/transparent"
-                    android:hint="Input color"
+                    android:hint="컬러를 적어주세요."
                     android:maxLength="15"
                     android:singleLine="true"
                     android:paddingBottom="10dp"
@@ -213,7 +213,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:text="Gender"
+                    android:text="성별"
                     android:textColor="#4a4a4a"
                     android:textSize="14sp" />
 
@@ -267,7 +267,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:text="Age"
+                    android:text="나이"
                     android:textColor="#4a4a4a"
                     android:textSize="14sp" />
 
@@ -278,7 +278,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_below="@id/tv_mating_request_age"
                     android:background="@android:color/transparent"
-                    android:hint="Input age"
+                    android:hint="나이를 적어주세요."
                     android:maxLength="15"
                     android:singleLine="true"
                     android:paddingBottom="10dp"
@@ -306,7 +306,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:text="Introduce"
+                    android:text="소개"
                     android:textColor="#4a4a4a"
                     android:textSize="14sp" />
 
@@ -317,7 +317,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_below="@id/tv_mating_request_intro"
                     android:background="@android:color/transparent"
-                    android:hint="Input intro"
+                    android:hint="소개를 적어주세요."
                     android:inputType="textMultiLine"
                     android:maxLines="5"
                     android:minLines="5"

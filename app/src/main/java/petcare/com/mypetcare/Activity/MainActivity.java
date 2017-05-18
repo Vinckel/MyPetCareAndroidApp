@@ -473,7 +473,7 @@ public class MainActivity extends BaseActivity
         adapter.addItem(R.drawable.ic_insurance_t, R.string.nav_insure, null);
         adapter.addItem(R.drawable.ic_list, R.string.nav_diary, null);
         adapter.addItem(R.drawable.ic_add_info, R.string.nav_info, null);
-        adapter.addItem(R.drawable.ic_beauty_shop_t, R.string.nav_my_write, null);
+        adapter.addItem(R.drawable.ic_my_post, R.string.nav_my_write, null);
         adapter.addItem(R.drawable.ic_share, R.string.nav_share, null);
         adapter.addItem(R.drawable.ic_info, R.string.nav_inquiry, null);
         adapter.addItem(R.drawable.ic_event_notice, R.string.nav_notice, R.drawable.ic_event_notice);

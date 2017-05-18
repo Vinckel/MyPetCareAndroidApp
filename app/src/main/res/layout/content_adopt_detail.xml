@@ -99,6 +99,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="9dp"
                     android:textColor="#7579e8"
+                    android:textColorLink="#7579e8"
+                    android:autoLink="web"
                     android:textSize="12sp"
                     app:layout_constraintBaseline_toBaselineOf="@+id/tv_adopt_detail_url_title"
                     app:layout_constraintLeft_toRightOf="@+id/tv_adopt_detail_url_title" />

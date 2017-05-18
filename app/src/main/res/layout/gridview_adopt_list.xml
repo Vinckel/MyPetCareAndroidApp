@@ -18,6 +18,5 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:src="@drawable/ic_beauty_shop_t" />
+        android:layout_marginTop="5dp" />
 </RelativeLayout>
