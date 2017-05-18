@@ -8,7 +8,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -33,6 +36,8 @@ import java.util.Map;
 
 import petcare.com.mypetcare.Activity.CustomView.RoundedImageView;
 import petcare.com.mypetcare.Adapter.MyInfoPetListViewAdapter;
+import petcare.com.mypetcare.Model.CommonResult;
+import petcare.com.mypetcare.Model.DiaryListData;
 import petcare.com.mypetcare.Model.MyInfoPetListData;
 import petcare.com.mypetcare.Model.MyInfoVO;
 import petcare.com.mypetcare.R;
@@ -90,6 +95,7 @@ public class MyInfoActivity extends BaseActivity {
         isLoading = false;
         picJustChanged = false;
         imageLoader = VolleySingleton.getInstance(MyInfoActivity.this).getImageLoader();
+        registerForContextMenu(lvPetInfo);
 
         lvPetInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -295,6 +301,57 @@ public class MyInfoActivity extends BaseActivity {
                 picJustChanged = true;
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+
+        menu.add(Menu.NONE, 0, Menu.NONE, "삭제");
+
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int index = info.position;
+        MyInfoPetListData data = adapter.getItem(index);
+
+        switch (item.getItemId()) {
+            case 0:
+                MyPetRemoveApi myPetRemoveApi = new MyPetRemoveApi();
+//
+                Map headers = new HashMap<>();
+                String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+                String serviceId = "MPMS_01006";
+                headers.put("url", url);
+                headers.put("serviceName", serviceId);
+
+                Map params = new HashMap<>();
+                params.put("PET_SN", data.getNo());
+
+                myPetRemoveApi.execute(headers, params);
+                break;
+        }
+
+        return super.onContextItemSelected(item);
+    }
+
+    public class MyPetRemoveApi extends GeneralApi {
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            CommonResult commonResult = GsonUtil.fromJson(result, CommonResult.class);
+
+            if (commonResult.getResultCode() != 0) {
+                Toast.makeText(MyInfoActivity.this, "삭제에 실패했습니다.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(MyInfoActivity.this, "삭제되었습니다.", Toast.LENGTH_SHORT).show();
+
+                getListview();
             }
         }
     }

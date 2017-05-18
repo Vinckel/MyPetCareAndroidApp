@@ -105,7 +105,8 @@
                     android:textColor="#898989"
                     android:textSize="12sp"
                     app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_location"
-                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_location" />
+                    app:layout_constraintLeft_toRightOf="@+id/tv_announce_location"
+                    android:layout_marginStart="10dp" />
 
                 <TextView
                     android:id="@+id/tv_announce_mark"
@@ -118,15 +119,24 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_announce_location" />
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_mark"
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_announce_location_desc"
+                    android:layout_marginLeft="0dp">
                 <TextView
                     android:id="@+id/tv_announce_mark_desc"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.80"
+                    android:singleLine="false"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorPrimary"
                     android:textSize="12sp"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_announce_mark"
-                    app:layout_constraintLeft_toLeftOf="@+id/tv_announce_location_desc" />
-
+                    android:text="1123123"
+                    android:maxLines="4" />
+                </LinearLayout>
                 <TextView
                     android:id="@+id/tv_announce_price"
                     android:layout_width="wrap_content"

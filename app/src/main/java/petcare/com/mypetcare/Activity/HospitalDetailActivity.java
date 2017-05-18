@@ -58,8 +58,6 @@ public class HospitalDetailActivity extends BaseActivity {
     private static int currentNum = -1;
     private static double longitude = -1.0;
     private static double latitude = -1.0;
-    private static double searchLongitude = -1.0;
-    private static double searchLatitude = -1.0;
     private static String radius = "";
     private static String name = "";
 
@@ -70,8 +68,8 @@ public class HospitalDetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         String id = intent.getStringExtra("id");
-        searchLongitude = intent.getDoubleExtra("searchLongitude", -1.0);
-        searchLatitude = intent.getDoubleExtra("searchLatitude", -1.0);
+        longitude = intent.getDoubleExtra("searchLongitude", -1.0);
+        latitude = intent.getDoubleExtra("searchLatitude", -1.0);
         radius = intent.getStringExtra("radius");
         currentNum = intent.getIntExtra("num", -1);
 
@@ -103,12 +101,12 @@ public class HospitalDetailActivity extends BaseActivity {
         ivMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (HospitalDetailActivity.longitude < 0 || HospitalDetailActivity.latitude < 0) {
+                if (longitude < 0 || latitude < 0) {
                     return ;
                 }
                 Intent intent = new Intent(getApplicationContext(), HospitalMapActivity.class);
-                intent.putExtra("longitude", HospitalDetailActivity.longitude);
-                intent.putExtra("latitude", HospitalDetailActivity.latitude);
+                intent.putExtra("longitude", longitude);
+                intent.putExtra("latitude", latitude);
                 intent.putExtra("name", name);
 
                 startActivity(intent);
@@ -178,6 +176,9 @@ public class HospitalDetailActivity extends BaseActivity {
             case NUM_FUNERAL:
                 callFuneralDetailApi(id);
                 break;
+            case NUM_ADOPT:
+                callAdoptDetailApi(id);
+                break;
         }
     }
 
@@ -193,8 +194,8 @@ public class HospitalDetailActivity extends BaseActivity {
 
             Map params = new HashMap<>();
             params.put("ID", id);
-            params.put("SEARCH_LON", searchLongitude);
-            params.put("SEARCH_LAT", searchLatitude);
+            params.put("SEARCH_LON", longitude);
+            params.put("SEARCH_LAT", latitude);
             params.put("SEARCH_RADIUS", radius);
 
             hospitalDetailApi.execute(headers, params);
@@ -216,8 +217,8 @@ public class HospitalDetailActivity extends BaseActivity {
 
             Map params = new HashMap<>();
             params.put("ID", id);
-            params.put("SEARCH_LON", searchLongitude);
-            params.put("SEARCH_LAT", searchLatitude);
+            params.put("SEARCH_LON", longitude);
+            params.put("SEARCH_LAT", latitude);
             params.put("SEARCH_RADIUS", radius);
 
             hospitalDetailApi.execute(headers, params);
@@ -239,8 +240,8 @@ public class HospitalDetailActivity extends BaseActivity {
 
             Map params = new HashMap<>();
             params.put("ID", id);
-            params.put("SEARCH_LON", searchLongitude);
-            params.put("SEARCH_LAT", searchLatitude);
+            params.put("SEARCH_LON", longitude);
+            params.put("SEARCH_LAT", latitude);
             params.put("SEARCH_RADIUS", radius);
 
             hospitalDetailApi.execute(headers, params);
@@ -262,8 +263,8 @@ public class HospitalDetailActivity extends BaseActivity {
 
             Map params = new HashMap<>();
             params.put("ID", id);
-            params.put("SEARCH_LON", searchLongitude);
-            params.put("SEARCH_LAT", searchLatitude);
+            params.put("SEARCH_LON", longitude);
+            params.put("SEARCH_LAT", latitude);
             params.put("SEARCH_RADIUS", radius);
 
             hospitalDetailApi.execute(headers, params);
@@ -285,8 +286,31 @@ public class HospitalDetailActivity extends BaseActivity {
 
             Map params = new HashMap<>();
             params.put("ID", id);
-            params.put("SEARCH_LON", searchLongitude);
-            params.put("SEARCH_LAT", searchLatitude);
+            params.put("SEARCH_LON", longitude);
+            params.put("SEARCH_LAT", latitude);
+            params.put("SEARCH_RADIUS", radius);
+
+            hospitalDetailApi.execute(headers, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(HospitalDetailActivity.this, "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void callAdoptDetailApi(String id) {
+        try {
+            HospitalDetailApi hospitalDetailApi = new HospitalDetailApi();
+
+            Map headers = new HashMap<>();
+            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+            String serviceId = "MPMS_09002";
+            headers.put("url", url);
+            headers.put("serviceName", serviceId);
+
+            Map params = new HashMap<>();
+            params.put("ID", id);
+            params.put("SEARCH_LON", longitude);
+            params.put("SEARCH_LAT", latitude);
             params.put("SEARCH_RADIUS", radius);
 
             hospitalDetailApi.execute(headers, params);
@@ -308,8 +332,8 @@ public class HospitalDetailActivity extends BaseActivity {
 
             Map params = new HashMap<>();
             params.put("ID", id);
-            params.put("SEARCH_LON", searchLongitude);
-            params.put("SEARCH_LAT", searchLatitude);
+            params.put("SEARCH_LON", longitude);
+            params.put("SEARCH_LAT", latitude);
             params.put("SEARCH_RADIUS", radius);
 
             hospitalDetailApi.execute(headers, params);
@@ -344,8 +368,8 @@ public class HospitalDetailActivity extends BaseActivity {
                 tvDistance.setText(String.format("%.1f", distance) + "km");
             }
 
-            latitude = hospitalObject.getSearchLatitude();
-            longitude = hospitalObject.getSearchLongitude();
+            latitude = hospitalObject.getLatitude();
+            longitude = hospitalObject.getLongitude();
             name = hospitalObject.getName();
 
             adapter.addItem(hospitalObject.getImgurl());
