@@ -1,23 +1,44 @@
 package petcare.com.mypetcare.Activity;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.InflateException;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 
 import net.daum.mf.map.api.CalloutBalloonAdapter;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapReverseGeoCoder;
 import net.daum.mf.map.api.MapView;
 
+import java.net.URLEncoder;
+
+import petcare.com.mypetcare.Adapter.JoinPopupListViewAdapter;
 import petcare.com.mypetcare.R;
 
 public class HospitalMapActivity extends BaseActivity
@@ -28,6 +49,8 @@ public class HospitalMapActivity extends BaseActivity
     private static String name = null;
     private static MapPoint customMarkerPoint = null;
     private ImageButton ibBack;
+    private Button btDot;
+    private Dialog shareDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +86,103 @@ public class HospitalMapActivity extends BaseActivity
 
         tvTitle = (TextView) findViewById(R.id.tv_hospital_map_title);
         ibBack = (ImageButton) findViewById(R.id.ib_hospital_map_back);
+        btDot = (Button) findViewById(R.id.bt_hospital_map_dot);
+
+        btDot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JoinPopupListViewAdapter adapterShare = new JoinPopupListViewAdapter(getApplicationContext(), 0);
+                shareDialog = new Dialog(HospitalMapActivity.this, R.style.Theme_AppCompat_DayNight_Dialog);
+                shareDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                shareDialog.setContentView(R.layout.popup_map);
+                adapterShare.addItem("주소 복사");
+                adapterShare.addItem("네이버 지도로 보기");
+                adapterShare.addItem("카카오톡 공유");
+                adapterShare.addItem("라인 공유");
+                adapterShare.addItem("메세지 공유");
+
+                ListView lvPopup = (ListView) shareDialog.findViewById(R.id.lv_popup_map);
+                lvPopup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        try {
+                            String message = "";
+                            PackageManager manager = getBaseContext().getPackageManager();
+                            Intent i = null;
+                            String encodedText = null;
+                            Uri uri = null;
+
+                            switch (position) {
+                                case 0: // kakaotalk
+                                    MapReverseGeoCoder reverseGeoCoder = new MapReverseGeoCoder(getResources().getString(R.string.daum_map_key), MapPoint.mapPointWithGeoCoord(latitude, longitude), new MapReverseGeoCoder.ReverseGeoCodingResultListener() {
+                                        @Override
+                                        public void onReverseGeoCoderFoundAddress(MapReverseGeoCoder mapReverseGeoCoder, String s) {
+                                            Toast.makeText(HospitalMapActivity.this, s, Toast.LENGTH_SHORT).show();
+                                        }
+
+                                        @Override
+                                        public void onReverseGeoCoderFailedToFindAddress(MapReverseGeoCoder mapReverseGeoCoder) {
+                                            Toast.makeText(HospitalMapActivity.this, "실패", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }, HospitalMapActivity.this);
+                                    reverseGeoCoder.startFindingAddress();
+                                    break;
+                                case 1: // facebook
+//                                    ShareLinkContent content = new ShareLinkContent.Builder()
+//                                            .setContentUrl(Uri.parse(STORE_URL))
+//                                            .build();
+//                                    ShareDialog.show(MainActivity.this, content);
+                                    break;
+                                case 2: // line
+//                                    i = manager.getLaunchIntentForPackage("jp.naver.line.android");
+//
+//                                    if (i == null) {
+//                                        i = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=jp.naver.line.android"));
+//                                        startActivity(i);
+//                                        break;
+//                                    }
+//
+//                                    encodedText = URLEncoder.encode(STORE_URL, "utf-8");
+//                                    uri = Uri.parse("line://msg/text/" + encodedText);
+//                                    i = new Intent(Intent.ACTION_VIEW, uri);
+//                                    startActivity(i);
+                                    break;
+                                case 3: // band
+//                                    i = manager.getLaunchIntentForPackage("com.nhn.android.band");
+//
+//                                    if (i == null) {
+//                                        i = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.nhn.android.band"));
+//                                        startActivity(i);
+//                                        break;
+//                                    }
+//
+//                                    encodedText = URLEncoder.encode(STORE_URL, "utf-8");
+//                                    uri = Uri.parse("bandapp://create/post?text=" + encodedText);
+//                                    i = new Intent(Intent.ACTION_VIEW, uri);
+//                                    startActivity(i);
+                                    break;
+                                case 4: // email
+//                                    i = new Intent(Intent.ACTION_SENDTO);
+//                                    i.setType("*/*");
+//                                    i.setData(Uri.parse("mailto:"));
+//                                    i.putExtra(Intent.EXTRA_EMAIL, "");
+//                                    i.putExtra(Intent.EXTRA_SUBJECT, STORE_URL);
+//                                    i.putExtra(Intent.EXTRA_TEXT, STORE_URL);
+//                                    startActivity(i);
+                                    break;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(HospitalMapActivity.this, "실패했습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                        shareDialog.dismiss();
+                    }
+                });
+                lvPopup.setAdapter(adapterShare);
+
+                shareDialog.show();
+            }
+        });
 
         ibBack.setOnClickListener(new View.OnClickListener() {
             @Override

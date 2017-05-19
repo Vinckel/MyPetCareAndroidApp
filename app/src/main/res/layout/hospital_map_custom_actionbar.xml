@@ -29,4 +29,25 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/ib_hospital_map_back"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/bt_hospital_map_dot"
+        android:layout_width="30dp"
+        android:textSize="26dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/transparent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="@string/vertical_ellipsis"
+        android:layout_height="wrap_content" />
+
+    <!--<ImageButton
+        android:id="@+id/ib_hospital_map_dot"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/dotdotdot"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />-->
 </android.support.constraint.ConstraintLayout>
