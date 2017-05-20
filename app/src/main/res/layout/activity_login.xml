@@ -19,7 +19,7 @@
             android:layout_width="176dp"
             android:layout_height="153dp"
             android:layout_gravity="center"
-            android:src="@drawable/img_bi_1" />
+            android:src="@drawable/img_bi_login" />
     </LinearLayout>
 
 
@@ -38,36 +38,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.facebook.login.widget.LoginButton
-                android:id="@+id/bt_login_facebook"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_gravity="center_horizontal"
-                android:visibility="invisible" />
-
-            <ImageView
-                android:id="@+id/bt_login_facebook_fake"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:src="@drawable/btn_facebook" />
-        </FrameLayout>
-
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp">
-
             <com.kakao.usermgmt.LoginButton
                 android:id="@+id/bt_login_kakao"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:layout_gravity="center_vertical|center_horizontal" />
 
-            <!--<ImageView
+            <ImageView
                 android:id="@+id/bt_login_kakao_fake"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:src="@drawable/ic_launcher" />-->
+                android:src="@drawable/btn_kakao" />
         </FrameLayout>
 
         <FrameLayout
@@ -77,8 +58,9 @@
 
             <com.nhn.android.naverlogin.ui.view.OAuthLoginButton
                 android:id="@+id/bt_login_naver"
-                android:layout_width="10dp"
-                android:layout_height="20dp"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:layout_gravity="center_vertical|center_horizontal"
                 android:visibility="invisible" />
 
             <ImageView
@@ -88,6 +70,24 @@
                 android:src="@drawable/btn_naver" />
         </FrameLayout>
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp">
+
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/bt_login_facebook"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:visibility="invisible" />
+
+            <ImageView
+                android:id="@+id/bt_login_facebook_fake"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:src="@drawable/btn_facebook" />
+        </FrameLayout>
         <!--<Button
             android:id="@+id/bt_login_naver"
             android:layout_width="wrap_content"

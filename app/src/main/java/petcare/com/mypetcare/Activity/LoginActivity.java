@@ -68,6 +68,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private OAuthLogin mOAuthLoginModule;
     private ImageView btNaverFake;
     private ImageView btKakaoFake;
+    private com.kakao.usermgmt.LoginButton btKakao;
     private ImageView btFacebookFake;
     private OAuthLoginButton naverLoginButton;
 
@@ -234,6 +235,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         final LoginButton fbLogin = (LoginButton) findViewById(R.id.bt_login_facebook);
         btFacebookFake = (ImageView) findViewById(R.id.bt_login_facebook_fake);
+        btKakao = (com.kakao.usermgmt.LoginButton) findViewById(R.id.bt_login_kakao);
+        btKakaoFake = (ImageView) findViewById(R.id.bt_login_kakao_fake);
+
+        btKakaoFake.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btKakao.performClick();
+            }
+        });
+
         btFacebookFake.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
