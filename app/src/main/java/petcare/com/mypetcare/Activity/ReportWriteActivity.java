@@ -256,6 +256,7 @@ public class ReportWriteActivity extends BaseActivity {
         body.put("PET_AR_CHAR", etMark.getText().toString());
         body.put("PET_AR_REWARD", etPrice.getText().toString());
         body.put("PET_AR_DESC", etEtc.getText().toString());
+        body.put("PET_AR_TELNUM", etContact.getText().toString());
         body.put("PET_AR_FIND_AT", "N");
 
         multipartApi.execute(header, body, paths);

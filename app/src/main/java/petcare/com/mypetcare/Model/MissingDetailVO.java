@@ -51,6 +51,9 @@ public class MissingDetailVO {
         @SerializedName("PET_AR_CHAR")
         private String mark;
 
+        @SerializedName("PET_AR_TELNUM")
+        private String contact;
+
         @SerializedName("PET_AR_REWARD")
         private String price;
 
@@ -62,6 +65,10 @@ public class MissingDetailVO {
 
         @SerializedName("PET_IMG")
         private List<PetImageObject> imgData;
+
+        public String getContact() {
+            return contact;
+        }
 
         public String getId() {
             return id;

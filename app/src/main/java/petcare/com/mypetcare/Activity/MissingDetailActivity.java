@@ -180,16 +180,14 @@ public class MissingDetailActivity extends BaseActivity {
                         if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                             requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 2);
                         } else {
-//                            String call = petObject.getContact();
-                            String call = "";
+                            String call = petObject.getContact();
                             if (StringUtils.isNotBlank(call)) {
                                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + call));
                                 startActivity(intent);
                             }
                         }
                     } else {
-//                        String call = petObject.getContact();
-                        String call = "";
+                        String call = petObject.getContact();
                         if (StringUtils.isNotBlank(call)) {
                             Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + call));
                             startActivity(intent);
@@ -207,7 +205,7 @@ public class MissingDetailActivity extends BaseActivity {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED && petObject != null) {
 
-                    String call = "";
+                    String call = petObject.getContact();
                     if (StringUtils.isNotBlank(call)) {
                         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + call));
 
