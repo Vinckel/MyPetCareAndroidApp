@@ -28,9 +28,7 @@ public class GeneralApi extends AsyncTask<Map<String, String>, Void, String> {
     private static final int CONNECTION_TIMEOUT = 2500;
     private static Global global = null;
     private static OkHttpClient client;
-    private static Gson gson;
     private static JSONObject jsonInput;
-    public static final MediaType JSON = MediaType.parse("application/json");
 
     public static void setGlobal(Global global1) {
         global = global1;
