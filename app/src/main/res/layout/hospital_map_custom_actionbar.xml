@@ -30,15 +30,18 @@
         app:layout_constraintLeft_toRightOf="@+id/ib_hospital_map_back"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <ImageButton
         android:id="@+id/bt_hospital_map_dot"
         android:layout_width="30dp"
-        android:textSize="26dp"
-        android:layout_marginRight="10dp"
+        android:layout_height="30dp"
+        android:scaleType="centerInside"
+        android:layout_marginRight="5dp"
         android:background="@color/transparent"
+        android:src="@drawable/ic_more_n"
         app:layout_constraintRight_toRightOf="parent"
-        android:text="@string/vertical_ellipsis"
-        android:layout_height="wrap_content" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!--<ImageButton
         android:id="@+id/ib_hospital_map_dot"

@@ -69,13 +69,18 @@ public class HospitalMapActivity extends BaseActivity
     private static String name = null;
     private static MapPoint customMarkerPoint = null;
     private ImageButton ibBack;
-    private Button btDot;
+    private ImageButton btDot;
     private Dialog shareDialog;
     private static String locationDetailName = null;
     private RelativeLayout rlDim;
     private ProgressBar pbMap;
     private ListView lvPopup;
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        locationDetailName = null;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +115,7 @@ public class HospitalMapActivity extends BaseActivity
 
         tvTitle = (TextView) findViewById(R.id.tv_hospital_map_title);
         ibBack = (ImageButton) findViewById(R.id.ib_hospital_map_back);
-        btDot = (Button) findViewById(R.id.bt_hospital_map_dot);
+        btDot = (ImageButton) findViewById(R.id.bt_hospital_map_dot);
         rlDim = (RelativeLayout) findViewById(R.id.rl_map_dim);
         pbMap = (ProgressBar) findViewById(R.id.pb_map);
 
