@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_search_n" />
+        android:src="@drawable/img_bi_login" />
 
     <TextView
         android:id="@+id/tv_gridview_missing_distance"

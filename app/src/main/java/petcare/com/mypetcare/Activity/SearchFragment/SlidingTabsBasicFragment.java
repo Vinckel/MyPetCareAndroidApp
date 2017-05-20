@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -41,6 +40,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,7 +56,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import petcare.com.mypetcare.Activity.AdoptDetailActivity;
 import petcare.com.mypetcare.Activity.AnnounceActivity;
 import petcare.com.mypetcare.Activity.BaseActivity;
 import petcare.com.mypetcare.Activity.HospitalDetailActivity;
@@ -64,7 +63,6 @@ import petcare.com.mypetcare.Activity.MatingDetailActivity;
 import petcare.com.mypetcare.Activity.MatingRequestActivity;
 import petcare.com.mypetcare.Activity.MissingDetailActivity;
 import petcare.com.mypetcare.Activity.ReportWriteActivity;
-import petcare.com.mypetcare.Adapter.AdoptGridViewAdapter;
 import petcare.com.mypetcare.Adapter.AnnounceGridViewAdapter;
 import petcare.com.mypetcare.Adapter.HospitalListViewAdapter;
 import petcare.com.mypetcare.Adapter.MatingGridViewAdapter;
@@ -151,6 +149,8 @@ public class SlidingTabsBasicFragment extends Fragment {
 //    private static AdoptGridViewAdapter adapterAdopt;
     private static Context context;
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+    private static RelativeLayout[] rlZero;
+    private static ListView[] lvList;
 //    private static long callCooldown; // 액티비티 뜬 후 바로 스크롤 호출 방지
 
     SharedPreferences pref; // 위치 저장용
@@ -251,6 +251,8 @@ public class SlidingTabsBasicFragment extends Fragment {
 //        }, 51000);
 
         isLoaded = new boolean[9];
+        rlZero = new RelativeLayout[9];
+        lvList = new ListView[9];
         for (int i = 0; i < isLoaded.length; i++) {
             isLoaded[i] = false;
         }
@@ -893,8 +895,9 @@ public class SlidingTabsBasicFragment extends Fragment {
         pagingLastCheck.set(num, false);
         View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_hospital, container, false);
         container.addView(view);
-        ListView lvHospitalList = (ListView) view.findViewById(R.id.lv_hospital_list);
+        lvList[num] = (ListView) view.findViewById(R.id.lv_hospital_list);
         spHospital = (Spinner) view.findViewById(R.id.sp_hospital_distance);
+        rlZero[num] = (RelativeLayout) view.findViewById(R.id.rl_hospital_zero);
         spHospital.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -962,8 +965,8 @@ public class SlidingTabsBasicFragment extends Fragment {
 //                break;
 //        }
 
-        lvHospitalList.setAdapter(adapterHospital[num]);
-        lvHospitalList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lvList[num].setAdapter(adapterHospital[num]);
+        lvList[num].setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), HospitalDetailActivity.class);
@@ -977,7 +980,7 @@ public class SlidingTabsBasicFragment extends Fragment {
             }
         });
 
-        lvHospitalList.setOnScrollListener(new AbsListView.OnScrollListener() {
+        lvList[num].setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if (firstVisibleItem + visibleItemCount >= totalItemCount && adapterHospital[num].getCount() > 0) {
@@ -1539,7 +1542,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             try {
                 ToolListVO toolListVO = GsonUtil.fromJson(result, ToolListVO.class);
-                if (toolListVO.getResultCode() == -1001) {
+                if (showListEmpty(toolListVO.getResultCode(), NUM_TOOL)) {
                     return;
                 }
 
@@ -1575,7 +1578,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             try {
                 FuneralListVO funeralListVO = GsonUtil.fromJson(result, FuneralListVO.class);
-                if (funeralListVO.getResultCode() == -1001) {
+                if (showListEmpty(funeralListVO.getResultCode(), NUM_FUNERAL)) {
                     return;
                 }
 
@@ -1611,7 +1614,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             try {
                 AdoptListVO adoptListVO = GsonUtil.fromJson(result, AdoptListVO.class);
-                if (adoptListVO.getResultCode() == -1001) {
+                if (showListEmpty(adoptListVO.getResultCode(), NUM_ADOPT)) {
                     return;
                 }
 
@@ -1634,6 +1637,9 @@ public class SlidingTabsBasicFragment extends Fragment {
                 }
 
                 adapterHospital[NUM_ADOPT].notifyDataSetChanged();
+
+                if (adapterHospital[NUM_ADOPT].getCount() < 1) {
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1648,7 +1654,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             try {
                 CafeListVO cafeListVO = GsonUtil.fromJson(result, CafeListVO.class);
-                if (cafeListVO.getResultCode() == -1001) {
+                if (showListEmpty(cafeListVO.getResultCode(), NUM_CAFE)) {
                     return;
                 }
 
@@ -1684,7 +1690,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             try {
                 HotelListVO hotelListVO = GsonUtil.fromJson(result, HotelListVO.class);
-                if (hotelListVO.getResultCode() == -1001) {
+                if (showListEmpty(hotelListVO.getResultCode(), NUM_HOTEL)) {
                     return;
                 }
 
@@ -1712,6 +1718,24 @@ public class SlidingTabsBasicFragment extends Fragment {
         }
     }
 
+    private boolean showListEmpty(int resultCode, int num) {
+        if (resultCode == -1001) {
+            if (rlZero[num] != null && adapterHospital[num].getCount() < 1) {
+                rlZero[num].setVisibility(View.VISIBLE);
+                lvList[num].setVisibility(View.GONE);
+            }
+
+            return true;
+        } else {
+            if (rlZero[num] != null) {
+                rlZero[num].setVisibility(View.GONE);
+                lvList[num].setVisibility(View.VISIBLE);
+            }
+        }
+
+        return false;
+    }
+
     private class BeautyApi extends GeneralApi {
 
         @Override
@@ -1720,7 +1744,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             try {
                 BeautyListVO beautyListVO = GsonUtil.fromJson(result, BeautyListVO.class);
-                if (beautyListVO.getResultCode() == -1001) {
+                if (showListEmpty(beautyListVO.getResultCode(), NUM_BEAUTY)) {
                     return;
                 }
 
@@ -1756,7 +1780,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             try {
                 HospitalListVO hospitalListVO = GsonUtil.fromJson(result, HospitalListVO.class);
-                if (hospitalListVO.getResultCode() == -1001) {
+                if (showListEmpty(hospitalListVO.getResultCode(), NUM_HOSPITAL)) {
                     return;
                 }
 
@@ -1776,7 +1800,6 @@ public class SlidingTabsBasicFragment extends Fragment {
 
                     adapterHospital[NUM_HOSPITAL].addItem(hospitalObject.getName(), "", distanceStr, hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId(), lastLongitude, lastLatitude, hospitalObject.getRadius());
                 }
-
                 adapterHospital[NUM_HOSPITAL].notifyDataSetChanged();
             } catch (Exception e) {
                 e.printStackTrace();
