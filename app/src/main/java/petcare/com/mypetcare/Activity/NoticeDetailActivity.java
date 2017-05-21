@@ -10,14 +10,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import petcare.com.mypetcare.Model.NoticeDetailVO;
 import petcare.com.mypetcare.R;
 import petcare.com.mypetcare.Util.GeneralApi;
+import petcare.com.mypetcare.Util.GsonUtil;
+import petcare.com.mypetcare.Util.VolleySingleton;
 
 public class NoticeDetailActivity extends AppCompatActivity {
     private ImageButton ibBack;
@@ -25,6 +30,7 @@ public class NoticeDetailActivity extends AppCompatActivity {
     private TextView tvDate;
     private TextView tvTitle;
     private TextView tvContent;
+    private ImageLoader imageLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +54,9 @@ public class NoticeDetailActivity extends AppCompatActivity {
         Toolbar parent = (Toolbar) actionBarView.getParent();
         parent.setContentInsetsAbsolute(0, 0);
 
+        String id = getIntent().getStringExtra("id");
+
+        imageLoader = VolleySingleton.getInstance(NoticeDetailActivity.this).getImageLoader();
         ibBack = (ImageButton) findViewById(R.id.ib_notice_detail_back);
         IvImage = (NetworkImageView) findViewById(R.id.iv_notice_detail_image);
         tvDate = (TextView) findViewById(R.id.tv_notice_detail_date);
@@ -69,8 +78,8 @@ public class NoticeDetailActivity extends AppCompatActivity {
         header.put("serviceName", serviceId);
 
         Map<String, String> body = new HashMap<>();
-//        body.put("PET_AR_ID", id);
-//        noticeDetailApi.execute(header, body);
+        body.put("NOTICE_ID", id);
+        noticeDetailApi.execute(header, body);
     }
 
     public class NoticeDetailApi extends GeneralApi {
@@ -79,20 +88,23 @@ public class NoticeDetailActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-//            NoticeListVO noticeListVO = GsonUtil.fromJson(result, NoticeListVO.class);
-//            if (noticeListVO.getResultCode() != 0) {
-//                Toast.makeText(MyPostActivity.this, "정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
-//                finish();
-//                return;
-//            }
-//
-//            noticeObject = noticeListVO.getData().get(0);
+            NoticeDetailVO noticeListVO = GsonUtil.fromJson(result, NoticeDetailVO.class);
+            if (noticeListVO.getResultCode() == -1001) {
+                return;
+            }
 
-//            adapter.addItem(null, null, null, null);
+            if (noticeListVO.getResultCode() != 0) {
+                Toast.makeText(NoticeDetailActivity.this, "정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
 
-//            for () {
-//
-//            }
+            NoticeDetailVO.NoticeObject noticeObject = noticeListVO.getData().get(0);
+
+            tvTitle.setText(noticeObject.getTitle());
+            tvDate.setText(noticeObject.getCreateDate());
+            tvContent.setText(noticeObject.getContent());
+//            IvImage.setImageUrl();
         }
     }
 }
