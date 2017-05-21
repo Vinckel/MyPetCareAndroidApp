@@ -314,12 +314,8 @@ public class MainActivity extends BaseActivity
         });
         lvPopup.setAdapter(adapterShare);
 
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         isGpsOn = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        boolean isNetworkOn = networkInfo != null && networkInfo.isConnected();
 
         if (!isGpsOn) {
             Toast.makeText(MainActivity.this, "GPS가 꺼져 있습니다. GPS를 켜주세요.", Toast.LENGTH_SHORT).show();
@@ -362,7 +358,7 @@ public class MainActivity extends BaseActivity
 
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
-            if (isNetworkOn) {
+            if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
             } else {
                 Toast.makeText(MainActivity.this, "네트워크가 꺼져 있습니다. 네트워크를 켜주세요.", Toast.LENGTH_SHORT).show();
