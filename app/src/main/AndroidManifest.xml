@@ -141,6 +141,7 @@
             android:name=".Activity.InsureRegisterActivity"
             android:label="@string/title_activity_insure_register"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.ReceiptInsureActivity"
@@ -182,15 +183,18 @@
         <activity
             android:name=".Activity.MyPostActivity"
             android:label="@string/title_activity_my_post"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.NoticeActivity"
             android:label="@string/title_activity_notice"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.NoticeDetailActivity"
             android:label="@string/title_activity_notice_detail"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
