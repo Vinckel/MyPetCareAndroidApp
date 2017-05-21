@@ -103,12 +103,12 @@
                 android:text="서비스 약관" />
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="16sp"
-                android:src="@drawable/dropbox" />
+                android:src="@drawable/ic_arrow_right_r" />
         </RelativeLayout>
 
         <TextView
