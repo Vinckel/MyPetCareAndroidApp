@@ -9,12 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import petcare.com.mypetcare.R;
 
 public class PriceSampleActivity extends AppCompatActivity {
     private ImageButton ibBack;
-    private Button btPlan;
+    private ImageView ivPlan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class PriceSampleActivity extends AppCompatActivity {
         parent.setContentInsetsAbsolute(0, 0);
 
         ibBack = (ImageButton) findViewById(R.id.ib_price_sample_back);
-        btPlan = (Button) findViewById(R.id.bt_price_sample_plan);
+        ivPlan = (ImageView) findViewById(R.id.iv_price_sample_plan);
 
         ibBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,7 +48,7 @@ public class PriceSampleActivity extends AppCompatActivity {
                 finish();
             }
         });
-        btPlan.setOnClickListener(new View.OnClickListener() {
+        ivPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(PriceSampleActivity.this, PlanActivity.class);
@@ -55,5 +56,4 @@ public class PriceSampleActivity extends AppCompatActivity {
             }
         });
     }
-
 }

@@ -362,6 +362,8 @@ public class DiaryListActivity extends BaseActivity {
                 Date date = adapter.getItem(i).getRawDate();
                 if (date.before(c.getTime())) {
                     adapter.markYearAtPosition(true, i);
+                } else {
+                    adapter.markYearAtPosition(false, i);
                 }
             }
         }
