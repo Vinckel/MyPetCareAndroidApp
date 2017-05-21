@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +41,8 @@ public class NoticeActivity extends AppCompatActivity {
     private static final long SCROLL_MIN_TERM = 1000L;
     private static long scrollCooldown = 0L;
     private static final int SEARCH_COUNT = 20;
+    private static final SimpleDateFormat sdfRaw = new SimpleDateFormat("yyyyMMddHHmmss");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +81,7 @@ public class NoticeActivity extends AppCompatActivity {
         lvList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(NoticeActivity.this, AnnounceActivity.class);
+                Intent intent = new Intent(NoticeActivity.this, NoticeDetailActivity.class);
                 NoticeListData item = adapter.getItem(position);
                 intent.putExtra("id", item.getId());
 
@@ -135,7 +139,11 @@ public class NoticeActivity extends AppCompatActivity {
             List<NoticeListVO.NoticeObject> data = noticeListVO.getData();
 
             for (NoticeListVO.NoticeObject noticeObject : data) {
-                adapter.addItem(noticeObject.getId(), noticeObject.getName(), noticeObject.getCreateDate());
+                try {
+                    adapter.addItem(noticeObject.getId(), noticeObject.getName(), sdf.format(sdfRaw.parse(noticeObject.getCreateDate())));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
 
             adapter.notifyDataSetChanged();

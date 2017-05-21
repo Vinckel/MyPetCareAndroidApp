@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,11 +27,14 @@ import petcare.com.mypetcare.Util.VolleySingleton;
 
 public class NoticeDetailActivity extends AppCompatActivity {
     private ImageButton ibBack;
-    private NetworkImageView IvImage;
+    private NetworkImageView ivImage;
     private TextView tvDate;
     private TextView tvTitle;
     private TextView tvContent;
+    private Button btDone;
     private ImageLoader imageLoader;
+    private static final SimpleDateFormat sdfRaw = new SimpleDateFormat("yyyyMMddHHmmss");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,16 +62,21 @@ public class NoticeDetailActivity extends AppCompatActivity {
 
         imageLoader = VolleySingleton.getInstance(NoticeDetailActivity.this).getImageLoader();
         ibBack = (ImageButton) findViewById(R.id.ib_notice_detail_back);
-        IvImage = (NetworkImageView) findViewById(R.id.iv_notice_detail_image);
+        ivImage = (NetworkImageView) findViewById(R.id.iv_notice_detail_image);
         tvDate = (TextView) findViewById(R.id.tv_notice_detail_date);
         tvTitle = (TextView) findViewById(R.id.tv_notice_detail_name);
         tvContent = (TextView) findViewById(R.id.tv_notice_detail_content);
-        ibBack.setOnClickListener(new View.OnClickListener() {
+        btDone = (Button) findViewById(R.id.bt_notice_detail_done);
+
+        View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
-        });
+        };
+
+        ibBack.setOnClickListener(listener);
+        btDone.setOnClickListener(listener);
 
         NoticeDetailApi noticeDetailApi = new NoticeDetailApi();
         String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
@@ -100,8 +111,18 @@ public class NoticeDetailActivity extends AppCompatActivity {
             NoticeDetailVO.NoticeObject noticeObject = noticeListVO.getData().get(0);
 
             tvTitle.setText(noticeObject.getTitle());
-            tvDate.setText(noticeObject.getCreateDate());
             tvContent.setText(noticeObject.getContent());
+
+//            IvImage.setImageUrl();
+            ivImage.setVisibility(View.GONE);
+
+
+            try {
+                tvDate.setText(sdf.format(sdfRaw.parse(noticeObject.getCreateDate())));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
 //            IvImage.setImageUrl();
         }
     }

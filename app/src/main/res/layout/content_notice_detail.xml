@@ -18,6 +18,7 @@
             android:id="@+id/iv_notice_detail_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_pet_n" />
 

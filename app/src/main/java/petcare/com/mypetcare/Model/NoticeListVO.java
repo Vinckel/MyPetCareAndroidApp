@@ -43,6 +43,9 @@ public class NoticeListVO {
         @SerializedName("LAST_UPDATE_DTIME")
         private String updateDate;
 
+        @SerializedName("NEW_NOTICE_AT")
+        private String noticeAt;
+
         public String getId() {
             return id;
         }
@@ -61,6 +64,10 @@ public class NoticeListVO {
 
         public String getUpdateDate() {
             return updateDate;
+        }
+
+        public String getNoticeAt() {
+            return noticeAt;
         }
     }
 

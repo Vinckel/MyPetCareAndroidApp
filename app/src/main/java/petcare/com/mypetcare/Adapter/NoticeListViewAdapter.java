@@ -43,7 +43,7 @@ public class NoticeListViewAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = inflater.inflate(R.layout.listview_my_post, null);
+        convertView = inflater.inflate(R.layout.listview_notice, null);
         NoticeListData data = list.get(position);
 
         TextView title = (TextView) convertView.findViewById(R.id.tv_notice_name);
