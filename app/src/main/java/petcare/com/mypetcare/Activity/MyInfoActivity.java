@@ -164,51 +164,57 @@ public class MyInfoActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            MyInfoVO myInfoVO = GsonUtil.fromJson(result, MyInfoVO.class);
-            if (myInfoVO.getResultCode() != 0) {
-                Toast.makeText(MyInfoActivity.this, "사용자 정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
-                return ;
-            }
+            try {
+                MyInfoVO myInfoVO = GsonUtil.fromJson(result, MyInfoVO.class);
+                if (myInfoVO.getResultCode() != 0) {
+                    Toast.makeText(MyInfoActivity.this, "사용자 정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-            MyInfoVO.MyInfoObject data = myInfoVO.getData().get(0);
-            if (StringUtils.isNotEmpty(data.getUserName())) {
-                etName.setText(data.getUserName());
-            }
+                MyInfoVO.MyInfoObject data = myInfoVO.getData().get(0);
+                if (StringUtils.isNotEmpty(data.getUserName())) {
+                    etName.setText(data.getUserName());
+                }
 
-            if (StringUtils.isNotEmpty(data.getUserImgThumbUrl())) {
+                if (StringUtils.isNotEmpty(data.getUserImgThumbUrl())) {
 //                ivProfile.setImageUrl(data.getUserImgThumbUrl(), imageLoader);
 //                ivProfile.setImageUrl("http://i.imgur.com/SEBjThb.jpg", imageLoader);
-                imageLoader.get(data.getUserImgThumbUrl(), new ImageLoader.ImageListener() {
+                    imageLoader.get(data.getUserImgThumbUrl(), new ImageLoader.ImageListener() {
 
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("error", "Image Load Error: " + error.getMessage());
-                    }
-
-                    @Override
-                    public void onResponse(ImageLoader.ImageContainer response, boolean arg1) {
-                        if (response.getBitmap() != null) {
-                            ivProfile.setImageBitmap(response.getBitmap());
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("error", "Image Load Error: " + error.getMessage());
                         }
-                    }
-                });
-            }
 
-            if (CollectionUtils.isNotEmpty(data.getData())) {
-                adapter = new MyInfoPetListViewAdapter(MyInfoActivity.this);
-                List<MyInfoVO.MyInfoObject.MyPetInfoObject> petList = data.getData();
-                for (MyInfoVO.MyInfoObject.MyPetInfoObject myPetInfo : petList) {
-                    Integer no = myPetInfo.getNo();
-                    String birth = myPetInfo.getPetBirth();
-                    String breed = myPetInfo.getPetBreed();
-                    String url = myPetInfo.getPetImgThumbUrl();
-                    adapter.addItem(breed, birth, url, no);
+                        @Override
+                        public void onResponse(ImageLoader.ImageContainer response, boolean arg1) {
+                            if (response.getBitmap() != null) {
+                                ivProfile.setImageBitmap(response.getBitmap());
+                            }
+                        }
+                    });
                 }
-                lvPetInfo.setAdapter(adapter);
-                llPetInfoAdd.setVisibility(View.GONE);
-                lvPetInfo.setVisibility(View.VISIBLE);
 
-                adapter.notifyDataSetChanged();
+                if (CollectionUtils.isNotEmpty(data.getData())) {
+                    adapter = new MyInfoPetListViewAdapter(MyInfoActivity.this);
+                    List<MyInfoVO.MyInfoObject.MyPetInfoObject> petList = data.getData();
+                    for (MyInfoVO.MyInfoObject.MyPetInfoObject myPetInfo : petList) {
+                        Integer no = myPetInfo.getNo();
+                        String birth = myPetInfo.getPetBirth();
+                        String breed = myPetInfo.getPetBreed();
+                        String url = myPetInfo.getPetImgThumbUrl();
+                        adapter.addItem(breed, birth, url, no);
+                    }
+                    lvPetInfo.setAdapter(adapter);
+                    llPetInfoAdd.setVisibility(View.GONE);
+                    lvPetInfo.setVisibility(View.VISIBLE);
+
+                    adapter.notifyDataSetChanged();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(MyInfoActivity.this, "정보 조회에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                finish();
             }
         }
     }

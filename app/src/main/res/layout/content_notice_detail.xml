@@ -18,9 +18,9 @@
             android:id="@+id/iv_notice_detail_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_pet_n" />
+            android:src="@drawable/ic_pet_n"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_notice_detail_date"
@@ -39,7 +39,8 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="9dp"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_notice_detail_content"

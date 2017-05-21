@@ -91,6 +91,7 @@ public class NoticeActivity extends AppCompatActivity {
 
         callNoticeListApi();
     }
+
     private void callNoticeListApi() {
         long currentTime = Calendar.getInstance().getTimeInMillis();
         if (scrollCooldown + SCROLL_MIN_TERM > currentTime) {

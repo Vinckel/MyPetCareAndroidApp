@@ -78,6 +78,10 @@ public class NoticeDetailActivity extends AppCompatActivity {
         ibBack.setOnClickListener(listener);
         btDone.setOnClickListener(listener);
 
+        callNoticeDetailApi(id);
+    }
+
+    private void callNoticeDetailApi(String id) {
         NoticeDetailApi noticeDetailApi = new NoticeDetailApi();
         String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
         String serviceId = "MPMS_15002";

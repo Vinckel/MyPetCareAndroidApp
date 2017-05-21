@@ -84,6 +84,10 @@ public class NavigationListViewAdapter extends BaseAdapter {
         return convertView;
     }
 
+    public void setExistNewNotice() {
+        list.get(6).setBadge(context.getResources().getDrawable(R.drawable.ic_new));
+    }
+
     public void addItem(@DrawableRes Integer icon, @StringRes Integer title, @DrawableRes Integer badge) {
         NavigationListData data = new NavigationListData();
 

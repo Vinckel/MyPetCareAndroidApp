@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -47,7 +48,10 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -56,6 +60,8 @@ import petcare.com.mypetcare.Activity.CustomView.RoundedImageView;
 import petcare.com.mypetcare.Adapter.JoinPopupListViewAdapter;
 import petcare.com.mypetcare.Adapter.NavigationListViewAdapter;
 import petcare.com.mypetcare.Model.MyInfoVO;
+import petcare.com.mypetcare.Model.NoticeDetailVO;
+import petcare.com.mypetcare.Model.NoticeListVO;
 import petcare.com.mypetcare.R;
 import petcare.com.mypetcare.Util.GeneralApi;
 import petcare.com.mypetcare.Util.GsonUtil;
@@ -95,6 +101,8 @@ public class MainActivity extends BaseActivity
     private LocationManager locationManager;
     private SharedPreferences pref;
     private ImageButton ibAbNoti;
+    private static boolean isExistNew = false;
+    private static NavigationListViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -364,6 +372,8 @@ public class MainActivity extends BaseActivity
                 Toast.makeText(MainActivity.this, "네트워크가 꺼져 있습니다. 네트워크를 켜주세요.", Toast.LENGTH_SHORT).show();
             }
         }
+
+        callNoticeListApi();
     }
 
     @Override
@@ -479,7 +489,7 @@ public class MainActivity extends BaseActivity
         });
 
         final ListView lv = (ListView) findViewById(R.id.nav_lst);
-        NavigationListViewAdapter adapter = new NavigationListViewAdapter(this);
+        adapter = new NavigationListViewAdapter(this);
         lv.setAdapter(adapter);
 
         adapter.addItem(R.drawable.ic_insurance_t, R.string.nav_insure, null);
@@ -488,7 +498,7 @@ public class MainActivity extends BaseActivity
         adapter.addItem(R.drawable.ic_my_post, R.string.nav_my_write, null);
         adapter.addItem(R.drawable.ic_share, R.string.nav_share, null);
         adapter.addItem(R.drawable.ic_info, R.string.nav_inquiry, null);
-        adapter.addItem(R.drawable.ic_event_notice, R.string.nav_notice, R.drawable.ic_new);
+        adapter.addItem(R.drawable.ic_event_notice, R.string.nav_notice, null);
         adapter.addItem(R.drawable.ic_setting_t, R.string.nav_setting, null);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -602,32 +612,93 @@ public class MainActivity extends BaseActivity
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            MyInfoVO myInfoVO = GsonUtil.fromJson(result, MyInfoVO.class);
 
-            if (myInfoVO.getResultCode() != 0) {
+            try {
+                MyInfoVO myInfoVO = GsonUtil.fromJson(result, MyInfoVO.class);
+
+                if (myInfoVO.getResultCode() != 0) {
+                    return;
+                }
+                MyInfoVO.MyInfoObject info = myInfoVO.getData().get(0);
+                String userName = info.getUserName();
+                String url = info.getUserImgThumbUrl();
+                int count = CollectionUtils.size(info.getData());
+
+                tvMyInfoName.setText(userName);
+                tvMyInfoPetCount.setText("마이펫 " + String.valueOf(count));
+                imageLoader.get(url, new ImageLoader.ImageListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("error", "Image Load Error: " + error.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(ImageLoader.ImageContainer response, boolean arg1) {
+                        if (response.getBitmap() != null) {
+                            tvMyInfoProfile.setImageBitmap(response.getBitmap());
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(MainActivity.this, "정보 조회에 실패했습니다.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void callNoticeListApi() {
+        try {
+            NoticeListApi noticeListApi = new NoticeListApi();
+
+            Map headers = new HashMap<>();
+            String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
+            String serviceId = "MPMS_15001";
+            headers.put("url", url);
+            headers.put("serviceName", serviceId);
+
+            Map params = new HashMap<>();
+            params.put("SEARCH_COUNT", 5);
+            params.put("SEARCH_PAGE", 1);
+
+            noticeListApi.execute(headers, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(MainActivity.this, "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public class NoticeListApi extends GeneralApi {
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            NoticeListVO noticeListVO = GsonUtil.fromJson(result, NoticeListVO.class);
+            if (noticeListVO.getResultCode() == -1001) {
                 return;
             }
-            MyInfoVO.MyInfoObject info = myInfoVO.getData().get(0);
-            String userName = info.getUserName();
-            String url = info.getUserImgThumbUrl();
-            int count = CollectionUtils.size(info.getData());
 
-            tvMyInfoName.setText(userName);
-            tvMyInfoPetCount.setText("마이펫 " + String.valueOf(count));
-            imageLoader.get(url, new ImageLoader.ImageListener() {
+            if (noticeListVO.getResultCode() != 0) {
+                Toast.makeText(MainActivity.this, "정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
 
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("error", "Image Load Error: " + error.getMessage());
+            List<NoticeListVO.NoticeObject> data = noticeListVO.getData();
+
+            for (NoticeListVO.NoticeObject noticeObject : data) {
+                String noticeAt = data.get(0).getNoticeAt();
+                if (StringUtils.equals(noticeAt, "Y")) {
+                    isExistNew = true;
+                    break;
                 }
+            }
 
-                @Override
-                public void onResponse(ImageLoader.ImageContainer response, boolean arg1) {
-                    if (response.getBitmap() != null) {
-                        tvMyInfoProfile.setImageBitmap(response.getBitmap());
-                    }
-                }
-            });
+            if (isExistNew) {
+                adapter.setExistNewNotice();
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 
