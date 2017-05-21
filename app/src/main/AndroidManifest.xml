@@ -186,6 +186,10 @@
         <activity
             android:name=".Activity.NoticeActivity"
             android:label="@string/title_activity_notice"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.NoticeDetailActivity"
+            android:label="@string/title_activity_notice_detail"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
