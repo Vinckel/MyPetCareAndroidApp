@@ -24,8 +24,10 @@ import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -345,35 +347,50 @@ public class DiaryListActivity extends BaseActivity {
                 adapter.addItem(listData.getRawDate(), listData.getContent(), listData.getNo());
             }
 
-            reCalcNewYear();
+//            reCalcNewYear();
+            checkBeforeYear();
             adapter.notifyDataSetChanged();
         }
 
-        private void reCalcNewYear() {
-            List<DiaryListData> list = new ArrayList<>();
-
+        private void checkBeforeYear() {
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.DAY_OF_YEAR, 1);
+            c.set(Calendar.HOUR_OF_DAY, 0);
+            c.set(Calendar.MINUTE, 0);
+            c.set(Calendar.SECOND, 0);
             for (int i = 0; i < adapter.getCount(); i++) {
-                list.add((DiaryListData) lvDiary.getAdapter().getItem(i));
-            }
-
-            for (int i = 0; i < list.size(); i++) {
-                DiaryListData listData = list.get(i);
-                boolean isViewYear = false;
-
-                if (i + 1 == list.size()) {
-                    isViewYear = true;
-                } else if (i + 1 < list.size()) {
-                    int year = Integer.parseInt(listData.getYear());
-                    int afterYear = Integer.parseInt(list.get(i + 1).getYear());
-
-                    if (year < afterYear) {
-                        isViewYear = true;
-                    }
+                Date date = adapter.getItem(i).getRawDate();
+                if (date.before(c.getTime())) {
+                    adapter.markYearAtPosition(true, i);
                 }
-
-                adapter.markYearAtPosition(isViewYear, i);
             }
         }
+
+//        private void reCalcNewYear() {
+//            List<DiaryListData> list = new ArrayList<>();
+//
+//            for (int i = 0; i < adapter.getCount(); i++) {
+//                list.add((DiaryListData) lvDiary.getAdapter().getItem(i));
+//            }
+//
+//            for (int i = 0; i < list.size(); i++) {
+//                DiaryListData listData = list.get(i);
+//                boolean isViewYear = false;
+//
+//                if (i + 1 == list.size()) {
+//                    isViewYear = true;
+//                } else if (i + 1 < list.size()) {
+//                    int year = Integer.parseInt(listData.getYear());
+//                    int afterYear = Integer.parseInt(list.get(i + 1).getYear());
+//
+//                    if (year < afterYear) {
+//                        isViewYear = true;
+//                    }
+//                }
+//
+//                adapter.markYearAtPosition(isViewYear, i);
+//            }
+//        }
 
         class Comp implements Comparator<DiaryListData> {
             public int compare(DiaryListData d1, DiaryListData d2) {

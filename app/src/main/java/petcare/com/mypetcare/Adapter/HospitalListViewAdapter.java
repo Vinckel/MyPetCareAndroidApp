@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -74,7 +76,11 @@ public class HospitalListViewAdapter extends BaseAdapter {
         name.setText(data.getName());
         distance.setText(data.getDist());
         description.setText(data.getDesc());
-        view.setImageUrl(data.getImgUrl(), imageLoader);
+        view.setDefaultImageResId(R.drawable.img_list_empty_list);
+        view.setErrorImageResId(R.drawable.img_list_empty_list);
+        if (StringUtils.isNotBlank(data.getImgUrl())) {
+            view.setImageUrl(data.getImgUrl(), imageLoader);
+        }
 
 //            convertView.setTag(holder);
 //        } else {

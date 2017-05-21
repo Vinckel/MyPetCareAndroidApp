@@ -180,11 +180,11 @@ public class DiaryWriteActivity extends BaseActivity {
 
             params.put("PET_JOURNAL_CN", contents);
 
-            if (!isNew) {
-                serviceId = "MPMS_02002";
-            } else {
-                params.put("PET_JOURNAL_SN", no);
+            if (!isNew) { // 수정
                 serviceId = "MPMS_02003";
+                params.put("PET_JOURNAL_SN", no);
+            } else { // 새로작성
+                serviceId = "MPMS_02002";
             }
 
             headers.put("url", url);

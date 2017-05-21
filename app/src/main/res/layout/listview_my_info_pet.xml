@@ -49,7 +49,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginRight="0dp"
-        android:src="@drawable/ic_search_n"
+        android:src="@drawable/ic_arrow_right_r"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

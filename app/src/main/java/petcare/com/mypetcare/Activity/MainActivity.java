@@ -9,6 +9,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -75,7 +78,7 @@ public class MainActivity extends BaseActivity
     private ConstraintLayout clMyInfoArea;
     private TextView tvMyInfoName;
     private TextView tvMyInfoPetCount;
-    private RoundedImageView tvMyInfoProfile;
+    private ImageView tvMyInfoProfile;
     private ImageLoader imageLoader;
     private LinearLayout llInsure;
     private Dialog shareDialog;
@@ -125,7 +128,7 @@ public class MainActivity extends BaseActivity
 
         tvMyInfoName = (TextView) findViewById(R.id.tv_nav_top_name);
         tvMyInfoPetCount = (TextView) findViewById(R.id.tv_nav_top_pet_count);
-        tvMyInfoProfile = (RoundedImageView) findViewById(R.id.iv_nav_top_profile);
+        tvMyInfoProfile = (ImageView) findViewById(R.id.iv_nav_top_profile);
         imageLoader = VolleySingleton.getInstance(MainActivity.this).getImageLoader();
         pref = getSharedPreferences("local_auth", MODE_PRIVATE);
 
@@ -310,8 +313,12 @@ public class MainActivity extends BaseActivity
         });
         lvPopup.setAdapter(adapterShare);
 
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         isGpsOn = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean isNetworkOn = networkInfo != null && networkInfo.isConnected();
 
         if (!isGpsOn) {
             Toast.makeText(MainActivity.this, "GPS가 꺼져 있습니다. GPS를 켜주세요.", Toast.LENGTH_SHORT).show();
@@ -351,15 +358,14 @@ public class MainActivity extends BaseActivity
                 public void onStatusChanged(String provider, int status, Bundle extras) {
                 }
             };
-//            Criteria criteria = new Criteria();
-//            criteria.setAccuracy(Criteria.ACCURACY_LOW);
-//            criteria.setPowerRequirement(Criteria.POWER_LOW);
-//            criteria.setAltitudeRequired(false);
-//            criteria.setBearingRequired(false);
-//            String provider = locationManager.getBestProvider(criteria, true);
-//            locationManager.requestLocationUpdates(provider, 0, 0, locationListener);
+
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+
+            if (isNetworkOn) {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+            } else {
+                Toast.makeText(MainActivity.this, "네트워크가 꺼져 있습니다. 네트워크를 켜주세요.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -476,7 +482,7 @@ public class MainActivity extends BaseActivity
         adapter.addItem(R.drawable.ic_my_post, R.string.nav_my_write, null);
         adapter.addItem(R.drawable.ic_share, R.string.nav_share, null);
         adapter.addItem(R.drawable.ic_info, R.string.nav_inquiry, null);
-        adapter.addItem(R.drawable.ic_event_notice, R.string.nav_notice, R.drawable.ic_event_notice);
+        adapter.addItem(R.drawable.ic_event_notice, R.string.nav_notice, R.drawable.ic_new);
         adapter.addItem(R.drawable.ic_setting_t, R.string.nav_setting, null);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {

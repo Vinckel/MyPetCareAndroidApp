@@ -17,13 +17,15 @@
             android:id="@+id/sp_announce_state"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5" />
+            android:layout_weight="0.5"
+            android:background="@android:color/white" />
 
         <Spinner
             android:id="@+id/sp_announce_region"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5" />
+            android:layout_weight="0.5"
+            android:background="@android:color/white" />
     </LinearLayout>
 
     <GridView

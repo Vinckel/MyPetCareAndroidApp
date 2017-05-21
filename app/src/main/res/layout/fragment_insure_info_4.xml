@@ -58,7 +58,7 @@ tools:context="petcare.com.mypetcare.Activity.InsureInfoActivity$PlaceholderFrag
         android:paddingRight="15dp"
         android:paddingTop="15dp"
         android:textColorLink="#615fe2"
-        android:text="수술비 최대 150만원, 입원비 하루당\n10만원 한도로 70%까지 '실손'\n보상해준답니다.\n\n특약 가입 시 통원치료도 하루당\n10만원 한도로 70%까지 '실손'\n보상해준답니다."
+        android:text="수술비 최대 150만원, 입원비\n 하루당 10만원 한도로 70%까지\n '실손' 보상해준답니다.\n\n특약 가입 시 통원치료도 하루당\n10만원 한도로 70%까지 '실손'\n보상해준답니다."
         android:textSize="15sp" />
 
     <ImageView
