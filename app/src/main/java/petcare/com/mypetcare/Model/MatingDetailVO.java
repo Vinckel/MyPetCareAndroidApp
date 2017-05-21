@@ -55,7 +55,7 @@ public class MatingDetailVO {
             private String imgUrl;
 
             @SerializedName("PET_CB_IMG_THUM_URL")
-            private Double thumbnailUrl;
+            private String thumbnailUrl;
 
             public String getImgId() {
                 return imgId;
@@ -69,7 +69,7 @@ public class MatingDetailVO {
                 return imgUrl;
             }
 
-            public Double getThumbnailUrl() {
+            public String getThumbnailUrl() {
                 return thumbnailUrl;
             }
         }

@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp"
-        android:text="등록 글 관리"
+        android:text="이벤트 및 공지사항"
         android:textColor="@color/normalFont"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"

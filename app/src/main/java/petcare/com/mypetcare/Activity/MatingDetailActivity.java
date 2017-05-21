@@ -124,7 +124,7 @@ public class MatingDetailActivity extends BaseActivity {
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                tvPageCount.setText((position + 1) + "/" + urls.size());
+                tvPageCount.setText((position + 1) + "/" + adapter.getCount());
             }
 
             @Override
@@ -167,55 +167,62 @@ public class MatingDetailActivity extends BaseActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            MatingDetailVO matingDetailVO = GsonUtil.fromJson(result, MatingDetailVO.class);
-            if (matingDetailVO.getResultCode() != 0) {
-                Toast.makeText(MatingDetailActivity.this, "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
-                finish();
-                return;
-            }
+            try {
+                MatingDetailVO matingDetailVO = GsonUtil.fromJson(result, MatingDetailVO.class);
+                if (matingDetailVO.getResultCode() != 0) {
+                    Toast.makeText(MatingDetailActivity.this, "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                    finish();
+                    return;
+                }
 
-            List<MatingDetailVO.MatingDetailObject> data = matingDetailVO.getData();
-            matingDetailObject = data.get(0);
-            tvTitle.setText(matingDetailObject.getName());
-            tvName.setText(matingDetailObject.getName());
+                List<MatingDetailVO.MatingDetailObject> data = matingDetailVO.getData();
+                matingDetailObject = data.get(0);
+                tvTitle.setText(matingDetailObject.getName());
+                tvName.setText(matingDetailObject.getName());
 //            tvSubTitle.setText(matingDetailObject.get);
 //            tvHomepage.setText(matingDetailObject.get);
-            tvBreed.setText(matingDetailObject.getBreed());
-            tvColor.setText(matingDetailObject.getColor());
-            tvGender.setText(matingDetailObject.getGender());
-            tvAge.setText(matingDetailObject.getAge());
+                tvBreed.setText(matingDetailObject.getBreed());
+                tvColor.setText(matingDetailObject.getColor());
+                tvGender.setText(matingDetailObject.getGender());
+                tvAge.setText(matingDetailObject.getAge());
 
-            List<MatingDetailVO.MatingDetailObject.MatingDetailImageObject> imgData = matingDetailObject.getImgData();
-            for (MatingDetailVO.MatingDetailObject.MatingDetailImageObject imageObject : imgData) {
-                adapter.addItem(imageObject.getImgUrl());
-            }
+                List<MatingDetailVO.MatingDetailObject.MatingDetailImageObject> imgData = matingDetailObject.getImgData();
+                for (MatingDetailVO.MatingDetailObject.MatingDetailImageObject imageObject : imgData) {
+                    adapter.addItem(imageObject.getImgUrl());
+                }
 
-            adapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
 
-            btCall.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                            requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 2);
-                        } else {
+                btCall.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                                requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 2);
+                            } else {
 //                            String call = matingDetailObject.getContact();
+                                String call = "";
+                                if (StringUtils.isNotBlank(call)) {
+                                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + call));
+                                    startActivity(intent);
+                                }
+                            }
+                        } else {
+//                        String call = matingDetailObject.getContact();
                             String call = "";
                             if (StringUtils.isNotBlank(call)) {
                                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + call));
                                 startActivity(intent);
                             }
                         }
-                    } else {
-//                        String call = matingDetailObject.getContact();
-                        String call = "";
-                        if (StringUtils.isNotBlank(call)) {
-                            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + call));
-                            startActivity(intent);
-                        }
                     }
-                }
-            });
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(MatingDetailActivity.this, "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
         }
     }
 

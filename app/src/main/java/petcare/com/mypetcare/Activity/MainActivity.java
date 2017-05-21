@@ -94,6 +94,7 @@ public class MainActivity extends BaseActivity
     private LocationListener locationListener;
     private LocationManager locationManager;
     private SharedPreferences pref;
+    private ImageButton ibAbNoti;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -460,6 +461,7 @@ public class MainActivity extends BaseActivity
         Toolbar parent = (Toolbar) actionbarView.getParent();
         parent.setContentInsetsAbsolute(0, 0);
 
+        ibAbNoti = (ImageButton) actionbarView.findViewById(R.id.ib_main_noti);
         ibHamburger = (ImageButton) findViewById(R.id.ibHeaderHamburger);
         ibHamburger.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -469,6 +471,14 @@ public class MainActivity extends BaseActivity
                 } else {
                     drawer.openDrawer(GravityCompat.START);
                 }
+            }
+        });
+
+        ibAbNoti.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, NoticeActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -493,9 +503,11 @@ public class MainActivity extends BaseActivity
 
                 String receipt = getApplicationContext().getResources().getString(R.string.nav_insure);
                 String info = getApplicationContext().getResources().getString(R.string.nav_info);
+                String myPost = getApplicationContext().getResources().getString(R.string.nav_my_write);
                 String diary = getApplicationContext().getResources().getString(R.string.nav_diary);
-                String inquiry = getApplicationContext().getResources().getString(R.string.nav_inquiry);
                 String share = getApplicationContext().getResources().getString(R.string.nav_share);
+                String inquiry = getApplicationContext().getResources().getString(R.string.nav_inquiry);
+                String notice = getApplicationContext().getResources().getString(R.string.nav_notice);
                 String setting = getApplicationContext().getResources().getString(R.string.nav_setting);
 
                 drawer.closeDrawer(GravityCompat.START);
@@ -512,6 +524,12 @@ public class MainActivity extends BaseActivity
                     startActivity(intent);
                 } else if (StringUtils.equals(inquiry, selected)) {
                     intent = new Intent(getApplicationContext(), InquiryActivity.class);
+                    startActivity(intent);
+                } else if (StringUtils.equals(myPost, selected)) {
+                    intent = new Intent(getApplicationContext(), MyPostActivity.class);
+                    startActivity(intent);
+                } else if (StringUtils.equals(notice, selected)) {
+                    intent = new Intent(getApplicationContext(), NoticeActivity.class);
                     startActivity(intent);
                 } else if (StringUtils.equals(setting, selected)) {
                     intent = new Intent(getApplicationContext(), SettingActivity.class);
