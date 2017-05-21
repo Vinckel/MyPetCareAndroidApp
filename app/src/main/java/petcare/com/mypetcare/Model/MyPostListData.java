@@ -6,11 +6,10 @@ package petcare.com.mypetcare.Model;
 
 public class MyPostListData {
     private String typeName;
-    private String imageUrl;
     private String typeDetailName;
+    private String imageUrl;
     private String name;
     private String date;
-    private String id;
 
     public String getName() {
         return name;
@@ -50,13 +49,5 @@ public class MyPostListData {
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 }

@@ -56,10 +56,6 @@ public class MyPostListViewAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.listview_my_post, null);
         MyPostListData data = list.get(position);
-//        if (convertView == null) {
-//            holder = new HospitalListViewHolder();
-//            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//            convertView = inflater.inflate(R.layout.diary_listview, null);
 
         ImageView typeImage = (ImageView) convertView.findViewById(R.id.iv_my_post_type);
         TextView type = (TextView) convertView.findViewById(R.id.tv_my_post_type);
@@ -68,32 +64,43 @@ public class MyPostListViewAdapter extends BaseAdapter {
         TextView petName = (TextView) convertView.findViewById(R.id.tv_my_post_name);
         TextView date = (TextView) convertView.findViewById(R.id.tv_my_post_date);
         NetworkImageView petImage = (NetworkImageView) convertView.findViewById(R.id.iv_my_info_pet_img);
-//            (LinearLayout) convertView.findViewById(R.id.ll_hostpital_tags);
+
+        if (StringUtils.equals("AR", data.getTypeName())) {
+            typeImage.setImageResource(R.drawable.ic_report_n);
+            type.setText("신고");
+
+            if (StringUtils.equals("001", data.getTypeDetailName())) {
+                typeDetail.setText("실종");
+            } else if (StringUtils.equals("001", data.getTypeDetailName())) {
+                typeDetail.setText("보호중");
+            }
+        } else if (StringUtils.equals("CB", data.getTypeName())) {
+            typeImage.setImageResource(R.drawable.ic_pet_n);
+            type.setText("분양");
+            typeDetail.setText("교배");
+        }
+
 
         petName.setText(data.getName());
         date.setText(data.getDate());
-//        description.setText(data.getDesc());
+
         petImage.setDefaultImageResId(R.drawable.img_list_empty_list);
         petImage.setErrorImageResId(R.drawable.img_list_empty_list);
         if (StringUtils.isNotBlank(data.getImageUrl())) {
             petImage.setImageUrl(data.getImageUrl(), imageLoader);
         }
 
-//            convertView.setTag(holder);
-//        } else {
-//            holder = (HospitalListViewHolder) convertView.getTag();
-//        }
-
         return convertView;
     }
 
-    public void addItem(String id, String name, String date, String imgUrl) {
+    public void addItem(String name, String createDate, String divide, String type, String thumbImgUrl) {
         MyPostListData data = new MyPostListData();
 
         data.setName(name);
-        data.setId(id);
-        data.setDate(date);
-        data.setImageUrl(imgUrl);
+        data.setTypeName(divide);
+        data.setTypeDetailName(type);
+        data.setDate(createDate);
+        data.setImageUrl(thumbImgUrl);
 
         list.add(data);
     }

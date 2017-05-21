@@ -126,43 +126,50 @@ public class NoticeActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            NoticeListVO noticeListVO = GsonUtil.fromJson(result, NoticeListVO.class);
-            if (noticeListVO.getResultCode() == -1001) {
-                return;
-            }
+            try {
+                NoticeListVO noticeListVO = GsonUtil.fromJson(result, NoticeListVO.class);
+                if (noticeListVO.getResultCode() == -1001) {
+                    return;
+                }
 
-            if (noticeListVO.getResultCode() != 0) {
+                if (noticeListVO.getResultCode() != 0) {
+                    Toast.makeText(NoticeActivity.this, "정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                    finish();
+                    return;
+                }
+
+                List<NoticeListVO.NoticeObject> data = noticeListVO.getData();
+
+                for (NoticeListVO.NoticeObject noticeObject : data) {
+                    try {
+                        adapter.addItem(noticeObject.getId(), noticeObject.getName(), sdf.format(sdfRaw.parse(noticeObject.getCreateDate())));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                adapter.notifyDataSetChanged();
+
+                lvList.setOnScrollListener(new AbsListView.OnScrollListener() {
+                    @Override
+                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                        if (firstVisibleItem + visibleItemCount >= totalItemCount && adapter.getCount() > 0) {
+                            Log.d("listview notice", "reached at bottom");
+                            callNoticeListApi();
+                        }
+                    }
+
+                    @Override
+                    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
                 Toast.makeText(NoticeActivity.this, "정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
                 finish();
                 return;
             }
-
-            List<NoticeListVO.NoticeObject> data = noticeListVO.getData();
-
-            for (NoticeListVO.NoticeObject noticeObject : data) {
-                try {
-                    adapter.addItem(noticeObject.getId(), noticeObject.getName(), sdf.format(sdfRaw.parse(noticeObject.getCreateDate())));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            adapter.notifyDataSetChanged();
-
-            lvList.setOnScrollListener(new AbsListView.OnScrollListener() {
-                @Override
-                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                    if (firstVisibleItem + visibleItemCount >= totalItemCount && adapter.getCount() > 0) {
-                        Log.d("listview notice", "reached at bottom");
-                        callNoticeListApi();
-                    }
-                }
-
-                @Override
-                public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-                }
-            });
         }
     }
 }

@@ -23,7 +23,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
-            android:text="알 수 없음" />
+            android:text="알 수 없음"
+            android:textColor="#626262"
+            android:textSize="13sp" />
     </LinearLayout>
 
     <com.android.volley.toolbox.NetworkImageView
@@ -36,8 +38,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/iv_lv_my_info_pet_img"
+        android:layout_toEndOf="@+id/iv_my_info_pet_img"
         android:orientation="vertical"
         android:paddingLeft="20dp">
 
