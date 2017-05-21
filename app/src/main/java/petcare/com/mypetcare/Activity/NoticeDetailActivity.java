@@ -71,7 +71,7 @@ public class NoticeDetailActivity extends AppCompatActivity {
 
         NoticeDetailApi noticeDetailApi = new NoticeDetailApi();
         String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-        String serviceId = "MPMS_11002";
+        String serviceId = "MPMS_15002";
 
         Map<String, String> header = new HashMap<>();
         header.put("url", url);
