@@ -43,7 +43,7 @@ public class NoticeActivity extends AppCompatActivity {
         Toolbar parent = (Toolbar) actionBarView.getParent();
         parent.setContentInsetsAbsolute(0, 0);
 
-        ibBack = (ImageButton) findViewById(R.id.ib_my_post_back);
+        ibBack = (ImageButton) findViewById(R.id.ib_notice_back);
         lvList = (ListView) findViewById(R.id.lv_notice);
         ibBack.setOnClickListener(new View.OnClickListener() {
             @Override
