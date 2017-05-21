@@ -7,28 +7,28 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorControlActivated">@color/colorPrimary</item>
-</style>
+    </style>
 
-<style name="AppTheme.NoActionBar">
-    <item name="windowActionBar">false</item>
-    <item name="windowNoTitle">true</item>
-    <item name="android:textColor">@color/normalFont</item>
-</style>
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:textColor">@color/normalFont</item>
+    </style>
 
-<style name="MyPopupMenu" parent="Theme.AppCompat.Light.NoActionBar">
-    <item name="android:popupBackground">#0F213F</item>
-    <item name="android:disabledAlpha">0.5</item>
-</style>
+    <style name="MyPopupMenu" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:popupBackground">#0F213F</item>
+        <item name="android:disabledAlpha">0.5</item>
+    </style>
 
-<style name="CustomActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
-    <item name="android:textColor">@color/naviTopFont</item>
-</style>
+    <style name="CustomActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColor">@color/naviTopFont</item>
+    </style>
 
-<style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-<style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-<!-- <style name="PauseDialog" parent="@android:style/Theme.Dialog">
+    <!-- <style name="PauseDialog" parent="@android:style/Theme.Dialog">
      <item name="android:windowTitleStyle">@style/PauseDialogTitle</item>
  </style>-->
     <style name="PauseDialogTitle" parent="@android:style/TextAppearance.DialogWindowTitle">

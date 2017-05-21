@@ -172,11 +172,21 @@
             android:name=".Activity.TermsActivity"
             android:label="@string/title_activity_terms"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider287973501627698"
             android:exported="true" />
+
+        <activity
+            android:name=".Activity.MyPostActivity"
+            android:label="@string/title_activity_my_post"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.NoticeActivity"
+            android:label="@string/title_activity_notice"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
+
 </manifest>
