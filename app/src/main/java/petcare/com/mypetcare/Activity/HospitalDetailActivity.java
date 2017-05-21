@@ -46,6 +46,8 @@ public class HospitalDetailActivity extends BaseActivity {
     private TextView tvUrl;
     private TextView tvDescription;
     private Button btCall;
+    private ImageView ivZero;
+
     private HospitalDetailVO.HospitalObject hospitalObject;
 
     private static final int NUM_HOSPITAL = 0;
@@ -113,6 +115,7 @@ public class HospitalDetailActivity extends BaseActivity {
             }
         });
 
+        ivZero = (ImageView) findViewById(R.id.iv_hospital_detail_zero);
         tvPageCount = (TextView) findViewById(R.id.tv_hospital_detail_page_count);
         ibBack = (ImageButton) findViewById(R.id.ib_hospital_detail_back);
         tvTitle = (TextView) findViewById(R.id.tv_hospital_detail_title);
@@ -375,6 +378,8 @@ public class HospitalDetailActivity extends BaseActivity {
             adapter.addItem(hospitalObject.getImgurl());
 
             if (StringUtils.isNotBlank(hospitalObject.getImgurl())) {
+                ivZero.setVisibility(View.GONE);
+                pager.setVisibility(View.VISIBLE);
                 tvPageCount.setText("1/1");
             }
 

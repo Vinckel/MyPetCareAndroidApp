@@ -13,20 +13,78 @@
         android:background="#fafafa"
         android:orientation="horizontal">
 
-        <Spinner
-            android:id="@+id/sp_announce_state"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:background="@android:color/white" />
 
-        <Spinner
-            android:id="@+id/sp_announce_region"
+        <RelativeLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:background="@android:color/white" />
+            android:background="@android:color/white">
+
+            <Spinner
+                android:id="@+id/sp_announce_state"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:src="#f3f3f3" />
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:background="@android:color/white">
+
+            <Spinner
+                android:id="@+id/sp_announce_region"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:src="#f3f3f3" />
+
+    <RelativeLayout
+        android:id="@+id/rl_announce_zero"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#f3f3f3"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="66dp"
+                android:layout_height="88dp"
+                android:src="@drawable/img_list_empty" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="목록이 없습니다"
+                android:textColor="#9b9b9b"
+                android:textSize="17sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="반경 거리 내에 목록이 없습니다.\n거리를 넓혀 더 많은 목록을 받아보세요!"
+                android:textColor="#9b9b9b"
+                android:textSize="13sp" />
+        </LinearLayout>
+    </RelativeLayout>
 
     <GridView
         android:id="@+id/gv_announce_list"
@@ -35,5 +93,6 @@
         android:horizontalSpacing="5dp"
         android:numColumns="3"
         android:padding="7dp"
-        android:verticalSpacing="5dp" />
+        android:verticalSpacing="5dp"
+        android:visibility="gone" />
 </LinearLayout>

@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,7 @@ public class MissingDetailActivity extends BaseActivity {
     private TextView tvPageCount;
     private Button btCall;
     private ImageButton ibBack;
+    private ImageView ivZero;
 
     private MissingDetailVO.ReportPetObject petObject;
     private HospitalDetailViewpagerAdapter adapter;
@@ -80,6 +82,7 @@ public class MissingDetailActivity extends BaseActivity {
             return;
         }
 
+        ivZero = (ImageView) findViewById(R.id.iv_missing_detail_zero);
         tvTitle = (TextView) findViewById(R.id.tv_missing_detail_title);
         tvName = (TextView) findViewById(R.id.tv_missing_detail_name);
         tvFound = (TextView) findViewById(R.id.tv_missing_detail_found);
@@ -149,12 +152,14 @@ public class MissingDetailActivity extends BaseActivity {
             List<MissingDetailVO.ReportPetObject.PetImageObject> imgData = petObject.getImgData();
 
             if (CollectionUtils.isNotEmpty(imgData)) {
+                pager.setVisibility(View.VISIBLE);
+                ivZero.setVisibility(View.GONE);
                 for (MissingDetailVO.ReportPetObject.PetImageObject imageObject : imgData) {
                     adapter.addItem(imageObject.getPetImgUrl());
                 }
                 tvPageCount.setText("1/" + adapter.getCount());
+                adapter.notifyDataSetChanged();
             }
-            adapter.notifyDataSetChanged();
             pager.setAdapter(adapter);
             pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override

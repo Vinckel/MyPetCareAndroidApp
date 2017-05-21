@@ -78,7 +78,7 @@ public class MainActivity extends BaseActivity
     private ConstraintLayout clMyInfoArea;
     private TextView tvMyInfoName;
     private TextView tvMyInfoPetCount;
-    private ImageView tvMyInfoProfile;
+    private RoundedImageView tvMyInfoProfile;
     private ImageLoader imageLoader;
     private LinearLayout llInsure;
     private Dialog shareDialog;
@@ -128,7 +128,7 @@ public class MainActivity extends BaseActivity
 
         tvMyInfoName = (TextView) findViewById(R.id.tv_nav_top_name);
         tvMyInfoPetCount = (TextView) findViewById(R.id.tv_nav_top_pet_count);
-        tvMyInfoProfile = (ImageView) findViewById(R.id.iv_nav_top_profile);
+        tvMyInfoProfile = (RoundedImageView) findViewById(R.id.iv_nav_top_profile);
         imageLoader = VolleySingleton.getInstance(MainActivity.this).getImageLoader();
         pref = getSharedPreferences("local_auth", MODE_PRIVATE);
 

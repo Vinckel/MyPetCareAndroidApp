@@ -151,6 +151,8 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
     private static RelativeLayout[] rlZero;
     private static ListView[] lvList;
+    private static GridView gvAnnounce;
+    private static RelativeLayout rlAnnounceZero;
 //    private static long callCooldown; // 액티비티 뜬 후 바로 스크롤 호출 방지
 
     SharedPreferences pref; // 위치 저장용
@@ -539,7 +541,8 @@ public class SlidingTabsBasicFragment extends Fragment {
                     view = getActivity().getLayoutInflater().inflate(R.layout.fragment_announce_list, container, false);
                     container.addView(view);
 
-                    GridView gvAnnounce = (GridView) view.findViewById(R.id.gv_announce_list);
+                    rlAnnounceZero = (RelativeLayout) view.findViewById(R.id.rl_announce_zero);
+                    gvAnnounce = (GridView) view.findViewById(R.id.gv_announce_list);
                     adapterAnnounce = new AnnounceGridViewAdapter(getContext(), R.layout.gridview_announce_list);
                     gvAnnounce.setAdapter(adapterAnnounce);
                     gvAnnounce.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -575,9 +578,22 @@ public class SlidingTabsBasicFragment extends Fragment {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                             if (CollectionUtils.isNotEmpty(stateList)) {
-                                GeoStateVO.GeoStateObject stateObject = stateList.get(position);
-                                selectedState = stateObject.getCode();
-                                callRegionApi(spRegion);
+                                adapterAnnounce.removeAllItems();
+                                pagingLastCheck.set(NUM_NOTI, false);
+                                pagingCount.set(NUM_NOTI, 1);
+                                if (position > 0) {
+                                    spRegion.setEnabled(true);
+                                    GeoStateVO.GeoStateObject stateObject = stateList.get(position - 1);
+                                    selectedState = stateObject.getCode();
+
+                                    callRegionApi(spRegion);
+                                } else {
+                                    spRegion.setAdapter(null);
+                                    spRegion.setEnabled(false);
+                                    rlAnnounceZero.setVisibility(View.VISIBLE);
+                                    gvAnnounce.setVisibility(View.GONE);
+                                    adapterAnnounce.notifyDataSetChanged();
+                                }
                             }
                         }
 
@@ -591,12 +607,19 @@ public class SlidingTabsBasicFragment extends Fragment {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                             if (CollectionUtils.isNotEmpty(regionList)) {
-                                GeoRegionVO.GeoRegionObject regionObject = regionList.get(position);
-                                selectedRegion = regionObject.getRegionCode();
                                 adapterAnnounce.removeAllItems();
                                 pagingLastCheck.set(NUM_NOTI, false);
                                 pagingCount.set(NUM_NOTI, 1);
-                                callAnnouncePetCallApi();
+                                if (position > 0) {
+                                    GeoRegionVO.GeoRegionObject regionObject = regionList.get(position - 1);
+                                    selectedRegion = regionObject.getRegionCode();
+
+                                    callAnnouncePetCallApi();
+                                } else {
+                                    rlAnnounceZero.setVisibility(View.VISIBLE);
+                                    gvAnnounce.setVisibility(View.GONE);
+                                    adapterAnnounce.notifyDataSetChanged();
+                                }
                             }
                         }
 
@@ -1448,6 +1471,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 
             stateList = geoStateVO.getData();
             List<String> arr = new ArrayList<>();
+            arr.add("시/도");
 
             for (GeoStateVO.GeoStateObject geo : stateList) {
                  arr.add(geo.getName());
@@ -1477,11 +1501,11 @@ public class SlidingTabsBasicFragment extends Fragment {
             spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerState.setAdapter(spinnerArrayAdapter);
 
-            if (stateList.size() > 0) {
-                pagingLastCheck.set(NUM_NOTI, false);
-                selectedState = stateList.get(0).getCode();
-                callRegionApi(spinnerRegion);
-            }
+//            if (stateList.size() > 0) {
+//                pagingLastCheck.set(NUM_NOTI, false);
+//                selectedState = stateList.get(0).getCode();
+//                callRegionApi(spinnerRegion);
+//            }
         }
     }
 
@@ -1828,6 +1852,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 
                 regionList = geoRegionVO.getData();
                 List<String> arr = new ArrayList<>();
+                arr.add("시/구/군");
 
                 for (GeoRegionVO.GeoRegionObject geo : regionList) {
                     arr.add(geo.getRegionName());
@@ -1858,8 +1883,8 @@ public class SlidingTabsBasicFragment extends Fragment {
                 spinner.setAdapter(null);
                 spinner.setAdapter(spinnerArrayAdapter);
 
-                if (arr.size() > 0) {
-                    pagingLastCheck.set(NUM_NOTI, false);
+                pagingLastCheck.set(NUM_NOTI, false);
+                if (regionList.size() > 0) {
                     selectedRegion = regionList.get(0).getRegionCode();
                 }
             } catch (Exception e) {
@@ -1918,12 +1943,23 @@ public class SlidingTabsBasicFragment extends Fragment {
 
                 if (dataList.size() == 0) {
                     pagingLastCheck.set(NUM_NOTI, true);
+                    if (rlAnnounceZero != null && gvAnnounce != null) {
+                        rlAnnounceZero.setVisibility(View.VISIBLE);
+                        gvAnnounce.setVisibility(View.GONE);
+                    }
                     return ;
                 }
 
                 for (AnnounceInfoListVO.AnnounceInfoObject data : dataList) {
 //                    adapterAnnounce.addItem(data.getThumbUrl());
                     adapterAnnounce.addItem(data);
+                }
+
+                if (adapterAnnounce.getCount() > 0) {
+                    if (rlAnnounceZero != null && gvAnnounce != null) {
+                        rlAnnounceZero.setVisibility(View.GONE);
+                        gvAnnounce.setVisibility(View.VISIBLE);
+                    }
                 }
 
                 adapterAnnounce.notifyDataSetChanged();

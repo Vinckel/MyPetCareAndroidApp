@@ -18,11 +18,20 @@
             android:layout_width="match_parent"
             android:layout_height="270dp">
 
+            <ImageView
+                android:id="@+id/iv_missing_detail_zero"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:src="@drawable/img_photo_empty"
+                android:visibility="visible" />
+
             <android.support.v4.view.ViewPager
                 android:id="@+id/vp_missing_detail"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_centerInParent="true" />
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_missing_detail_page_count"
@@ -37,7 +46,8 @@
                 android:paddingRight="8dp"
                 android:text="0/0"
                 android:textColor="@android:color/white"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:visibility="gone" />
         </RelativeLayout>
 
         <LinearLayout
