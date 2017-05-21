@@ -22,7 +22,6 @@
         android:id="@+id/tv_main2_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="분양 정보"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"

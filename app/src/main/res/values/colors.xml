@@ -12,6 +12,7 @@
     <color name="joinImageBorder">#E1E1E1</color>
 
     <color name="diaryListLeftBg">#FAFAFA</color>
+    <color name="actionbar_underbar">#CACACA</color>
 
     <color name="joinDoneBtnFont">#FFFFFF</color>
     <color name="normalFont">#626262</color>
