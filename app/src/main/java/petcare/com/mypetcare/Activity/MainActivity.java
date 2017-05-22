@@ -680,29 +680,34 @@ public class MainActivity extends BaseActivity
             super.onPostExecute(result);
 
             NoticeListVO noticeListVO = GsonUtil.fromJson(result, NoticeListVO.class);
-            if (noticeListVO.getResultCode() == -1001) {
-                return;
-            }
-
-            if (noticeListVO.getResultCode() != 0) {
-                Toast.makeText(MainActivity.this, "정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
-                finish();
-                return;
-            }
-
-            List<NoticeListVO.NoticeObject> data = noticeListVO.getData();
-
-            for (NoticeListVO.NoticeObject noticeObject : data) {
-                String noticeAt = data.get(0).getNoticeAt();
-                if (StringUtils.equals(noticeAt, "Y")) {
-                    isExistNew = true;
-                    break;
+            try {
+                if (noticeListVO.getResultCode() == -1001) {
+                    return;
                 }
-            }
 
-            if (isExistNew) {
-                adapter.setExistNewNotice();
-                adapter.notifyDataSetChanged();
+                if (noticeListVO.getResultCode() != 0) {
+                    Toast.makeText(MainActivity.this, "정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                    finish();
+                    return;
+                }
+
+                List<NoticeListVO.NoticeObject> data = noticeListVO.getData();
+
+                for (NoticeListVO.NoticeObject noticeObject : data) {
+                    String noticeAt = data.get(0).getNoticeAt();
+                    if (StringUtils.equals(noticeAt, "Y")) {
+                        isExistNew = true;
+                        break;
+                    }
+                }
+
+                if (isExistNew) {
+                    adapter.setExistNewNotice();
+                    adapter.notifyDataSetChanged();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(MainActivity.this, "정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
             }
         }
     }
