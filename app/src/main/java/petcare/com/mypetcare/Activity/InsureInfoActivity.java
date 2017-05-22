@@ -174,7 +174,7 @@ public class InsureInfoActivity extends BaseActivity {
 //                    tv3Answer.setText(ss3);
 //                    tv3Answer.setMovementMethod(LinkMovementMethod.getInstance());
 
-                    SpannableStringBuilder sb = new SpannableStringBuilder("반쪽의 질병 및 상해에 대한 병원비\n를 \'실손\' 보상해준답니다.\n\n(자세한 내용은 ");
+                    SpannableStringBuilder sb = new SpannableStringBuilder("반쪽의 질병 및 상해에 대한\n병원비를 \'실손\' 보상해준답니다.\n\n(자세한 내용은 ");
                     sb.append("'보장하는 손해'");
                     sb.setSpan(new ClickableSpan() {
                         @Override
@@ -192,7 +192,7 @@ public class InsureInfoActivity extends BaseActivity {
                             startActivity(intent);
                         }
                     }, sb.length() - "'보장하지 않는 손해'".length(), sb.length(), 0);
-                    sb.append(" 참고해주세요.)");
+                    sb.append("참고해\n주세요.)");
                     tv3Answer.setMovementMethod(LinkMovementMethod.getInstance());
                     tv3Answer.setText(sb, TextView.BufferType.SPANNABLE);
                     break;

@@ -624,7 +624,12 @@ public class MainActivity extends BaseActivity
                 String url = info.getUserImgThumbUrl();
                 int count = CollectionUtils.size(info.getData());
 
-                tvMyInfoName.setText(userName);
+                if (StringUtils.isBlank(userName)) {
+                    tvMyInfoName.setText("이름을 입력하세요");
+                } else {
+                    tvMyInfoName.setText(userName);
+                }
+
                 tvMyInfoPetCount.setText("마이펫 " + String.valueOf(count));
                 imageLoader.get(url, new ImageLoader.ImageListener() {
 

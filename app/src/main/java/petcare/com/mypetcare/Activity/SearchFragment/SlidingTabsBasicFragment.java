@@ -104,7 +104,6 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static AnnounceGridViewAdapter adapterAnnounce;
     private static MatingGridViewAdapter adapterMating;
     private static MissingGridViewAdapter adapterMissing;
-    private static MissingGridViewAdapter adapterProtection;
     private static HospitalListViewAdapter[] adapterHospital;
     private static List<Integer> pagingCount;
     private static List<Integer> pagingCountAdopt;
@@ -122,9 +121,6 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static final int NUM_ADOPT_MATING = 1;
     private static final int NUM_REPORT_MISSING = 0;
     private static final int NUM_REPORT_CENTER = 1;
-    private static boolean isLoading = false;
-    private static long currentTime = 0L;
-    private static int maxCount = 0;
     private static final int PAGE_OFFSET = 15;
     private static List<Boolean> pagingLastCheck;
     private static List<Boolean> pagingLastCheckAdopt;
@@ -133,7 +129,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static Map<String, String> reportCodeMap;
     private static double lastLongitude = 127.0276;
     private static double lastLatitude = 37.497959;
-    private static Spinner spHospital;
+    private static Spinner[] spHospital;
     private static long[] scrollCooldown;
     private static long[] scrollCooldownAdopt;
     private static long[] scrollCooldownReport;
@@ -146,14 +142,12 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static FuneralApi funeralApi;
     private static AdoptApi adoptApi;
     private static MissingListApi missingListApi;
-//    private static AdoptGridViewAdapter adapterAdopt;
     private static Context context;
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
     private static RelativeLayout[] rlZero;
     private static ListView[] lvList;
     private static GridView gvAnnounce;
     private static RelativeLayout rlAnnounceZero;
-//    private static long callCooldown; // 액티비티 뜬 후 바로 스크롤 호출 방지
 
     SharedPreferences pref; // 위치 저장용
 
@@ -252,6 +246,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 //            }
 //        }, 51000);
 
+        spHospital = new Spinner[9];
         isLoaded = new boolean[9];
         rlZero = new RelativeLayout[9];
         lvList = new ListView[9];
@@ -919,14 +914,29 @@ public class SlidingTabsBasicFragment extends Fragment {
         View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_hospital, container, false);
         container.addView(view);
         lvList[num] = (ListView) view.findViewById(R.id.lv_hospital_list);
-        spHospital = (Spinner) view.findViewById(R.id.sp_hospital_distance);
+        spHospital[num] = (Spinner) view.findViewById(R.id.sp_hospital_distance);
         rlZero[num] = (RelativeLayout) view.findViewById(R.id.rl_hospital_zero);
-        spHospital.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spHospital[num].setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String radius = StringUtils.substring(spHospital.getItemAtPosition(position).toString(), 0, 1) + "000";
+                String radiusStr = spHospital[num].getItemAtPosition(position).toString();
+                String radius = null;
+
+                if (StringUtils.startsWith(radiusStr, "1")) {
+                    radius = "1000";
+                } else if (StringUtils.startsWith(radiusStr, "2")) {
+                    radius = "2000";
+                } else if (StringUtils.startsWith(radiusStr, "3")) {
+                    radius = "3000";
+                } else if (StringUtils.startsWith(radiusStr, "4")) {
+                    radius = "4000";
+                } else {
+                    radius = "20000";
+                }
+
                 pagingCount.set(num, 1);
                 scrollCooldown[num] = 0L;
+                Log.d("scroll cooldown", "" + scrollCooldown[num]);
                 adapterHospital[num].clear();
 
                 if (lastLatitude < 0 || lastLongitude < 0) {
@@ -936,24 +946,31 @@ public class SlidingTabsBasicFragment extends Fragment {
 
                 switch (num) {
                     case NUM_HOTEL:
+                        pagingCount.set(NUM_HOTEL, 1);
                         callHotelApi(radius);
                         break;
                     case NUM_BEAUTY:
+                        pagingCount.set(NUM_BEAUTY, 1);
                         callBeautyApi(radius);
                         break;
                     case NUM_HOSPITAL:
+                        pagingCount.set(NUM_HOSPITAL, 1);
                         callHospitalApi(radius);
                         break;
                     case NUM_TOOL:
+                        pagingCount.set(NUM_TOOL, 1);
                         callToolApi(radius);
                         break;
                     case NUM_CAFE:
+                        pagingCount.set(NUM_CAFE, 1);
                         callCafeApi(radius);
                         break;
                     case NUM_FUNERAL:
+                        pagingCount.set(NUM_FUNERAL, 1);
                         callFuneralApi(radius);
                         break;
                     case NUM_ADOPT:
+                        pagingCount.set(NUM_ADOPT, 1);
                         callAdoptApi(radius);
                         break;
                 }
@@ -1008,8 +1025,21 @@ public class SlidingTabsBasicFragment extends Fragment {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if (firstVisibleItem + visibleItemCount >= totalItemCount && adapterHospital[num].getCount() > 0) {
                     Log.d("listview hospital", "reached at bottom");
-                    String radius = StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1);
 
+                    String radiusStr = spHospital[num].getSelectedItem().toString();
+                    String radius = null;
+
+                    if (StringUtils.startsWith(radiusStr, "1")) {
+                        radius = "1000";
+                    } else if (StringUtils.startsWith(radiusStr, "2")) {
+                        radius = "2000";
+                    } else if (StringUtils.startsWith(radiusStr, "3")) {
+                        radius = "3000";
+                    } else if (StringUtils.startsWith(radiusStr, "4")) {
+                        radius = "4000";
+                    } else {
+                        radius = "20000";
+                    }
 
                     if (lastLatitude < 0 || lastLongitude < 0) {
                         Toast.makeText(getContext(), "위치를 받아올 수 없습니다.", Toast.LENGTH_SHORT).show();
@@ -1248,7 +1278,6 @@ public class SlidingTabsBasicFragment extends Fragment {
             params.put("SEARCH_LAT", lastLatitude);
             params.put("SEARCH_LON", lastLongitude);
             params.put("SEARCH_RADIUS", radius);
-            pagingCount.set(NUM_HOSPITAL, currentPage + 1);
             Log.d("latitude", String.valueOf(lastLatitude));
             Log.d("latitude", String.valueOf(lastLongitude));
 
@@ -1575,6 +1604,8 @@ public class SlidingTabsBasicFragment extends Fragment {
                     return;
                 }
 
+                pagingCount.set(NUM_TOOL, pagingCount.get(NUM_TOOL) + 1);
+
                 List<ToolListVO.ToolObject> data = toolListVO.getData();
 
                 for (ToolListVO.ToolObject toolObject : data) {
@@ -1611,6 +1642,8 @@ public class SlidingTabsBasicFragment extends Fragment {
                     return;
                 }
 
+                pagingCount.set(NUM_FUNERAL, pagingCount.get(NUM_FUNERAL) + 1);
+
                 List<FuneralListVO.FuneralObject> data = funeralListVO.getData();
 
                 for (FuneralListVO.FuneralObject funeralObject : data) {
@@ -1646,6 +1679,8 @@ public class SlidingTabsBasicFragment extends Fragment {
                     Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                pagingCount.set(NUM_ADOPT, pagingCount.get(NUM_ADOPT) + 1);
 
                 List<AdoptListVO.AdoptObject> data = adoptListVO.getData();
 
@@ -1687,6 +1722,8 @@ public class SlidingTabsBasicFragment extends Fragment {
                     return;
                 }
 
+                pagingCount.set(NUM_CAFE, pagingCount.get(NUM_CAFE) + 1);
+
                 List<CafeListVO.CafeObject> data = cafeListVO.getData();
 
                 for (CafeListVO.CafeObject cafeObject : data) {
@@ -1722,6 +1759,8 @@ public class SlidingTabsBasicFragment extends Fragment {
                     Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                pagingCount.set(NUM_HOTEL, pagingCount.get(NUM_HOTEL) + 1);
 
                 List<HotelListVO.HotelObject> data = hotelListVO.getData();
 
@@ -1777,6 +1816,8 @@ public class SlidingTabsBasicFragment extends Fragment {
                     return;
                 }
 
+                pagingCount.set(NUM_BEAUTY, pagingCount.get(NUM_BEAUTY) + 1);
+
                 List<BeautyListVO.BeautyObject> data = beautyListVO.getData();
 
                 for (BeautyListVO.BeautyObject beautyObject : data) {
@@ -1812,6 +1853,8 @@ public class SlidingTabsBasicFragment extends Fragment {
                     Toast.makeText(getActivity(), "데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                pagingCount.set(NUM_HOSPITAL, pagingCount.get(NUM_HOSPITAL) + 1);
 
                 List<HospitalListVO.HospitalObject> data = hospitalListVO.getData();
 
