@@ -2,19 +2,23 @@ package petcare.com.mypetcare.Activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.Signature;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -27,13 +31,9 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.OptionalPendingResult;
-import com.google.android.gms.common.api.ResultCallback;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.network.ErrorResult;
@@ -49,7 +49,6 @@ import org.apache.commons.collections4.MapUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.MessageDigest;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -64,7 +63,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private static final int REQUEST_CODE_LOCATION = 1;
     private CallbackManager callbackManager;
     private SharedPreferences pref;
-    private GoogleApiClient googleApiClient;
     private static final int RC_SIGN_IN = 9001; // google
     private static final int FIRST_LOGIN = 1; // google
     protected static Global global = null;
@@ -72,9 +70,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private OAuthLogin mOAuthLoginModule;
     private ImageView btNaverFake;
     private ImageView btKakaoFake;
-    private com.kakao.usermgmt.LoginButton btKakao;
     private ImageView btFacebookFake;
+    private com.kakao.usermgmt.LoginButton btKakao;
     private OAuthLoginButton naverLoginButton;
+    private CheckBox cbTerms1;
+    private CheckBox cbTerms2;
+    private CheckBox cbTerms3;
+    private TextView tvTerms1;
+    private TextView tvTerms2;
+    private TextView tvTerms3;
+    private LinearLayout llTerms;
 
     private void saveEmail(String email) {
         SharedPreferences.Editor edit = pref.edit();
@@ -105,10 +110,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         goToMain();
     }
 
-    private void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
+//    private void signIn() {
+//        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+//        startActivityForResult(signInIntent, RC_SIGN_IN);
+//    }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
@@ -169,6 +174,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
     }
 
+    public static void setGrayScale(ImageView v) {
+        ColorMatrix matrix = new ColorMatrix();
+        matrix.setSaturation(0); //0 means grayscale
+        ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
+        v.setColorFilter(cf);
+        v.setImageAlpha(128);
+    }
+
+    public static void setColorScale(ImageView v) {
+        v.setColorFilter(null);
+        v.setImageAlpha(255);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -183,6 +201,125 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if (checkEmail() && pref.getBoolean("autoLogin", true)) {
             goToMain();
         }
+
+        btFacebookFake = (ImageView) findViewById(R.id.bt_login_facebook_fake);
+        btKakaoFake = (ImageView) findViewById(R.id.bt_login_kakao_fake);
+        btNaverFake = (ImageView) findViewById(R.id.bt_login_naver_fake);
+
+        cbTerms1 = (CheckBox) findViewById(R.id.cb_login_terms1);
+        cbTerms2 = (CheckBox) findViewById(R.id.cb_login_terms2);
+        cbTerms3 = (CheckBox) findViewById(R.id.cb_login_terms3);
+
+        tvTerms1 = (TextView) findViewById(R.id.tv_login_terms1);
+        tvTerms2 = (TextView) findViewById(R.id.tv_login_terms2);
+        tvTerms3 = (TextView) findViewById(R.id.tv_login_terms3);
+
+        llTerms = (LinearLayout) findViewById(R.id.ll_terms);
+
+        if (pref.contains("autoLogin")) {
+            cbTerms1.setChecked(true);
+            cbTerms2.setChecked(true);
+            cbTerms3.setChecked(true);
+
+            cbTerms1.setEnabled(false);
+            cbTerms2.setEnabled(false);
+            cbTerms3.setEnabled(false);
+
+            llTerms.setVisibility(View.INVISIBLE);
+        } else {
+            setGrayScale(btNaverFake);
+            setGrayScale(btKakaoFake);
+            setGrayScale(btFacebookFake);
+        }
+
+        tvTerms1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+                alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.setMessage(getResources().getString(R.string.terms1));
+
+                alert.setCancelable(false);
+                AlertDialog alertDialog = alert.create();
+                alertDialog.show();
+            }
+        });
+
+        tvTerms2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+                alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.setMessage(getResources().getString(R.string.terms2));
+
+                alert.setCancelable(false);
+                AlertDialog alertDialog = alert.create();
+                alertDialog.show();
+            }
+        });
+
+        tvTerms3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+                alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.setMessage(getResources().getString(R.string.terms3));
+
+                alert.setCancelable(false);
+                AlertDialog alertDialog = alert.create();
+                alertDialog.show();
+            }
+        });
+
+        CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!pref.contains("autoLogin")) {
+                    if (cbTerms1.isChecked() && cbTerms2.isChecked() && cbTerms3.isChecked()) {
+                        btNaverFake.setClickable(true);
+                        btKakaoFake.setClickable(true);
+                        btFacebookFake.setClickable(true);
+
+                        setColorScale(btNaverFake);
+                        setColorScale(btKakaoFake);
+                        setColorScale(btFacebookFake);
+                    } else {
+                        btNaverFake.setClickable(false);
+                        btKakaoFake.setClickable(false);
+                        btFacebookFake.setClickable(false);
+
+                        setGrayScale(btNaverFake);
+                        setGrayScale(btKakaoFake);
+                        setGrayScale(btFacebookFake);
+                    }
+                }
+            }
+        };
+
+        cbTerms1.setOnCheckedChangeListener(listener);
+        cbTerms2.setOnCheckedChangeListener(listener);
+        cbTerms3.setOnCheckedChangeListener(listener);
 
         initializeNaverAPI();
 
@@ -253,9 +390,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         callbackManager = CallbackManager.Factory.create();
 
         final LoginButton fbLogin = (LoginButton) findViewById(R.id.bt_login_facebook);
-        btFacebookFake = (ImageView) findViewById(R.id.bt_login_facebook_fake);
         btKakao = (com.kakao.usermgmt.LoginButton) findViewById(R.id.bt_login_kakao);
-        btKakaoFake = (ImageView) findViewById(R.id.bt_login_kakao_fake);
 
         btKakaoFake.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -384,7 +519,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         // 네이버 로그인 버튼 리스너 등록
         naverLoginButton = (OAuthLoginButton) findViewById(R.id.bt_login_naver);
-        btNaverFake = (ImageView) findViewById(R.id.bt_login_naver_fake);
         btNaverFake.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

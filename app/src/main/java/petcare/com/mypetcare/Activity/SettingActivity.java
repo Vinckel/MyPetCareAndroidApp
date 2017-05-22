@@ -55,7 +55,7 @@ public class SettingActivity extends AppCompatActivity {
         pref = getSharedPreferences("local_auth", MODE_PRIVATE);
 
         ibBack = (ImageButton) findViewById(R.id.ib_setting_back);
-        rlTerms = (RelativeLayout) findViewById(R.id.rl_setting_terms);
+//        rlTerms = (RelativeLayout) findViewById(R.id.rl_setting_terms);
         tvVersion = (TextView) findViewById(R.id.tv_setting_version);
         swLogin = (SwitchCompat) findViewById(R.id.sw_setting_login);
 
@@ -87,13 +87,13 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
-        rlTerms.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SettingActivity.this, TermsActivity.class);
-                startActivity(intent);
-            }
-        });
+//        rlTerms.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(SettingActivity.this, TermsActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
         ibBack.setOnClickListener(new View.OnClickListener() {
             @Override
