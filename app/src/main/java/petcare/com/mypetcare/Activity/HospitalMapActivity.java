@@ -36,6 +36,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.kakao.kakaonavi.KakaoNaviParams;
+import com.kakao.kakaonavi.KakaoNaviService;
+import com.kakao.kakaonavi.Location;
+import com.kakao.kakaonavi.NaviOptions;
+import com.kakao.kakaonavi.options.CoordType;
 
 import net.daum.mf.map.api.CalloutBalloonAdapter;
 import net.daum.mf.map.api.MapPOIItem;
@@ -135,6 +140,8 @@ public class HospitalMapActivity extends BaseActivity
                 shareDialog.setContentView(R.layout.popup_map);
                 adapterShare.addItem("주소 복사");
                 adapterShare.addItem("네이버 지도로 보기");
+                adapterShare.addItem("카카오 네비로 보기");
+//                adapterShare.addItem("T MAP으로 보기");
                 adapterShare.addItem("카카오톡 공유");
                 adapterShare.addItem("라인 공유");
                 adapterShare.addItem("메세지 공유");
@@ -162,14 +169,21 @@ public class HospitalMapActivity extends BaseActivity
                                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url + "#/map"));
                                     startActivity(intent);
                                     break;
-                                case 2: // 카카오톡
+                                case 2:
+                                    Location destination = Location.newBuilder(name, longitude, latitude).build();
+                                    KakaoNaviParams.Builder builder = KakaoNaviParams.newBuilder(destination)
+                                            .setNaviOptions(NaviOptions.newBuilder().setCoordType(CoordType.WGS84).build());
+
+                                    KakaoNaviService.shareDestination(HospitalMapActivity.this, builder.build());
+                                    break;
+                                case 3: // 카카오톡
                                     i = new Intent(Intent.ACTION_SEND);
                                     i.setType("text/plain");
                                     i.setPackage("com.kakao.talk");
                                     i.putExtra(Intent.EXTRA_TEXT, locationDetailName);
                                     startActivity(i);
                                     break;
-                                case 3: // 라인
+                                case 4: // 라인
                                     i = manager.getLaunchIntentForPackage("jp.naver.line.android");
 
                                     if (i == null) {
@@ -183,7 +197,7 @@ public class HospitalMapActivity extends BaseActivity
                                     i = new Intent(Intent.ACTION_VIEW, uri);
                                     startActivity(i);
                                     break;
-                                case 4: // 메세지
+                                case 5: // 메세지
                                     i = new Intent(Intent.ACTION_VIEW);
                                     i.setData(Uri.parse("smsto:"));
                                     i.putExtra("sms_body", locationDetailName);

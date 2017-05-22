@@ -23,7 +23,9 @@
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
-
+        <meta-data
+            android:name="com.kakao.sdk.kakaonavi.useWebView"
+            android:value="false" />
         <activity
             android:name=".Activity.MainActivity"
             android:label="@string/title_activity_main"

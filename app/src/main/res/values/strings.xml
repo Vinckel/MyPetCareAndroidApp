@@ -1,9 +1,9 @@
 <resources>
     <string name="facebook_app_id">287973501627698</string>
-    <string name="kakao_app_key">c166da129dac875e35fa767a08f3c0fb</string>
+    <string name="kakao_app_key">6b63e3de31a394f7649d2f730d2fe2c3</string>
     <string name="naver_client_id">FavhMGXhU3BUSy7Xs3PK</string>
     <string name="naver_client_secret">MDKMaaq9BR</string>
-    <string name="naver_client_name">Mypet</string>
+    <string name="naver_client_name">내옆에</string>
     <string name="daum_map_key">fdc23d4726cd2099b3f2a94f24ce88aa</string>
 
     <string name="app_name">내옆에</string>
