@@ -3,6 +3,7 @@ package petcare.com.mypetcare.Util;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -74,7 +75,7 @@ public class TokenApi extends AsyncTask<String, Void, String> {
             String token = tokenVO.getToken();
 
             return token;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

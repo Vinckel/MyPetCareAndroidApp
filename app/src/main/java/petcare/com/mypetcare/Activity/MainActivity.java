@@ -678,9 +678,9 @@ public class MainActivity extends BaseActivity
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-
-            NoticeListVO noticeListVO = GsonUtil.fromJson(result, NoticeListVO.class);
             try {
+                NoticeListVO noticeListVO = GsonUtil.fromJson(result, NoticeListVO.class);
+
                 if (noticeListVO.getResultCode() == -1001) {
                     return;
                 }
