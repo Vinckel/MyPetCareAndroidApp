@@ -27,6 +27,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -59,7 +60,7 @@ import petcare.com.mypetcare.Util.Global;
 import petcare.com.mypetcare.Util.GsonUtil;
 import petcare.com.mypetcare.Util.TokenApi;
 
-public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class LoginActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
     private static final int REQUEST_CODE_LOCATION = 1;
     private CallbackManager callbackManager;
     private SharedPreferences pref;
@@ -200,6 +201,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         if (checkEmail() && pref.getBoolean("autoLogin", true)) {
             goToMain();
+            return;
         }
 
         btFacebookFake = (ImageView) findViewById(R.id.bt_login_facebook_fake);
@@ -216,7 +218,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         llTerms = (LinearLayout) findViewById(R.id.ll_terms);
 
-        if (pref.contains("autoLogin")) {
+        if (pref.contains("autoLogin")) { // 2번째 이상 로그인이며 자동로그인 해제 상태
             cbTerms1.setChecked(true);
             cbTerms2.setChecked(true);
             cbTerms3.setChecked(true);
@@ -224,6 +226,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             cbTerms1.setEnabled(false);
             cbTerms2.setEnabled(false);
             cbTerms3.setEnabled(false);
+
+            setInitialized(false);
+            global.set("email", null);
+            global.set("token", null);
+
+            LoginManager.getInstance().logOut();
+            UserManagement.requestLogout(null);
 
             llTerms.setVisibility(View.INVISIBLE);
         } else {

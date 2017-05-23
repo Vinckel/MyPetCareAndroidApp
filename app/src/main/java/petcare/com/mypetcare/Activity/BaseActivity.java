@@ -21,6 +21,9 @@ public class BaseActivity extends AppCompatActivity {
     protected static Global global = null;
     private static Gson gson;
 
+    public void setInitialized(boolean is) {
+        initialized = is;
+    }
     @Override
     public void onResume() {
         super.onResume();
