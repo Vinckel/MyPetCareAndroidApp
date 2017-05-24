@@ -571,6 +571,7 @@ public class MainActivity extends BaseActivity
         progressBar.setVisibility(View.VISIBLE);
         ibHamburger.setEnabled(false);
         ibAbNoti.setEnabled(false);
+        llInsure.setEnabled(false);
 
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         toggle.onDrawerStateChanged(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -592,6 +593,7 @@ public class MainActivity extends BaseActivity
         progressBar.setVisibility(View.GONE);
         ibHamburger.setEnabled(true);
         ibAbNoti.setEnabled(true);
+        llInsure.setEnabled(true);
 
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         toggle.onDrawerStateChanged(DrawerLayout.LOCK_MODE_UNLOCKED);

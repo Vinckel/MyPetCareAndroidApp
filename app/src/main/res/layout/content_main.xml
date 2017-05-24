@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,258 +10,13 @@
     tools:showIn="@layout/app_bar_main">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="34dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="34dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="27dp"
-        android:orientation="vertical"
-        app:layout_constraintLeft_toRightOf="@+id/centerReport"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rightFuneral">
-
-        <ImageButton
-            android:id="@+id/btnNoti"
-            android:layout_width="81dp"
-            android:layout_height="81dp"
-            android:background="@drawable/ic_notice_n" />
-
-        <TextView
-            android:id="@+id/tvNoti"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/main_noti"
-            android:textAlignment="center"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="25dp"
-        android:layout_marginLeft="34dp"
-        android:layout_marginRight="25dp"
-        android:layout_marginStart="34dp"
-        android:layout_marginTop="27dp"
-        android:orientation="vertical"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/centerReport"
-        app:layout_constraintTop_toBottomOf="@+id/leftTool">
-
-        <ImageButton
-            android:id="@+id/btnAdopt"
-            android:layout_width="81dp"
-            android:layout_height="81dp"
-            android:background="@drawable/ic_pet_n" />
-
-        <TextView
-            android:id="@+id/tvAdopt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/main_adopt"
-            android:textAlignment="center"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/centerReport"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="27dp"
-        android:orientation="vertical"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/centerCafe">
-
-        <ImageButton
-            android:id="@+id/btnReport"
-            android:layout_width="81dp"
-            android:layout_height="81dp"
-            android:background="@drawable/ic_report_n" />
-
-        <TextView
-            android:id="@+id/tvReport"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/main_report"
-            android:textAlignment="center"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="27dp"
-        android:layout_marginEnd="34dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="34dp"
-        android:layout_marginStart="25dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/rightFuneral"
-        app:layout_constraintLeft_toRightOf="@+id/centerBeauty"
-        app:layout_constraintRight_toRightOf="parent">
-
-        <ImageButton
-            android:id="@+id/btnHotel"
-            android:layout_width="81dp"
-            android:layout_height="81dp"
-            android:background="@drawable/ic_hotel_n" />
-
-        <TextView
-            android:id="@+id/tvHotel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/main_hotel"
-            android:textAlignment="center"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="27dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginLeft="34dp"
-        android:layout_marginRight="25dp"
-        android:layout_marginStart="34dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/leftTool"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/centerBeauty">
-
-        <ImageButton
-            android:id="@+id/btnHospital"
-            android:layout_width="81dp"
-            android:layout_height="81dp"
-            android:background="@drawable/ic_hospital_n" />
-
-        <TextView
-            android:id="@+id/tvHospital"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/main_hospital"
-            android:textAlignment="center"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/centerBeauty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="27dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/centerCafe"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
-
-        <ImageButton
-            android:id="@+id/btnBeauty"
-            android:layout_width="81dp"
-            android:layout_height="81dp"
-            android:background="@drawable/ic_beauty_shop_n" />
-
-        <TextView
-            android:id="@+id/tvBeauty"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/main_beauty"
-            android:textAlignment="center"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/rightFuneral"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="33dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="33dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="176dp"
-        android:orientation="vertical"
-        app:layout_constraintLeft_toRightOf="@+id/centerCafe"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageButton
-            android:id="@+id/btnFuneral"
-            android:layout_width="81dp"
-            android:layout_height="81dp"
-            android:background="@drawable/ic_funeral_n" />
-
-        <TextView
-            android:id="@+id/tvFuneral"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/main_funeral"
-            android:textAlignment="center"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/leftTool"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="25dp"
-        android:layout_marginLeft="34dp"
-        android:layout_marginRight="25dp"
-        android:layout_marginStart="34dp"
-        android:layout_marginTop="176dp"
-        android:orientation="vertical"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/centerCafe"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageButton
-            android:id="@+id/btnTool"
-            android:layout_width="81dp"
-            android:layout_height="81dp"
-            android:background="@drawable/ic_product_n" />
-
-        <TextView
-            android:id="@+id/tvTool"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/main_tool"
-            android:textAlignment="center"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/centerCafe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="176dp"
-        android:orientation="vertical"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageButton
-            android:id="@+id/btnCafe"
-            android:layout_width="81dp"
-            android:layout_height="81dp"
-            android:background="@drawable/ic_cafe_n" />
-
-        <TextView
-            android:id="@+id/tvCafe"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/main_cafe"
-            android:textAlignment="center"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/llInsure"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="75dp"
+        android:layout_alignParentBottom="true"
         android:background="@color/colorPrimary"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
@@ -291,23 +46,276 @@
         </LinearLayout>
     </LinearLayout>
 
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/llInsure"
+        android:layout_centerHorizontal="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="34dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="34dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="27dp"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toRightOf="@+id/centerReport"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rightFuneral">
+
+            <ImageButton
+                android:id="@+id/btnNoti"
+                android:layout_width="81dp"
+                android:layout_height="81dp"
+                android:background="@drawable/ic_notice_n" />
+
+            <TextView
+                android:id="@+id/tvNoti"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/main_noti"
+                android:textAlignment="center"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="25dp"
+            android:layout_marginLeft="34dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginStart="34dp"
+            android:layout_marginTop="27dp"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/centerReport"
+            app:layout_constraintTop_toBottomOf="@+id/leftTool">
+
+            <ImageButton
+                android:id="@+id/btnAdopt"
+                android:layout_width="81dp"
+                android:layout_height="81dp"
+                android:background="@drawable/ic_pet_n" />
+
+            <TextView
+                android:id="@+id/tvAdopt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/main_adopt"
+                android:textAlignment="center"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/centerReport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="27dp"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/centerCafe">
+
+            <ImageButton
+                android:id="@+id/btnReport"
+                android:layout_width="81dp"
+                android:layout_height="81dp"
+                android:background="@drawable/ic_report_n" />
+
+            <TextView
+                android:id="@+id/tvReport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/main_report"
+                android:textAlignment="center"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="27dp"
+            android:layout_marginEnd="34dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="34dp"
+            android:layout_marginStart="25dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/rightFuneral"
+            app:layout_constraintLeft_toRightOf="@+id/centerBeauty"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <ImageButton
+                android:id="@+id/btnHotel"
+                android:layout_width="81dp"
+                android:layout_height="81dp"
+                android:background="@drawable/ic_hotel_n" />
+
+            <TextView
+                android:id="@+id/tvHotel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/main_hotel"
+                android:textAlignment="center"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="27dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginLeft="34dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginStart="34dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/leftTool"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/centerBeauty">
+
+            <ImageButton
+                android:id="@+id/btnHospital"
+                android:layout_width="81dp"
+                android:layout_height="81dp"
+                android:background="@drawable/ic_hospital_n" />
+
+            <TextView
+                android:id="@+id/tvHospital"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/main_hospital"
+                android:textAlignment="center"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/centerBeauty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="27dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/centerCafe"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <ImageButton
+                android:id="@+id/btnBeauty"
+                android:layout_width="81dp"
+                android:layout_height="81dp"
+                android:background="@drawable/ic_beauty_shop_n" />
+
+            <TextView
+                android:id="@+id/tvBeauty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/main_beauty"
+                android:textAlignment="center"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rightFuneral"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="33dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="33dp"
+            android:layout_marginStart="25dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/centerCafe"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/btnFuneral"
+                android:layout_width="81dp"
+                android:layout_height="81dp"
+                android:background="@drawable/ic_funeral_n" />
+
+            <TextView
+                android:id="@+id/tvFuneral"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/main_funeral"
+                android:textAlignment="center"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/leftTool"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="25dp"
+            android:layout_marginLeft="34dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginStart="34dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/centerCafe"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/btnTool"
+                android:layout_width="81dp"
+                android:layout_height="81dp"
+                android:background="@drawable/ic_product_n" />
+
+            <TextView
+                android:id="@+id/tvTool"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/main_tool"
+                android:textAlignment="center"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/centerCafe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/btnCafe"
+                android:layout_width="81dp"
+                android:layout_height="81dp"
+                android:background="@drawable/ic_cafe_n" />
+
+            <TextView
+                android:id="@+id/tvCafe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/main_cafe"
+                android:textAlignment="center"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
+
     <RelativeLayout
         android:id="@+id/rl_main_dim"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="#88000000"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_above="@+id/llInsure">
 
         <ProgressBar
             android:id="@+id/pb_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:visibility="gone" />
+            android:visibility="visible" />
     </RelativeLayout>
-
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

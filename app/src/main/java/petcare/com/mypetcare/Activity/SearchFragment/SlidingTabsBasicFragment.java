@@ -1409,21 +1409,26 @@ public class SlidingTabsBasicFragment extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            ReportListVO reportListVO = GsonUtil.fromJson(result, ReportListVO.class);
-            if (reportListVO.getResultCode() == -1001) {
-                return;
-            }
+            try {
+                ReportListVO reportListVO = GsonUtil.fromJson(result, ReportListVO.class);
+                if (reportListVO.getResultCode() == -1001) {
+                    return;
+                }
 
-            if (reportListVO.getResultCode() != 0) {
-                return;
-            }
+                if (reportListVO.getResultCode() != 0) {
+                    return;
+                }
 
-            List<ReportListVO.ReportPetObject> dataList = reportListVO.getData();
-            for (ReportListVO.ReportPetObject data : dataList) {
-                adapterMissing.addItem(data.getId(), data.getThumbImgUrl(), data.isFound(), data.getLocation());
-            }
+                List<ReportListVO.ReportPetObject> dataList = reportListVO.getData();
+                for (ReportListVO.ReportPetObject data : dataList) {
+                    adapterMissing.addItem(data.getId(), data.getThumbImgUrl(), data.isFound(), data.getLocation());
+                }
 
-            adapterMissing.notifyDataSetChanged();
+                adapterMissing.notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
+//                Toast.makeText(getActivity(), "", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -1433,21 +1438,26 @@ public class SlidingTabsBasicFragment extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            MatingListVO matingListVO = GsonUtil.fromJson(result, MatingListVO.class);
-            if (matingListVO.getResultCode() == -1001) {
-                return;
-            }
+            try {
+                MatingListVO matingListVO = GsonUtil.fromJson(result, MatingListVO.class);
+                if (matingListVO.getResultCode() == -1001) {
+                    return;
+                }
 
-            if (matingListVO.getResultCode() != 0) {
-                return;
-            }
+                if (matingListVO.getResultCode() != 0) {
+                    return;
+                }
 
-            List<MatingListVO.MatingObject> dataList = matingListVO.getData();
-            for (MatingListVO.MatingObject data : dataList) {
-                adapterMating.addItem(data.getId(), data.getThumbImgUrl(), data.getGender());
-            }
+                List<MatingListVO.MatingObject> dataList = matingListVO.getData();
+                for (MatingListVO.MatingObject data : dataList) {
+                    adapterMating.addItem(data.getId(), data.getThumbImgUrl(), data.getGender());
+                }
 
-            adapterMating.notifyDataSetChanged();
+                adapterMating.notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
+//                Toast.makeText(getActivity(), "", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -1493,42 +1503,43 @@ public class SlidingTabsBasicFragment extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            GeoStateVO geoStateVO = GsonUtil.fromJson(result, GeoStateVO.class);
-            if (geoStateVO.getResultCode() != 0) {
-                return;
+            try {
+                GeoStateVO geoStateVO = GsonUtil.fromJson(result, GeoStateVO.class);
+                if (geoStateVO.getResultCode() != 0) {
+                    return;
+                }
+
+                stateList = geoStateVO.getData();
+                List<String> arr = new ArrayList<>();
+                arr.add("시/도");
+
+                for (GeoStateVO.GeoStateObject geo : stateList) {
+                    arr.add(geo.getName());
+                }
+
+                ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, arr) {
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        return setCentered(super.getView(position, convertView, parent));
+                    }
+
+                    @Override
+                    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                        return setCentered(super.getDropDownView(position, convertView, parent));
+                    }
+
+                    private View setCentered(View view) {
+                        TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                        textView.setGravity(Gravity.CENTER);
+                        return view;
+                    }
+                };
+                spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerState.setAdapter(spinnerArrayAdapter);
+            } catch (Exception e) {
+                e.printStackTrace();
+//                Toast.makeText(getActivity(), "", Toast.LENGTH_SHORT).show();
             }
-
-            stateList = geoStateVO.getData();
-            List<String> arr = new ArrayList<>();
-            arr.add("시/도");
-
-            for (GeoStateVO.GeoStateObject geo : stateList) {
-                 arr.add(geo.getName());
-            }
-
-            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String> (getActivity(), android.R.layout.simple_spinner_item, arr)
-            {
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent)
-                {
-                    return setCentered(super.getView(position, convertView, parent));
-                }
-
-                @Override
-                public View getDropDownView(int position, View convertView, ViewGroup parent)
-                {
-                    return setCentered(super.getDropDownView(position, convertView, parent));
-                }
-
-                private View setCentered(View view)
-                {
-                    TextView textView = (TextView)view.findViewById(android.R.id.text1);
-                    textView.setGravity(Gravity.CENTER);
-                    return view;
-                }
-            };
-            spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinnerState.setAdapter(spinnerArrayAdapter);
 
 //            if (stateList.size() > 0) {
 //                pagingLastCheck.set(NUM_NOTI, false);
