@@ -17,6 +17,7 @@
 
 package petcare.com.mypetcare.Activity.SearchFragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
@@ -25,7 +26,7 @@ import petcare.com.mypetcare.Activity.BaseActivity;
 import petcare.com.mypetcare.R;
 
 public class MainActivity extends BaseActivity {
-
+    SlidingTabsBasicFragment fragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +34,7 @@ public class MainActivity extends BaseActivity {
 
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            SlidingTabsBasicFragment fragment = new SlidingTabsBasicFragment();
+            fragment = new SlidingTabsBasicFragment();
             Bundle b = new Bundle();
             b.putInt("startPage", getIntent().getExtras().getInt("startPage", 0));
             fragment.setArguments(b);
@@ -46,5 +47,14 @@ public class MainActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (fragment != null) {
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

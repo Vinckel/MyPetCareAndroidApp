@@ -87,10 +87,7 @@ import petcare.com.mypetcare.Util.GsonUtil;
 import static android.content.Context.MODE_PRIVATE;
 
 public class SlidingTabsBasicFragment extends Fragment {
-    private int hospitalCurrentPosition = 1;
     private static final int SEARCH_COUNT = 20;
-
-    static final String LOG_TAG = "SlidingTabsBasicFragment";
     private static ActionBar actionBar;
     private static TextView tvTitle;
     private static ImageView ivWrite;
@@ -149,6 +146,8 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static GridView gvAnnounce;
     private static RelativeLayout rlAnnounceZero;
     private static String currentReportType = "실종";
+    private static final int REQUEST_CODE_MATING = 1;
+    private static final int REQUEST_CODE_REPORT = 2;
 
     SharedPreferences pref; // 위치 저장용
 
@@ -237,16 +236,6 @@ public class SlidingTabsBasicFragment extends Fragment {
             pagingLastCheck.add(false);
         }
 
-
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                isLoaded = true;
-//            }
-//        }, 51000);
-
         spHospital = new Spinner[9];
         isLoaded = new boolean[9];
         rlZero = new RelativeLayout[9];
@@ -274,32 +263,6 @@ public class SlidingTabsBasicFragment extends Fragment {
         lastLongitude = Double.parseDouble(pref.getString("lastLongitude", "127.0276"));
     }
 
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        SharedPreferences.Editor edit = pref.edit();
-//        edit.putString("lastLatitude", String.valueOf(lastLatitude));
-//        edit.putString("lastLongitude", String.valueOf(lastLongitude));
-//        edit.commit();
-//    }
-//    @TargetApi(23)
-//    private void checkPermission() {
-//        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//
-//            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
-//        }
-//    }
-
-    // BEGIN_INCLUDE (fragment_onviewcreated)
-    /**
-     * This is called after the {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)} has finished.
-     * Here we can pick out the {@link View}s we need to configure from the content view.
-     *
-     * We set the {@link ViewPager}'s adapter to be an instance of {@link SamplePagerAdapter}. The
-     * {@link SlidingTabLayout} is then given the {@link ViewPager} so that it can populate itself.
-     *
-     * @param view View created in {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
-     */
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         // BEGIN_INCLUDE (setup_viewpager)
@@ -321,7 +284,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                     Intent intent = new Intent(getActivity(), ReportWriteActivity.class);
                     intent.putExtra("arType", reportCodeMap.get(currentReportType));
                     intent.putExtra("arTypeStr", currentReportType);
-                    startActivity(intent);
+                    startActivityForResult(intent, REQUEST_CODE_REPORT);
                 }
             });
         }
@@ -345,7 +308,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(getActivity(), MatingRequestActivity.class);
-                            startActivity(intent);
+                            startActivityForResult(intent, REQUEST_CODE_MATING);
                         }
                     });
                 } else if (position == NUM_REPORT) {
@@ -357,7 +320,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                             Intent intent = new Intent(getActivity(), ReportWriteActivity.class);
                             intent.putExtra("arType", reportCodeMap.get(currentReportType));
                             intent.putExtra("arTypeStr", currentReportType);
-                            startActivity(intent);
+                            startActivityForResult(intent, REQUEST_CODE_REPORT);
                         }
                     });
                 } else {
@@ -519,7 +482,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                                         @Override
                                         public void onClick(View v) {
                                             Intent intent = new Intent(getActivity(), MatingRequestActivity.class);
-                                            startActivity(intent);
+                                            startActivityForResult(intent, REQUEST_CODE_MATING);
                                         }
                                     });
 
@@ -741,63 +704,12 @@ public class SlidingTabsBasicFragment extends Fragment {
         GridView gvAdopt = null;
         switch (num) {
             case NUM_ADOPT_ADOPT:
-//                view = getActivity().getLayoutInflater().inflate(R.layout.fragment_hospital, container, false);
-//                container.addView(view);
-//                ListView lvHospitalList = (ListView) view.findViewById(R.id.lv_hospital_list);
-//                spHospital = (Spinner) view.findViewById(R.id.sp_hospital_distance);
-//
-//                gvAdopt = (GridView) view.findViewById(R.id.gv_adopt_list);
                 break;
             case NUM_ADOPT_MATING:
                 view = getActivity().getLayoutInflater().inflate(R.layout.fragment_mating_list, container, false);
                 container.addView(view);
 
                 gvAdopt = (GridView) view.findViewById(R.id.gv_mating_list);
-
-//                GridView gvAdopt = (GridView) view.findViewById(R.id.gv_adopt_list);
-//
-//                adapterAdopt = new AdoptGridViewAdapter(getContext(), R.layout.gridview_adopt_list);
-//                gvAdopt.setAdapter(adapterAdopt);
-//
-//
-//                gvAdopt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                        Intent intent = new Intent(getActivity(), AdoptDetailActivity.class);
-//                        intent.putExtra("id", adapterAdopt.getItemSaleId(position));
-//
-//                        startActivity(intent);
-//                    }
-//                });
-//
-//                gvAdopt.setOnScrollListener(new AbsListView.OnScrollListener() {
-//                    @Override
-//                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-//                        if (firstVisibleItem + visibleItemCount >= totalItemCount && isLoaded) {
-//                            Log.d("listview adopt", "reached at bottom");
-////                    String radius = StringUtils.substring(spHospital.getSelectedItem().toString(), 0, 1);
-//                            String radius = "1";
-//
-//                            if (lastLatitude < 0 || lastLongitude < 0) {
-//                                Toast.makeText(getContext(), "위치를 받아올 수 없습니다.", Toast.LENGTH_SHORT).show();
-//                                return;
-//                            }
-//
-//                            switch (num) {
-//                                case NUM_ADOPT_ADOPT:
-//                                    callAdoptApi(radius);
-//                                    break;
-//                                case NUM_ADOPT_MATING:
-////                            callAdoptApi(radius);
-//                                    break;
-//                            }
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onScrollStateChanged(AbsListView view, int scrollState) {
-//                    }
-//                });
                 break;
         }
 
@@ -853,28 +765,6 @@ public class SlidingTabsBasicFragment extends Fragment {
         }
 
         return view;
-
-//        pagingCountAdopt.set(NUM_ADOPT_MATING, 1);
-//        pagingLastCheckAdopt.set(NUM_ADOPT_MATING, false);
-//        view = getActivity().getLayoutInflater().inflate(R.layout.fragment_mating_list, container, false);
-//        container.addView(view);
-//        tvTitle.setText("교배");
-//
-//        ivWrite.setVisibility(View.VISIBLE);
-//
-//        GridView gvMating = (GridView) view.findViewById(R.id.gv_mating_list);
-//        adapterMating = new AdoptGridViewAdapter(getContext(), R.layout.gridview_adopt_list);
-//        gvMating.setAdapter(adapterMating);
-//        callMatingApi();
-//        gvMating.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent intent = new Intent(getActivity(), MatingDetailActivity.class);
-//                intent.putExtra("id", id);
-//
-//                startActivity(intent);
-//            }
-//        });
     }
 
     private void callAdoptApi(String radius) {
@@ -907,6 +797,27 @@ public class SlidingTabsBasicFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(getContext(), "정보를 조회하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != 0) {
+            switch (requestCode) {
+                case REQUEST_CODE_MATING:
+                    adapter.notifyDataSetChanged();
+                    break;
+                case REQUEST_CODE_REPORT:
+                    if (StringUtils.equals("실종", currentReportType)) {
+                        Fragment fragment1 = MissingFragment.newInstance(0);
+                        getFragmentManager().beginTransaction().replace(R.id.containerLayout, fragment1).commit();
+                    } else {
+                        Fragment fragment1 = MissingFragment.newInstance(1);
+                        getFragmentManager().beginTransaction().replace(R.id.containerLayout, fragment1).commit();
+                    }
+                    break;
+            }
         }
     }
 
@@ -986,28 +897,6 @@ public class SlidingTabsBasicFragment extends Fragment {
         });
         adapterHospital[num] = new HospitalListViewAdapter(view.getContext());
 
-//        cancelAllApis();
-//        switch (num) {
-//            case NUM_HOTEL:
-//                callHotelApi(radius);
-//                break;
-//            case NUM_BEAUTY:
-//                callBeautyApi(radius);
-//                break;
-//            case NUM_HOSPITAL:
-//                callHospitalApi(radius);
-//                break;
-//            case NUM_TOOL:
-//                callToolApi(radius);
-//                break;
-//            case NUM_CAFE:
-//                callCafeApi(radius);
-//                break;
-//            case NUM_FUNERAL:
-//                callFuneralApi(radius);
-//                break;
-//        }
-
         lvList[num].setAdapter(adapterHospital[num]);
         lvList[num].setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -1079,16 +968,6 @@ public class SlidingTabsBasicFragment extends Fragment {
         });
 
         return view;
-    }
-
-    private void cancelAllApis() {
-//        if (hotelApi != null) {
-//            hotelApi.cancel(true);
-//        }
-//
-//        if (hospitalApi != null) {
-//            hospitalApi.cancel(true);
-//        }
     }
 
     private void callHotelApi(String radius) {

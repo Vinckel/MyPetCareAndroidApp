@@ -44,7 +44,7 @@ public class MatingDetailActivity extends BaseActivity {
     private TextView tvTitle;
     private TextView tvName;
     private TextView tvSubTitle;
-    private TextView tvHomepage;
+//    private TextView tvHomepage;
     private TextView tvBreed;
     private TextView tvColor;
     private TextView tvGender;
@@ -103,7 +103,7 @@ public class MatingDetailActivity extends BaseActivity {
         tvTitle = (TextView) findViewById(R.id.tv_mating_detail_title);
         tvName = (TextView) findViewById(R.id.tv_mating_detail_name);
         tvSubTitle = (TextView) findViewById(R.id.tv_mating_detail_subtitle);
-        tvHomepage = (TextView) findViewById(R.id.tv_mating_detail_url);
+//        tvHomepage = (TextView) findViewById(R.id.tv_mating_detail_url);
         tvBreed = (TextView) findViewById(R.id.tv_mating_detail_breed_desc);
         tvColor = (TextView) findViewById(R.id.tv_mating_detail_color_desc);
         tvGender = (TextView) findViewById(R.id.tv_mating_detail_gender_desc);
