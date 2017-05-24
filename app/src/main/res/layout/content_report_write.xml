@@ -456,7 +456,7 @@
                     android:layout_below="@id/tv_report_write_etc"
                     android:background="@android:color/transparent"
                     android:hint="기타사항을 입력해주세요"
-                    android:maxLength="15"
+                    android:maxLength="25"
                     android:singleLine="true"
                     android:paddingBottom="10dp"
                     android:paddingLeft="11dp"

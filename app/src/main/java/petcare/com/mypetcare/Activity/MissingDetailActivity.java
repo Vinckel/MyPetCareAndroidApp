@@ -140,7 +140,7 @@ public class MissingDetailActivity extends BaseActivity {
             tvLocation.setText(petObject.getLocation());
             tvMark.setText(petObject.getMark());
             tvPrice.setText(petObject.getPrice());
-//            tvEtc.setText(petObject.);
+            tvEtc.setText(petObject.getDescription());
             tvBreed.setText(petObject.getBreed());
             tvColor.setText(petObject.getColor());
             tvGender.setText(petObject.getGender());
