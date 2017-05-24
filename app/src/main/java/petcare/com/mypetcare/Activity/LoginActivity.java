@@ -463,7 +463,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             edit.commit();
 
             Intent intent = new Intent(LoginActivity.this, JoinActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, 10);
 
             return;
         }
@@ -482,7 +482,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 64206) {
+        if (requestCode == 10) {
+            goToMain();
+        } else if (requestCode == 64206) {
             callbackManager.onActivityResult(requestCode, resultCode, data); // fb
         } else if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) { // kakao
             return;
