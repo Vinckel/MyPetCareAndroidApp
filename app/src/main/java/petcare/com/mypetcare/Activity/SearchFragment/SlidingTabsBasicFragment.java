@@ -148,6 +148,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     private static ListView[] lvList;
     private static GridView gvAnnounce;
     private static RelativeLayout rlAnnounceZero;
+    private static String currentReportType = "실종";
 
     SharedPreferences pref; // 위치 저장용
 
@@ -318,7 +319,8 @@ public class SlidingTabsBasicFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), ReportWriteActivity.class);
-                    intent.putExtra("arType", reportCodeMap.get("실종"));
+                    intent.putExtra("arType", reportCodeMap.get(currentReportType));
+                    intent.putExtra("arTypeStr", currentReportType);
                     startActivity(intent);
                 }
             });
@@ -353,7 +355,8 @@ public class SlidingTabsBasicFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(getActivity(), ReportWriteActivity.class);
-                            intent.putExtra("arType", reportCodeMap.get("실종"));
+                            intent.putExtra("arType", reportCodeMap.get(currentReportType));
+                            intent.putExtra("arTypeStr", currentReportType);
                             startActivity(intent);
                         }
                     });
@@ -1321,6 +1324,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                         Map body = new HashMap<>();
                         reportCodeApi.execute(header, body);
                     }
+                    currentReportType = "실종";
                     break;
                 case 1:
                     rootView = reportProcess(inflater, container, NUM_REPORT_CENTER);
@@ -1329,6 +1333,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 //                    GridView gvProtection = (GridView) rootView.findViewById(R.id.gv_missing_list);
 //                    adapterProtection = new MissingGridViewAdapter(getContext(), R.layout.gridview_missing_list);
 //                    gvProtection.setAdapter(adapterProtection);
+                    currentReportType = "보호중";
                     break;
             }
             return rootView;

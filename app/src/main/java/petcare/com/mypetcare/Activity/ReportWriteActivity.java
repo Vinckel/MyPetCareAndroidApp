@@ -59,6 +59,7 @@ public class ReportWriteActivity extends BaseActivity {
     private RelativeLayout rlPicTouch;
     private LinearLayout llPicAreaWithAddPhoto;
     private TextView tvDone;
+    private TextView tvTitle;
 
     private EditText etName;
     private EditText etBreed;
@@ -66,6 +67,7 @@ public class ReportWriteActivity extends BaseActivity {
     private ToggleButton btGenderMale;
     private ToggleButton btGenderFemale;
     private EditText etAge;
+    private EditText etDate;
     private EditText etLocation;
     private EditText etMark;
     private EditText etPrice;
@@ -102,6 +104,7 @@ public class ReportWriteActivity extends BaseActivity {
         parent.setContentInsetsAbsolute(0, 0);
 
         arType = getIntent().getStringExtra("arType");
+        String arTypeStr = getIntent().getStringExtra("arTypeStr");
 
         if (StringUtils.isBlank(arType)) {
             Toast.makeText(ReportWriteActivity.this, "다시 시도해주세요.", Toast.LENGTH_SHORT).show();
@@ -121,10 +124,12 @@ public class ReportWriteActivity extends BaseActivity {
         rlPicAreaWithPager = (RelativeLayout) findViewById(R.id.rl_report_write_pic_area);
         rlPicTouch = (RelativeLayout) findViewById(R.id.rl_report_write_pic_touch);
 
+        tvTitle = (TextView) findViewById(R.id.tv_report_write_title);
         etName = (EditText) findViewById(R.id.et_report_write_name);
         etBreed = (EditText) findViewById(R.id.et_report_write_breed);
         etColor = (EditText) findViewById(R.id.et_report_write_color);
         etAge = (EditText) findViewById(R.id.et_report_write_age);
+        etDate = (EditText) findViewById(R.id.et_report_write_date);
         etLocation = (EditText) findViewById(R.id.et_report_write_location);
         etMark = (EditText) findViewById(R.id.et_report_write_mark);
         etPrice = (EditText) findViewById(R.id.et_report_write_price);
@@ -136,6 +141,8 @@ public class ReportWriteActivity extends BaseActivity {
 
         btGenderMale = (ToggleButton) findViewById(R.id.bt_report_write_gender_male);
         btGenderFemale = (ToggleButton) findViewById(R.id.bt_report_write_gender_female);
+
+        tvTitle.setText(arTypeStr + " 등록");
 
         sv.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -235,6 +242,7 @@ public class ReportWriteActivity extends BaseActivity {
         etPrice.setEnabled(false);
         etEtc.setEnabled(false);
         etContact.setEnabled(false);
+        etDate.setEnabled(false);
         isBlocked = true;
     }
 
@@ -254,6 +262,7 @@ public class ReportWriteActivity extends BaseActivity {
         etPrice.setEnabled(true);
         etEtc.setEnabled(true);
         etContact.setEnabled(true);
+        etDate.setEnabled(true);
         isBlocked = false;
     }
 
@@ -308,7 +317,7 @@ public class ReportWriteActivity extends BaseActivity {
         body.put("PET_AR_SEX", btGenderMale.isChecked() ? "남" : "여");
         body.put("PET_AR_AGE", etAge.getText().toString());
         body.put("PET_AR_PLACE", etLocation.getText().toString());
-//        body.put("PET_AR_DATE", "");
+        body.put("PET_AR_DATE", etDate.getText().toString());
         body.put("PET_AR_CHAR", etMark.getText().toString());
         body.put("PET_AR_REWARD", etPrice.getText().toString());
         body.put("PET_AR_DESC", etEtc.getText().toString());
