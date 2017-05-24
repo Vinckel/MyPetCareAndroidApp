@@ -204,5 +204,35 @@
                 android:layout_marginRight="16sp"
                 android:enabled="false" />
         </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/rl_setting_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:background="@android:color/white">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentTop="true"
+                android:src="#eaeaea" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:src="#eaeaea" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="15sp"
+                android:layout_marginLeft="16sp"
+                android:layout_marginTop="15sp"
+                android:text="로그아웃" />
+        </RelativeLayout>
     </LinearLayout>
 </ScrollView>

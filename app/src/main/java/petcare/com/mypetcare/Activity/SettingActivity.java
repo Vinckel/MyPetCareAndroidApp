@@ -18,10 +18,18 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.facebook.login.LoginManager;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
+import com.nhn.android.naverlogin.OAuthLogin;
 
 import org.jsoup.Jsoup;
 
+import petcare.com.mypetcare.Model.CommonResult;
 import petcare.com.mypetcare.R;
+import petcare.com.mypetcare.Util.GsonUtil;
 
 public class SettingActivity extends AppCompatActivity {
     private ImageButton ibBack;
@@ -29,6 +37,7 @@ public class SettingActivity extends AppCompatActivity {
     private TextView tvVersion;
     private SwitchCompat swLogin;
     SharedPreferences pref;
+    private RelativeLayout rlLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +67,7 @@ public class SettingActivity extends AppCompatActivity {
 //        rlTerms = (RelativeLayout) findViewById(R.id.rl_setting_terms);
         tvVersion = (TextView) findViewById(R.id.tv_setting_version);
         swLogin = (SwitchCompat) findViewById(R.id.sw_setting_login);
+        rlLogout = (RelativeLayout) findViewById(R.id.rl_setting_logout);
 
         boolean isAutoLogin = pref.getBoolean("autoLogin", true);
         swLogin.setChecked(isAutoLogin);
@@ -99,6 +109,52 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        rlLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(SettingActivity.this);
+                alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        SharedPreferences.Editor edit = pref.edit();
+                        edit.putBoolean("autoLogin", false);
+                        edit.commit();
+
+                        Intent intent = new Intent(SettingActivity.this, LoginActivity.class);
+
+                        LoginManager.getInstance().logOut();
+                        OAuthLogin.getInstance().logout(SettingActivity.this);
+                        UserManagement.requestLogout(new LogoutResponseCallback() {
+                            @Override
+                            public void onCompleteLogout() {
+                                Toast.makeText(SettingActivity.this, "카카오 로그아웃 성공", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                        return;
+                    }
+                });
+
+                alert.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.setMessage("로그아웃하시겠습니까?\n재로그인 시 동일 계정으로 로그인해주세요.");
+                AlertDialog alertDialog = alert.create();
+                alertDialog.show();
+                Button btDone = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                btDone.setTextColor(getResources().getColor(R.color.normalFont));
             }
         });
 

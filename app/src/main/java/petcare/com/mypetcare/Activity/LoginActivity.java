@@ -63,8 +63,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private static final int REQUEST_CODE_LOCATION = 1;
     private CallbackManager callbackManager;
     private SharedPreferences pref;
-    private static final int RC_SIGN_IN = 9001; // google
-    private static final int FIRST_LOGIN = 1; // google
     protected static Global global = null;
     private ISessionCallback iSessionCallback;
     private OAuthLogin mOAuthLoginModule;
@@ -246,7 +244,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                 alert.setMessage(getResources().getString(R.string.terms1));
 
-                alert.setCancelable(false);
                 AlertDialog alertDialog = alert.create();
                 alertDialog.show();
             }
@@ -266,7 +263,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                 alert.setMessage(getResources().getString(R.string.terms2));
 
-                alert.setCancelable(false);
                 AlertDialog alertDialog = alert.create();
                 alertDialog.show();
             }
@@ -286,7 +282,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                 alert.setMessage(getResources().getString(R.string.terms3));
 
-                alert.setCancelable(false);
                 AlertDialog alertDialog = alert.create();
                 alertDialog.show();
             }
@@ -468,7 +463,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             edit.commit();
 
             Intent intent = new Intent(LoginActivity.this, JoinActivity.class);
-            startActivityForResult(intent, FIRST_LOGIN);
+            startActivity(intent);
 
             return;
         }
@@ -487,19 +482,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);
+        if (requestCode == 64206) {
+            callbackManager.onActivityResult(requestCode, resultCode, data); // fb
+        } else if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) { // kakao
+            return;
         }
-
-        if (requestCode == FIRST_LOGIN) {
-            goToMain();
-        }
-//        if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
-//            return;
-//        }
     }
 
     @Override
@@ -562,18 +549,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 || checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            // Should we show an explanation?
-//            if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-//                // Explain to the user why we need to write the permission.
-//                Toast.makeText(this, "Read/Write external storage", Toast.LENGTH_SHORT).show();
-//            }
-
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_CODE_LOCATION);
 
         } else {
-            // 다음 부분은 항상 허용일 경우에 해당이 됩니다.
-            // writeFile();
         }
     }
 }
