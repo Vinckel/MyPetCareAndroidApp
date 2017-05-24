@@ -49,6 +49,7 @@ public class MatingDetailActivity extends BaseActivity {
     private TextView tvColor;
     private TextView tvGender;
     private TextView tvAge;
+    private TextView tvDescription;
     private Button btCall;
 
     private MatingDetailViewpagerAdapter adapter;
@@ -107,6 +108,7 @@ public class MatingDetailActivity extends BaseActivity {
         tvColor = (TextView) findViewById(R.id.tv_mating_detail_color_desc);
         tvGender = (TextView) findViewById(R.id.tv_mating_detail_gender_desc);
         tvAge = (TextView) findViewById(R.id.tv_mating_detail_age_desc);
+        tvDescription = (TextView) findViewById(R.id.tv_mating_detail_description);
         btCall = (Button) findViewById(R.id.bt_mating_detail_call);
 
         tvPageCount = (TextView) findViewById(R.id.tv_mating_detail_page_count);
@@ -185,6 +187,7 @@ public class MatingDetailActivity extends BaseActivity {
                 tvColor.setText(matingDetailObject.getColor());
                 tvGender.setText(matingDetailObject.getGender());
                 tvAge.setText(matingDetailObject.getAge());
+                tvDescription.setText(matingDetailObject.getDescription());
 
                 List<MatingDetailVO.MatingDetailObject.MatingDetailImageObject> imgData = matingDetailObject.getImgData();
                 for (MatingDetailVO.MatingDetailObject.MatingDetailImageObject imageObject : imgData) {

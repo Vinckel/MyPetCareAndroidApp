@@ -12,8 +12,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -21,7 +24,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -66,6 +71,44 @@ public class MatingRequestActivity extends BaseActivity {
 
     private boolean genderPick;
 
+    private RelativeLayout rlDim;
+    private ProgressBar pbDim;
+    private ScrollView sv;
+
+    private static boolean isBlocked = false;
+    private int lastSpecialRequestsCursorPosition = 0;
+    private String specialRequests = StringUtils.EMPTY;
+
+    private void onLoadingStart() {
+        pager.setEnabled(false);
+        rlDim.setVisibility(View.VISIBLE);
+        pbDim.setVisibility(View.VISIBLE);
+
+        etName.setEnabled(false);
+        etBreed.setEnabled(false);
+        etColor.setEnabled(false);
+        btGenderMale.setEnabled(false);
+        btGenderFemale.setEnabled(false);
+        etAge.setEnabled(false);
+        etIntroduce.setEnabled(false);
+        isBlocked = true;
+    }
+
+    private void onLoadingEnd() {
+        pager.setEnabled(true);
+        rlDim.setVisibility(View.GONE);
+        pbDim.setVisibility(View.GONE);
+
+        etName.setEnabled(true);
+        etBreed.setEnabled(true);
+        etColor.setEnabled(true);
+        btGenderMale.setEnabled(true);
+        btGenderFemale.setEnabled(true);
+        etAge.setEnabled(true);
+        etIntroduce.setEnabled(true);
+        isBlocked = false;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +150,40 @@ public class MatingRequestActivity extends BaseActivity {
         etIntroduce = (EditText) findViewById(R.id.et_mating_request_intro);
         btGenderMale = (ToggleButton) findViewById(R.id.bt_mating_request_gender_male);
         btGenderFemale = (ToggleButton) findViewById(R.id.bt_mating_request_gender_female);
+        sv = (ScrollView) findViewById(R.id.sv_mating_request);
+        rlDim = (RelativeLayout) findViewById(R.id.rl_mating_request_dim);
+        pbDim = (ProgressBar) findViewById(R.id.pb_mating_request);
+
+        etIntroduce.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                lastSpecialRequestsCursorPosition = etIntroduce.getSelectionStart();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                etIntroduce.removeTextChangedListener(this);
+
+                if (etIntroduce.getLineCount() > 5) {
+                    etIntroduce.setText(specialRequests);
+                    etIntroduce.setSelection(lastSpecialRequestsCursorPosition);
+                } else
+                    specialRequests = etIntroduce.getText().toString();
+
+                etIntroduce.addTextChangedListener(this);
+            }
+        });
+
+        sv.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return isBlocked;
+            }
+        });
 
 //        View.OnClickListener toggleButtonListener = new View.OnClickListener() {
 //            @Override
@@ -239,7 +316,7 @@ public class MatingRequestActivity extends BaseActivity {
         body.put("PET_CB_SEX", btGenderMale.isChecked() ? "남" : "여");
         body.put("PET_CB_AGE", etAge.getText().toString());
         body.put("PET_CB_DESC", etIntroduce.getText().toString());
-
+        onLoadingStart();
         multipartApi.execute(header, body, paths);
     }
     public class MultipartApi extends GeneralMultipartApi {
@@ -247,6 +324,7 @@ public class MatingRequestActivity extends BaseActivity {
         @Override
         protected void onPostExecute(List<String> resultList) {
             super.onPostExecute(resultList);
+            onLoadingEnd();
 
             AlertDialog.Builder alert = new AlertDialog.Builder(MatingRequestActivity.this);
             alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {

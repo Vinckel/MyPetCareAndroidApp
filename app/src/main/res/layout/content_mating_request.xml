@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,327 +9,349 @@
     tools:context="petcare.com.mypetcare.Activity.MatingRequestActivity"
     tools:showIn="@layout/activity_mating_request">
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/sv_mating_request"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:id="@+id/rl_pic_touch"
-            android:layout_width="match_parent"
-            android:layout_height="270dp"
-            android:background="#f9f9f9">
-
-            <LinearLayout
-                android:id="@+id/ll_pic_area"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <ImageView
-                    android:id="@+id/iv_add_pic"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:background="#f9f9f9"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_add_photo" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="5dp"
-                    android:text="사진 추가"
-                    android:textColor="#cacaca"
-                    android:textSize="15sp" />
-            </LinearLayout>
-
-            <RelativeLayout
-                android:id="@+id/rl_pic_area"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone">
-
-                <android.support.v4.view.ViewPager
-                    android:id="@+id/vp_mating_request"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true" />
-
-                <TextView
-                    android:id="@+id/tv_mating_request_page_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="13dp"
-                    android:background="#88000000"
-                    android:gravity="center"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:text="0/0"
-                    android:textColor="@android:color/white"
-                    android:textSize="13sp" />
-            </RelativeLayout>
-        </RelativeLayout>
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="5dp">
+            android:orientation="vertical">
 
-            <!--이름-->
             <RelativeLayout
+                android:id="@+id/rl_pic_touch"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp">
-
-                <TextView
-                    android:id="@+id/tv_mating_request_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:text="이름"
-                    android:textColor="#4a4a4a"
-                    android:textSize="14sp" />
-
-                <EditText
-                    android:id="@+id/et_mating_request_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@id/tv_mating_request_name"
-                    android:background="@android:color/transparent"
-                    android:hint="이름을 적어주세요."
-                    android:maxLength="15"
-                    android:singleLine="true"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="11dp"
-                    android:paddingTop="15dp"
-                    android:textColorHint="#cacaca"
-                    android:textSize="15sp" />
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_below="@id/et_mating_request_name"
-                    android:src="#cbcaca" />
-            </RelativeLayout>
-
-            <!--견종-->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp">
-
-                <TextView
-                    android:id="@+id/tv_mating_request_breed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:text="견종"
-                    android:textColor="#4a4a4a"
-                    android:textSize="14sp" />
-
-                <EditText
-                    android:id="@+id/et_mating_request_breed"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@id/tv_mating_request_breed"
-                    android:background="@android:color/transparent"
-                    android:hint="견종을 적어주세요."
-                    android:maxLength="15"
-                    android:singleLine="true"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="11dp"
-                    android:paddingTop="15dp"
-                    android:textColorHint="#cacaca"
-                    android:textSize="15sp" />
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_below="@id/et_mating_request_breed"
-                    android:src="#cbcaca" />
-            </RelativeLayout>
-
-            <!--컬러-->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp">
-
-                <TextView
-                    android:id="@+id/tv_mating_request_color"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:text="컬러"
-                    android:textColor="#4a4a4a"
-                    android:textSize="14sp" />
-
-                <EditText
-                    android:id="@+id/et_mating_request_color"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@id/tv_mating_request_color"
-                    android:background="@android:color/transparent"
-                    android:hint="컬러를 적어주세요."
-                    android:maxLength="15"
-                    android:singleLine="true"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="11dp"
-                    android:paddingTop="15dp"
-                    android:textColorHint="#cacaca"
-                    android:textSize="15sp" />
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_below="@id/et_mating_request_color"
-                    android:src="#cbcaca" />
-            </RelativeLayout>
-
-            <!--성별-->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp">
-
-                <TextView
-                    android:id="@+id/tv_mating_request_gender"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:text="성별"
-                    android:textColor="#4a4a4a"
-                    android:textSize="14sp" />
+                android:layout_height="270dp"
+                android:background="#f9f9f9">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_below="@id/tv_mating_request_gender"
-                    android:orientation="horizontal">
+                    android:id="@+id/ll_pic_area"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical"
+                    android:visibility="visible">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.5"
-                        android:paddingRight="5dp">
+                    <ImageView
+                        android:id="@+id/iv_add_pic"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center"
+                        android:background="#f9f9f9"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_add_photo" />
 
-                        <ToggleButton
-                            android:background="@android:color/white"
-                            android:id="@+id/bt_mating_request_gender_male"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textOn="남"
-                            android:textOff="남" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.5"
-                        android:paddingLeft="5dp">
-
-                        <ToggleButton
-                            android:background="@android:color/white"
-                            android:id="@+id/bt_mating_request_gender_female"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textOn="여"
-                            android:textOff="여" />
-                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:text="사진 추가"
+                        android:textColor="#cacaca"
+                        android:textSize="15sp" />
                 </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_pic_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <android.support.v4.view.ViewPager
+                        android:id="@+id/vp_mating_request"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true" />
+
+                    <TextView
+                        android:id="@+id/tv_mating_request_page_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="13dp"
+                        android:background="#88000000"
+                        android:gravity="center"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:text="0/0"
+                        android:textColor="@android:color/white"
+                        android:textSize="13sp" />
+                </RelativeLayout>
             </RelativeLayout>
 
-            <!--나이-->
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="10dp">
+                android:orientation="vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="5dp">
 
-                <TextView
-                    android:id="@+id/tv_mating_request_age"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:text="나이"
-                    android:textColor="#4a4a4a"
-                    android:textSize="14sp" />
-
-                <EditText
-                    android:id="@+id/et_mating_request_age"
+                <!--이름-->
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@id/tv_mating_request_age"
-                    android:background="@android:color/transparent"
-                    android:hint="나이를 적어주세요."
-                    android:maxLength="15"
-                    android:singleLine="true"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="11dp"
-                    android:paddingTop="15dp"
-                    android:textColorHint="#cacaca"
-                    android:textSize="15sp" />
+                    android:paddingTop="10dp">
 
-                <ImageView
+                    <TextView
+                        android:id="@+id/tv_mating_request_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:text="이름"
+                        android:textColor="#4a4a4a"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/et_mating_request_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@id/tv_mating_request_name"
+                        android:background="@android:color/transparent"
+                        android:hint="이름을 적어주세요."
+                        android:maxLength="15"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="11dp"
+                        android:paddingTop="15dp"
+                        android:singleLine="true"
+                        android:textColorHint="#cacaca"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@id/et_mating_request_name"
+                        android:src="#cbcaca" />
+                </RelativeLayout>
+
+                <!--견종-->
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_below="@id/et_mating_request_age"
-                    android:src="#cbcaca" />
-            </RelativeLayout>
-
-            <!--소개-->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp">
-
-                <TextView
-                    android:id="@+id/tv_mating_request_intro"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:text="소개"
-                    android:textColor="#4a4a4a"
-                    android:textSize="14sp" />
+                    android:paddingTop="10dp">
 
-                <EditText
-                    android:id="@+id/et_mating_request_intro"
+                    <TextView
+                        android:id="@+id/tv_mating_request_breed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:text="견종"
+                        android:textColor="#4a4a4a"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/et_mating_request_breed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@id/tv_mating_request_breed"
+                        android:background="@android:color/transparent"
+                        android:hint="견종을 적어주세요."
+                        android:maxLength="15"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="11dp"
+                        android:paddingTop="15dp"
+                        android:singleLine="true"
+                        android:textColorHint="#cacaca"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@id/et_mating_request_breed"
+                        android:src="#cbcaca" />
+                </RelativeLayout>
+
+                <!--컬러-->
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@id/tv_mating_request_intro"
-                    android:background="@android:color/transparent"
-                    android:hint="소개를 적어주세요."
-                    android:inputType="textMultiLine"
-                    android:maxLines="5"
-                    android:minLines="5"
-                    android:gravity="top"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="11dp"
-                    android:paddingTop="15dp"
-                    android:scrollHorizontally="false"
-                    android:textColorHint="#cacaca"
-                    android:textSize="15sp" />
-            </RelativeLayout>
+                    android:paddingTop="10dp">
+
+                    <TextView
+                        android:id="@+id/tv_mating_request_color"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:text="컬러"
+                        android:textColor="#4a4a4a"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/et_mating_request_color"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@id/tv_mating_request_color"
+                        android:background="@android:color/transparent"
+                        android:hint="컬러를 적어주세요."
+                        android:maxLength="15"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="11dp"
+                        android:paddingTop="15dp"
+                        android:singleLine="true"
+                        android:textColorHint="#cacaca"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@id/et_mating_request_color"
+                        android:src="#cbcaca" />
+                </RelativeLayout>
+
+                <!--성별-->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp">
+
+                    <TextView
+                        android:id="@+id/tv_mating_request_gender"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:text="성별"
+                        android:textColor="#4a4a4a"
+                        android:textSize="14sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_below="@id/tv_mating_request_gender"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:paddingRight="5dp">
+
+                            <ToggleButton
+                                android:id="@+id/bt_mating_request_gender_male"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/white"
+                                android:textOff="남"
+                                android:textOn="남" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:paddingLeft="5dp">
+
+                            <ToggleButton
+                                android:id="@+id/bt_mating_request_gender_female"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/white"
+                                android:textOff="여"
+                                android:textOn="여" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <!--나이-->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp">
+
+                    <TextView
+                        android:id="@+id/tv_mating_request_age"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:text="나이"
+                        android:textColor="#4a4a4a"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/et_mating_request_age"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@id/tv_mating_request_age"
+                        android:background="@android:color/transparent"
+                        android:hint="나이를 적어주세요."
+                        android:maxLength="15"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="11dp"
+                        android:paddingTop="15dp"
+                        android:singleLine="true"
+                        android:textColorHint="#cacaca"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@id/et_mating_request_age"
+                        android:src="#cbcaca" />
+                </RelativeLayout>
+
+                <!--소개-->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp">
+
+                    <TextView
+                        android:id="@+id/tv_mating_request_intro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:text="소개"
+                        android:textColor="#4a4a4a"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/et_mating_request_intro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@id/tv_mating_request_intro"
+                        android:background="@android:color/transparent"
+                        android:gravity="top"
+                        android:hint="소개를 적어주세요."
+                        android:inputType="textMultiLine"
+                        android:maxLines="5"
+                        android:minLines="5"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="11dp"
+                        android:paddingTop="15dp"
+                        android:scrollHorizontally="false"
+                        android:textColorHint="#cacaca"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+            </LinearLayout>
+
         </LinearLayout>
+    </ScrollView>
 
-    </LinearLayout>
-</ScrollView>
+    <RelativeLayout
+        android:id="@+id/rl_mating_request_dim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:background="#88000000"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/pb_mating_request"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+    </RelativeLayout>
+</RelativeLayout>

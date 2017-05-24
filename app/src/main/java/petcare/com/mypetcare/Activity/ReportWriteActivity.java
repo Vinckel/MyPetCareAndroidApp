@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -23,7 +24,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -68,8 +71,13 @@ public class ReportWriteActivity extends BaseActivity {
     private EditText etPrice;
     private EditText etEtc;
     private EditText etContact;
+    private ScrollView sv;
+
+    private RelativeLayout rlDim;
+    private ProgressBar pbDim;
 
     private static String arType = null;
+    private static boolean isBlocked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,9 +130,19 @@ public class ReportWriteActivity extends BaseActivity {
         etPrice = (EditText) findViewById(R.id.et_report_write_price);
         etEtc = (EditText) findViewById(R.id.et_report_write_etc);
         etContact = (EditText) findViewById(R.id.et_report_write_contact);
+        rlDim = (RelativeLayout) findViewById(R.id.rl_report_dim);
+        pbDim = (ProgressBar) findViewById(R.id.pb_report);
+        sv = (ScrollView) findViewById(R.id.sv_report);
 
         btGenderMale = (ToggleButton) findViewById(R.id.bt_report_write_gender_male);
         btGenderFemale = (ToggleButton) findViewById(R.id.bt_report_write_gender_female);
+
+        sv.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return isBlocked;
+            }
+        });
 
         btGenderMale.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -201,6 +219,44 @@ public class ReportWriteActivity extends BaseActivity {
         bitmapPaths = new ArrayList<>();
     }
 
+    private void onLoadingStart() {
+        pager.setEnabled(false);
+        rlDim.setVisibility(View.VISIBLE);
+        pbDim.setVisibility(View.VISIBLE);
+
+        etName.setEnabled(false);
+        etBreed.setEnabled(false);
+        etColor.setEnabled(false);
+        btGenderMale.setEnabled(false);
+        btGenderFemale.setEnabled(false);
+        etAge.setEnabled(false);
+        etLocation.setEnabled(false);
+        etMark.setEnabled(false);
+        etPrice.setEnabled(false);
+        etEtc.setEnabled(false);
+        etContact.setEnabled(false);
+        isBlocked = true;
+    }
+
+    private void onLoadingEnd() {
+        pager.setEnabled(true);
+        rlDim.setVisibility(View.GONE);
+        pbDim.setVisibility(View.GONE);
+
+        etName.setEnabled(true);
+        etBreed.setEnabled(true);
+        etColor.setEnabled(true);
+        btGenderMale.setEnabled(true);
+        btGenderFemale.setEnabled(true);
+        etAge.setEnabled(true);
+        etLocation.setEnabled(true);
+        etMark.setEnabled(true);
+        etPrice.setEnabled(true);
+        etEtc.setEnabled(true);
+        etContact.setEnabled(true);
+        isBlocked = false;
+    }
+
     private boolean validate() {
         String errorMessage = null;
 
@@ -260,6 +316,7 @@ public class ReportWriteActivity extends BaseActivity {
         body.put("PET_AR_FIND_AT", "N");
 
         multipartApi.execute(header, body, paths);
+        onLoadingStart();
     }
 
     public class MultipartApi extends GeneralMultipartApi {
@@ -286,6 +343,8 @@ public class ReportWriteActivity extends BaseActivity {
                     isAllOk = false;
                 }
             }
+
+            onLoadingEnd();
 
             if (isAllOk) {
                 alert.setMessage("등록이 완료되었습니다.");

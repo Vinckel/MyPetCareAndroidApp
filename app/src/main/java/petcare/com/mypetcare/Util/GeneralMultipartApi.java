@@ -69,19 +69,25 @@ public class GeneralMultipartApi extends AsyncTask<Map<String, String>, Void, Li
             builder.addFormDataPart(key, value);
         }
 
-        for (String key : files.keySet()) {
-            String value = files.get(key);
+        try {
+            for (String key : files.keySet()) {
+                String value = files.get(key);
 
-            String[] split = StringUtils.split(value, ".");
-            String extension;
+                if (StringUtils.isNotBlank(value)) {
+                    String[] split = StringUtils.split(value, ".");
+                    String extension;
 
-            if (split.length > 0) {
-                extension = split[split.length - 1];
-            } else {
-                extension = "jpg";
+                    if (split.length > 0) {
+                        extension = split[split.length - 1];
+                    } else {
+                        extension = "jpg";
+                    }
+
+                    builder.addFormDataPart(key, key + "." + extension, RequestBody.create(MEDIA_TYPE_IMG, new File(value)));
+                }
             }
-
-            builder.addFormDataPart(key, key + "." + extension,  RequestBody.create(MEDIA_TYPE_IMG, new File(value)));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         MultipartBody multipartBody = builder.build();

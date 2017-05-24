@@ -107,7 +107,6 @@ public class InsureRegisterActivity extends BaseActivity {
     }
 
     private void save() {
-
         InsureRegisterApi insureRegisterApi = new InsureRegisterApi();
         String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
         String serviceId = "MPMS_13001";
