@@ -363,8 +363,19 @@ public class HospitalDetailActivity extends BaseActivity {
             hospitalObject = data.get(0);
             tvTitle.setText(hospitalObject.getName());
             tvName.setText(hospitalObject.getName());
-//            tvSubTitle.setText(hospitalObject.getSubTitle());
-            tvUrl.setText(hospitalObject.getPlaceUrl());
+
+            if (StringUtils.isNotBlank(hospitalObject.getIntroduce())) {
+                tvSubTitle.setText(hospitalObject.getIntroduce());
+            }
+
+            if (StringUtils.isNotBlank(hospitalObject.getOpenTime())) {
+                tvTime.setText(hospitalObject.getOpenTime());
+            }
+
+            if (StringUtils.isNotBlank(hospitalObject.getHomepage())) {
+                tvUrl.setText(hospitalObject.getHomepage());
+            }
+
             if (StringUtils.isNotBlank(hospitalObject.getDistance())) {
                 double distance = Double.parseDouble(hospitalObject.getDistance());
                 distance = Math.round(distance / 100f) / 10f;

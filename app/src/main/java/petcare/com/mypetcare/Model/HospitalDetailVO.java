@@ -67,6 +67,34 @@ public class HospitalDetailVO {
         @SerializedName("SEARCH_LON")
         private Double searchLongitude;
 
+        @SerializedName("REMARK")
+        private String tags;
+
+        @SerializedName("INTRO")
+        private String introduce;
+
+        @SerializedName("CONS_HOUR")
+        private String openTime;
+
+        @SerializedName("HOMEPAGE")
+        private String homepage;
+
+        public String getTags() {
+            return tags;
+        }
+
+        public String getIntroduce() {
+            return introduce;
+        }
+
+        public String getOpenTime() {
+            return openTime;
+        }
+
+        public String getHomepage() {
+            return homepage;
+        }
+
         public String getRadius() {
             return radius;
         }
