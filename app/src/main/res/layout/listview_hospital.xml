@@ -62,13 +62,17 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_hospital_desc"
                 android:layout_marginTop="5dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
+                    android:id="@+id/tv_hostpital_tags"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="10sp" />
+                    android:textColor="@android:color/white"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textSize="13sp" />
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

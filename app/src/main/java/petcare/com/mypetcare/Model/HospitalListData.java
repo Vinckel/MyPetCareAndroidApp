@@ -1,11 +1,5 @@
 package petcare.com.mypetcare.Model;
 
-import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import java.util.List;
-
 /**
  * Created by KS on 2017-03-27.
  */
@@ -15,7 +9,7 @@ public class HospitalListData {
     public String imgUrl;
     public String name;
     public String desc;
-    public List<String> tags;
+    public String tags;
     public String dist;
 
     public Double longitude;
@@ -72,11 +66,11 @@ public class HospitalListData {
         this.desc = desc;
     }
 
-    public List<String> getTags() {
+    public String getTags() {
         return tags;
     }
 
-    public void setTags(List<String> tags) {
+    public void setTags(String tags) {
         this.tags = tags;
     }
 

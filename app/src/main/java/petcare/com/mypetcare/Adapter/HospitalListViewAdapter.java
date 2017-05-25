@@ -1,13 +1,18 @@
 package petcare.com.mypetcare.Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.BackgroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -71,6 +76,9 @@ public class HospitalListViewAdapter extends BaseAdapter {
         TextView distance = (TextView) convertView.findViewById(R.id.tv_hospital_distance);
         TextView description = (TextView) convertView.findViewById(R.id.tv_hospital_desc);
         NetworkImageView view = (NetworkImageView) convertView.findViewById(R.id.iv_hospital_view);
+        LinearLayout llTags = (LinearLayout) convertView.findViewById(R.id.ll_hostpital_tags);
+        TextView tvTags = (TextView) convertView.findViewById(R.id.tv_hostpital_tags);
+
 //            (LinearLayout) convertView.findViewById(R.id.ll_hostpital_tags);
 
         name.setText(data.getName());
@@ -82,6 +90,33 @@ public class HospitalListViewAdapter extends BaseAdapter {
             view.setImageUrl(data.getImgUrl(), imageLoader);
         }
 
+        if (StringUtils.isNotBlank(data.getTags())) {
+            String tags = data.getTags();
+            String[] split = StringUtils.split(tags, ",");
+            if (split != null && split.length > 0) {
+                llTags.setVisibility(View.VISIBLE);
+                Spannable str = null;
+
+                int count = split.length > 5 ? 5 : split.length;
+
+                for (int i = 0; i < count; i++) {
+                    String each = split[i];
+                    each = StringUtils.replaceAll(each, " ", "");
+                    each = StringUtils.replaceAll(each, "\r", "");
+                    each = StringUtils.replaceAll(each, "\n", "");
+
+                    if (each.length() > 6) {
+                        each = StringUtils.substring(each, 0, 6);
+                        each += "..";
+                    }
+                    str = new SpannableStringBuilder(" " + each + "  ");
+                    str.setSpan(new BackgroundColorSpan(Color.parseColor("#7579e8")), 0, str.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                    tvTags.append(str);
+                    tvTags.getMeasuredWidth();
+                }
+            }
+        }
 //            convertView.setTag(holder);
 //        } else {
 //            holder = (HospitalListViewHolder) convertView.getTag();
@@ -90,7 +125,7 @@ public class HospitalListViewAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void addItem(String name, String desc, String dist, String imgUrl, List<String> tags, String id, Double longitude, Double latitude, String radius) {
+    public void addItem(String name, String desc, String dist, String imgUrl, String tags, String id, Double longitude, Double latitude, String radius) {
         HospitalListData data = new HospitalListData();
 
         data.setName(name);

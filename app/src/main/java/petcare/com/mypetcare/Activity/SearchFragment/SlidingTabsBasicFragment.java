@@ -1510,7 +1510,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                         distanceStr = String.format("%.1f", distance) + "km";
                     }
 
-                    adapterHospital[NUM_TOOL].addItem(toolObject.getName(), "", distanceStr, toolObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, toolObject.getId(), lastLongitude, lastLatitude, toolObject.getRadius());
+                    adapterHospital[NUM_TOOL].addItem(toolObject.getName(), toolObject.getIntroduce(), distanceStr, toolObject.getImgUrl(), toolObject.getTags(), toolObject.getId(), lastLongitude, lastLatitude, toolObject.getRadius());
                 }
 
                 adapterHospital[NUM_TOOL].notifyDataSetChanged();
@@ -1548,7 +1548,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                         distanceStr = String.format("%.1f", distance) + "km";
                     }
 
-                    adapterHospital[NUM_FUNERAL].addItem(funeralObject.getName(), "", distanceStr, funeralObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, funeralObject.getId(), lastLongitude, lastLatitude, funeralObject.getRadius());
+                    adapterHospital[NUM_FUNERAL].addItem(funeralObject.getName(), funeralObject.getIntroduce(), distanceStr, funeralObject.getImgUrl(), funeralObject.getTags(), funeralObject.getId(), lastLongitude, lastLatitude, funeralObject.getRadius());
                 }
 
                 adapterHospital[NUM_FUNERAL].notifyDataSetChanged();
@@ -1586,8 +1586,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                         distanceStr = String.format("%.1f", distance) + "km";
                     }
 
-//                    adapterHospital[NUM_ADOPT].addItem(adoptObject.getId(), adoptObject.getImgUrl(), lastLongitude, lastLatitude, adoptObject.getRadius());
-                    adapterHospital[NUM_ADOPT].addItem(adoptObject.getName(), "", distanceStr, adoptObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, adoptObject.getId(), lastLongitude, lastLatitude, adoptObject.getRadius());
+                    adapterHospital[NUM_ADOPT].addItem(adoptObject.getName(), adoptObject.getIntroduce(), distanceStr, adoptObject.getImgUrl(), adoptObject.getTags(), adoptObject.getId(), lastLongitude, lastLatitude, adoptObject.getRadius());
                 }
 
                 adapterHospital[NUM_ADOPT].notifyDataSetChanged();
@@ -1628,7 +1627,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                         distanceStr = String.format("%.1f", distance) + "km";
                     }
 
-                    adapterHospital[NUM_CAFE].addItem(cafeObject.getName(), "", distanceStr, cafeObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, cafeObject.getId(), lastLongitude, lastLatitude, cafeObject.getRadius());
+                    adapterHospital[NUM_CAFE].addItem(cafeObject.getName(), cafeObject.getIntroduce(), distanceStr, cafeObject.getImgUrl(), cafeObject.getTags(), cafeObject.getId(), lastLongitude, lastLatitude, cafeObject.getRadius());
                 }
 
                 adapterHospital[NUM_CAFE].notifyDataSetChanged();
@@ -1666,7 +1665,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                         distanceStr = String.format("%.1f", distance) + "km";
                     }
 
-                    adapterHospital[NUM_HOTEL].addItem(hotelObject.getName(), "", distanceStr, hotelObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hotelObject.getId(), lastLongitude, lastLatitude, hotelObject.getRadius());
+                    adapterHospital[NUM_HOTEL].addItem(hotelObject.getName(), hotelObject.getIntroduce(), distanceStr, hotelObject.getImgUrl(), hotelObject.getTags(), hotelObject.getId(), lastLongitude, lastLatitude, hotelObject.getRadius());
                 }
 
                 adapterHospital[NUM_HOTEL].notifyDataSetChanged();
@@ -1722,7 +1721,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                         distanceStr = String.format("%.1f", distance) + "km";
                     }
 
-                    adapterHospital[NUM_BEAUTY].addItem(beautyObject.getName(), "", distanceStr, beautyObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, beautyObject.getId(), lastLongitude, lastLatitude, beautyObject.getRadius());
+                    adapterHospital[NUM_BEAUTY].addItem(beautyObject.getName(), beautyObject.getIntroduce(), distanceStr, beautyObject.getImgUrl(), beautyObject.getTags(), beautyObject.getId(), lastLongitude, lastLatitude, beautyObject.getRadius());
                 }
 
                 adapterHospital[NUM_BEAUTY].notifyDataSetChanged();
@@ -1760,7 +1759,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                         distanceStr = String.format("%.1f", distance) + "km";
                     }
 
-                    adapterHospital[NUM_HOSPITAL].addItem(hospitalObject.getName(), "", distanceStr, hospitalObject.getImgUrl(), null /*Arrays.asList(new String[]{"d", "b"})*/, hospitalObject.getId(), lastLongitude, lastLatitude, hospitalObject.getRadius());
+                    adapterHospital[NUM_HOSPITAL].addItem(hospitalObject.getName(), hospitalObject.getIntroduce(), distanceStr, hospitalObject.getImgUrl(), hospitalObject.getTags(), hospitalObject.getId(), lastLongitude, lastLatitude, hospitalObject.getRadius());
                 }
                 adapterHospital[NUM_HOSPITAL].notifyDataSetChanged();
             } catch (Exception e) {

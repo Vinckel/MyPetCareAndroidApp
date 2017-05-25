@@ -52,6 +52,20 @@ public class ToolListVO {
         @SerializedName("SEARCH_LON")
         private Double longitude;
 
+        @SerializedName("REMARK")
+        private String tags;
+
+        @SerializedName("INTRO")
+        private String introduce;
+
+        public String getTags() {
+            return tags;
+        }
+
+        public String getIntroduce() {
+            return introduce;
+        }
+
         public String getRadius() {
             return radius;
         }

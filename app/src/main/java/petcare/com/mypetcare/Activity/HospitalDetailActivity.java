@@ -3,6 +3,7 @@ package petcare.com.mypetcare.Activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,11 +11,15 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.BackgroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +52,8 @@ public class HospitalDetailActivity extends BaseActivity {
     private TextView tvDescription;
     private Button btCall;
     private ImageView ivZero;
+    private LinearLayout llTags;
+    private TextView tvTags;
 
     private HospitalDetailVO.HospitalObject hospitalObject;
 
@@ -125,6 +132,8 @@ public class HospitalDetailActivity extends BaseActivity {
         tvTime = (TextView) findViewById(R.id.tv_hospital_detail_time);
         tvUrl = (TextView) findViewById(R.id.tv_hospital_detail_url);
         tvDescription = (TextView) findViewById(R.id.tv_hospital_detail_description);
+        llTags = (LinearLayout) findViewById(R.id.ll_hospital_detail_tags);
+        tvTags = (TextView) findViewById(R.id.tv_hospital_detail_tags);
         btCall = (Button) findViewById(R.id.bt_hospital_detail_call);
 
         ibBack.setOnClickListener(new View.OnClickListener() {
@@ -380,6 +389,22 @@ public class HospitalDetailActivity extends BaseActivity {
                 double distance = Double.parseDouble(hospitalObject.getDistance());
                 distance = Math.round(distance / 100f) / 10f;
                 tvDistance.setText(String.format("%.1f", distance) + "km");
+            }
+
+            if (StringUtils.isNotBlank(hospitalObject.getTags())) {
+                String tags = hospitalObject.getTags();
+                String[] split = StringUtils.split(tags, ",");
+                if (split != null && split.length > 0) {
+                    llTags.setVisibility(View.VISIBLE);
+                    for (String each : split) {
+                        each = StringUtils.replaceAll(each, " ", "");
+                        each = StringUtils.replaceAll(each, "\r", "");
+                        each = StringUtils.replaceAll(each, "\n", "");
+                        Spannable str = new SpannableStringBuilder(" " + each + "  ");
+                        str.setSpan(new BackgroundColorSpan(Color.parseColor("#7579e8")), 0, str.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        tvTags.append(str);
+                    }
+                }
             }
 
             latitude = hospitalObject.getLatitude();
