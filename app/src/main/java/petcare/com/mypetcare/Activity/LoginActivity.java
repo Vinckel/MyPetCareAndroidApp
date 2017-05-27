@@ -59,7 +59,7 @@ import petcare.com.mypetcare.Util.Global;
 import petcare.com.mypetcare.Util.GsonUtil;
 import petcare.com.mypetcare.Util.TokenApi;
 
-public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class LoginActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
     private static final int REQUEST_CODE_LOCATION = 1;
     private CallbackManager callbackManager;
     private SharedPreferences pref;

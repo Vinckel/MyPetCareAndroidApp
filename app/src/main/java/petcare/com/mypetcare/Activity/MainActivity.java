@@ -369,7 +369,7 @@ public class MainActivity extends BaseActivity
             if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
             } else {
-                Toast.makeText(MainActivity.this, "네트워크가 꺼져 있습니다. 네트워크를 켜주세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "GPS 네트워크가 꺼져 있습니다. GPS 설정에서 네트워크를 켜주세요.", Toast.LENGTH_SHORT).show();
             }
         }
 
