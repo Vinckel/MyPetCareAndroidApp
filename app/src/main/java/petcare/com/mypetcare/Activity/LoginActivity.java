@@ -235,9 +235,9 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
             setGrayScale(btKakaoFake);
             setGrayScale(btFacebookFake);
 
-            btNaverFake.setClickable(false);
-            btKakaoFake.setClickable(false);
-            btFacebookFake.setClickable(false);
+            btNaverFake.setEnabled(false);
+            btKakaoFake.setEnabled(false);
+            btFacebookFake.setEnabled(false);
         }
 
 //        PackageInfo packageInfo = getPackageInfo(LoginActivity.this, PackageManager.GET_SIGNATURES);
@@ -314,17 +314,17 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!pref.contains("autoLogin")) {
                     if (cbTerms1.isChecked() && cbTerms2.isChecked() && cbTerms3.isChecked()) {
-                        btNaverFake.setClickable(true);
-                        btKakaoFake.setClickable(true);
-                        btFacebookFake.setClickable(true);
+                        btNaverFake.setEnabled(true);
+                        btKakaoFake.setEnabled(true);
+                        btFacebookFake.setEnabled(true);
 
                         setColorScale(btNaverFake);
                         setColorScale(btKakaoFake);
                         setColorScale(btFacebookFake);
                     } else {
-                        btNaverFake.setClickable(false);
-                        btKakaoFake.setClickable(false);
-                        btFacebookFake.setClickable(false);
+                        btNaverFake.setEnabled(false);
+                        btKakaoFake.setEnabled(false);
+                        btFacebookFake.setEnabled(false);
 
                         setGrayScale(btNaverFake);
                         setGrayScale(btKakaoFake);
