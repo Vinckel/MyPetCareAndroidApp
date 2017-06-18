@@ -7,11 +7,17 @@
     android:paddingBottom="17dp"
     android:paddingLeft="22dp"
     android:paddingRight="22dp"
-    android:paddingTop="25dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="petcare.com.mypetcare.Activity.InsureInfoActivity"
     tools:showIn="@layout/activity_insure_info">
 
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_alignParentRight="true"
+        android:layout_height="20dp"
+        android:layout_marginTop="8dp"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/lotteinsure" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_insure_info"
@@ -19,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/ll_insure_info_indicator"
         android:layout_marginBottom="25dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="35dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <LinearLayout
