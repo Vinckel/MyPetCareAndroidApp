@@ -14,6 +14,16 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true" />
 
+    <ImageButton
+        android:id="@+id/ib_current"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="20dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/gps" />
+
     <RelativeLayout
         android:id="@+id/rl_map_dim"
         android:layout_width="match_parent"

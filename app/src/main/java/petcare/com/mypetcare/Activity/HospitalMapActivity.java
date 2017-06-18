@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
@@ -71,6 +72,8 @@ public class HospitalMapActivity extends BaseActivity
     private TextView tvTitle;
     private static double latitude = -1.0;
     private static double longitude = -1.0;
+    private static double lastLatitude = -1.0;
+    private static double lastLongitude = -1.0;
     private static String name = null;
     private static MapPoint customMarkerPoint = null;
     private ImageButton ibBack;
@@ -80,12 +83,15 @@ public class HospitalMapActivity extends BaseActivity
     private RelativeLayout rlDim;
     private ProgressBar pbMap;
     private ListView lvPopup;
+    private ImageButton ivCurrent;
+    private SharedPreferences pref;
 
     @Override
     protected void onStart() {
         super.onStart();
         locationDetailName = null;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,10 +114,14 @@ public class HospitalMapActivity extends BaseActivity
         Toolbar parent = (Toolbar) actionBarView.getParent();
         parent.setContentInsetsAbsolute(0, 0);
 
+        pref = getSharedPreferences("local_auth", MODE_PRIVATE);
+
         Intent intent = getIntent();
         name = intent.getStringExtra("name");
         latitude = intent.getDoubleExtra("latitude", -1);
         longitude = intent.getDoubleExtra("longitude", -1);
+        lastLatitude = Double.parseDouble(pref.getString("lastLatitude", "-1"));
+        lastLongitude = Double.parseDouble(pref.getString("lastLongitude", "-1"));
 
         if (latitude < 0 || longitude < 0) {
             finish();
@@ -123,6 +133,7 @@ public class HospitalMapActivity extends BaseActivity
         btDot = (ImageButton) findViewById(R.id.bt_hospital_map_dot);
         rlDim = (RelativeLayout) findViewById(R.id.rl_map_dim);
         pbMap = (ProgressBar) findViewById(R.id.pb_map);
+        ivCurrent = (ImageButton) findViewById(R.id.ib_current);
 
         btDot.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,6 +222,7 @@ public class HospitalMapActivity extends BaseActivity
                         shareDialog.dismiss();
                     }
                 });
+
                 lvPopup.setAdapter(adapterShare);
 
                 shareDialog.show();
@@ -293,19 +305,36 @@ public class HospitalMapActivity extends BaseActivity
     }
 
     @Override
-    public void onMapViewInitialized(MapView mapView) {
-        customMarkerPoint = MapPoint.mapPointWithGeoCoord(latitude, longitude);
+    public void onMapViewInitialized(final MapView mapView) {
+        MapPoint customMarkerPoint = MapPoint.mapPointWithGeoCoord(latitude, longitude);
         mapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(latitude, longitude), 2, true);
 
         MapPOIItem marker = new MapPOIItem();
         marker.setItemName(name);
         marker.setTag(0);
         marker.setMapPoint(customMarkerPoint);
-        marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
+        marker.setMarkerType(MapPOIItem.MarkerType.RedPin); // 기본으로 제공하는 BluePin 마커 모양.
         marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
 
         mapView.addPOIItem(marker);
+
+        MapPoint customMarkerPointCurrent = MapPoint.mapPointWithGeoCoord(lastLatitude, lastLongitude);
+        MapPOIItem markerCurrentLocation = new MapPOIItem();
+        markerCurrentLocation.setItemName("현위치");
+        markerCurrentLocation.setTag(0);
+        markerCurrentLocation.setMapPoint(customMarkerPointCurrent);
+        markerCurrentLocation.setMarkerType(MapPOIItem.MarkerType.YellowPin); // 기본으로 제공하는 BluePin 마커 모양.
+        markerCurrentLocation.setSelectedMarkerType(MapPOIItem.MarkerType.YellowPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+
+        mapView.addPOIItem(markerCurrentLocation);
         mapView.setMapCenterPoint(customMarkerPoint, false);
+
+        ivCurrent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(lastLatitude, lastLongitude), 2, true);
+            }
+        });
     }
 
     @Override
