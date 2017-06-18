@@ -11,7 +11,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <com.android.volley.toolbox.NetworkImageView
@@ -42,16 +42,25 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tv_notice_detail_content"
+        <!--<TextView-->
+            <!--android:id="@+id/tv_notice_detail_content"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginBottom="35dp"-->
+            <!--android:layout_marginLeft="16dp"-->
+            <!--android:layout_marginRight="16dp"-->
+            <!--android:layout_marginTop="40dp"-->
+            <!--android:textColor="#9b9b9b"-->
+            <!--android:textSize="14sp" />-->
+
+        <WebView
+            android:id="@+id/wv_notice_detail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="35dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="40dp"
-            android:textColor="#9b9b9b"
-            android:textSize="14sp" />
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/bt_notice_detail_done"

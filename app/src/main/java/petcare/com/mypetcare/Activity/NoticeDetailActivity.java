@@ -1,11 +1,13 @@
 package petcare.com.mypetcare.Activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -31,6 +33,7 @@ public class NoticeDetailActivity extends AppCompatActivity {
     private TextView tvDate;
     private TextView tvTitle;
     private TextView tvContent;
+    private WebView wvContent;
     private Button btDone;
     private ImageLoader imageLoader;
     private static final SimpleDateFormat sdfRaw = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -65,7 +68,8 @@ public class NoticeDetailActivity extends AppCompatActivity {
         ivImage = (NetworkImageView) findViewById(R.id.iv_notice_detail_image);
         tvDate = (TextView) findViewById(R.id.tv_notice_detail_date);
         tvTitle = (TextView) findViewById(R.id.tv_notice_detail_name);
-        tvContent = (TextView) findViewById(R.id.tv_notice_detail_content);
+//        tvContent = (TextView) findViewById(R.id.tv_notice_detail_content);
+        wvContent = (WebView) findViewById(R.id.wv_notice_detail);
         btDone = (Button) findViewById(R.id.bt_notice_detail_done);
 
         View.OnClickListener listener = new View.OnClickListener() {
@@ -77,6 +81,11 @@ public class NoticeDetailActivity extends AppCompatActivity {
 
         ibBack.setOnClickListener(listener);
         btDone.setOnClickListener(listener);
+
+        wvContent.getSettings().setJavaScriptEnabled(false);
+        wvContent.setHorizontalScrollBarEnabled(false);
+        wvContent.setVerticalScrollBarEnabled(false);
+        wvContent.setBackgroundColor(Color.WHITE);
 
         callNoticeDetailApi(id);
     }
@@ -115,7 +124,8 @@ public class NoticeDetailActivity extends AppCompatActivity {
             NoticeDetailVO.NoticeObject noticeObject = noticeListVO.getData().get(0);
 
             tvTitle.setText(noticeObject.getTitle());
-            tvContent.setText(noticeObject.getContent());
+//            tvContent.setText(noticeObject.getContent());
+            wvContent.loadData(noticeObject.getContent(), "text/html; charset=UTF-8", null);
 
 //            IvImage.setImageUrl();
             ivImage.setVisibility(View.GONE);
