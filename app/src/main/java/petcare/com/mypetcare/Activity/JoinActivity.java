@@ -23,6 +23,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,6 +90,9 @@ public class JoinActivity extends BaseActivity {
     private ImageLoader imageLoader;
     private Integer no; // 수정 시 내 전체 펫 중의 순서
 
+    private RelativeLayout rlDim;
+    private ProgressBar pbDim;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,6 +141,9 @@ public class JoinActivity extends BaseActivity {
         ivPic1 = (ImageView) findViewById(R.id.ivPic1);
         ivPic2 = (ImageView) findViewById(R.id.ivPic2);
         ivPic3 = (ImageView) findViewById(R.id.ivPic3);
+
+        rlDim = (RelativeLayout) findViewById(R.id.rl_join_dim);
+        pbDim = (ProgressBar) findViewById(R.id.pb_join);
 
         ivPic1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -349,6 +357,38 @@ public class JoinActivity extends BaseActivity {
         });
     }
 
+    private void onLoadingStart() {
+        rlDim.setVisibility(View.VISIBLE);
+        pbDim.setVisibility(View.VISIBLE);
+
+        ivPic1.setEnabled(false);
+        ivPic2.setEnabled(false);
+        ivPic3.setEnabled(false);
+
+        btDone.setEnabled(false);
+        tvDone.setEnabled(false);
+        tvDone.setTextColor(getResources().getColor(R.color.normalFont));
+        ibBack.setEnabled(false);
+        btSpecies.setEnabled(false);
+        btBirth.setEnabled(false);
+    }
+
+    private void onLoadingEnd() {
+        rlDim.setVisibility(View.GONE);
+        pbDim.setVisibility(View.GONE);
+
+        ivPic1.setEnabled(true);
+        ivPic2.setEnabled(true);
+        ivPic3.setEnabled(true);
+
+        btDone.setEnabled(true);
+        tvDone.setEnabled(true);
+        tvDone.setTextColor(getResources().getColor(R.color.colorPrimary));
+        ibBack.setEnabled(true);
+        btSpecies.setEnabled(true);
+        btBirth.setEnabled(true);
+    }
+
     private boolean validate() {
         if (petCodeForSave == null) {
             Toast.makeText(getApplicationContext(), "반려동물의 종류를 입력해주세요.", Toast.LENGTH_SHORT).show();
@@ -439,6 +479,7 @@ public class JoinActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
+            onLoadingEnd();
 
             AlertDialog.Builder alert = new AlertDialog.Builder(JoinActivity.this);
             alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
@@ -451,11 +492,11 @@ public class JoinActivity extends BaseActivity {
             });
 
             CommonResult commonResult = GsonUtil.fromJson(result, CommonResult.class);
-                if (commonResult.getResultCode() != 0) {
-                    commonResult.getResultMessage();
-                    alert.setMessage("등록에 실패했습니다.");
-                } else {
-                    alert.setMessage("등록이 완료되었습니다.");
+            if (commonResult.getResultCode() != 0) {
+                commonResult.getResultMessage();
+                alert.setMessage("등록에 실패했습니다.");
+            } else {
+                alert.setMessage("등록이 완료되었습니다.");
             }
 
             alert.setCancelable(false);
@@ -471,6 +512,7 @@ public class JoinActivity extends BaseActivity {
         @Override
         protected void onPostExecute(List<String> resultList) {
             super.onPostExecute(resultList);
+            onLoadingEnd();
 
             AlertDialog.Builder alert = new AlertDialog.Builder(JoinActivity.this);
             alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
@@ -506,6 +548,7 @@ public class JoinActivity extends BaseActivity {
     }
 
     private void save() {
+        onLoadingStart();
         String pic1ImagePath = (String) ivPic1.getTag();
         String pic2ImagePath = (String) ivPic2.getTag();
         String pic3ImagePath = (String) ivPic3.getTag();
