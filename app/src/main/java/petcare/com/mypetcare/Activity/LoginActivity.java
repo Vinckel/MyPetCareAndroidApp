@@ -6,7 +6,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.Build;
@@ -49,6 +51,8 @@ import org.apache.commons.collections4.MapUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -58,6 +62,8 @@ import petcare.com.mypetcare.R;
 import petcare.com.mypetcare.Util.Global;
 import petcare.com.mypetcare.Util.GsonUtil;
 import petcare.com.mypetcare.Util.TokenApi;
+
+import static com.kakao.util.helper.Utility.getPackageInfo;
 
 public class LoginActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
     private static final int REQUEST_CODE_LOCATION = 1;
@@ -228,7 +234,23 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
             setGrayScale(btNaverFake);
             setGrayScale(btKakaoFake);
             setGrayScale(btFacebookFake);
+
+            btNaverFake.setClickable(false);
+            btKakaoFake.setClickable(false);
+            btFacebookFake.setClickable(false);
         }
+
+//        PackageInfo packageInfo = getPackageInfo(LoginActivity.this, PackageManager.GET_SIGNATURES);
+//
+//        for (Signature signature : packageInfo.signatures) {
+//            try {
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                Log.d("key", android.util.Base64.encodeToString(md.digest(), android.util.Base64.NO_WRAP));
+//            } catch (NoSuchAlgorithmException e) {
+//                Log.w("key", "Unable to get MessageDigest. signature=" + signature, e);
+//            }
+//        }
 
         tvTerms1.setOnClickListener(new View.OnClickListener() {
             @Override
