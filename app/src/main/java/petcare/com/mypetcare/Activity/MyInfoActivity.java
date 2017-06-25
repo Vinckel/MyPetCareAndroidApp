@@ -299,7 +299,8 @@ public class MyInfoActivity extends BaseActivity {
         if (resultCode == RESULT_OK) {
             try {
                 final Uri imageUri = data.getData();
-                String pathFromUri = PicUtil.getPathFromUri(getApplicationContext(), data.getData());
+//                String pathFromUri = PicUtil.getPathFromUri(getApplicationContext(), data.getData());
+                String pathFromUri = PicUtil.getResizedImagePathFromUri(getApplicationContext(), data.getData(), "1");
                 Bitmap selectedImage = PicUtil.getPicture(getApplicationContext(), imageUri);
                 ivProfile.setTag(pathFromUri);
                 ivProfile.setImageBitmap(selectedImage);

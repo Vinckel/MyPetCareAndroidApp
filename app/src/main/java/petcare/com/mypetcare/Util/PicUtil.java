@@ -23,6 +23,7 @@ import java.io.InputStream;
  */
 
 public class PicUtil {
+    private static final int MAX_IMAGE_LENGTH = 720;
     public static byte[] getFileDataFromDrawable(Context context, int id) {
         Drawable drawable = ContextCompat.getDrawable(context, id);
         Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
@@ -55,6 +56,48 @@ public class PicUtil {
         cursor.close();
 
         return path;
+    }
+
+    public static String getResizedImagePathFromUri(Context context, Uri uri, String name) {
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+            resizeBitmapImage(bitmap, MAX_IMAGE_LENGTH);
+
+            File storage = context.getCacheDir();
+            String fileName = name + ".jpg";
+            File tempFile = new File(storage, fileName);
+            return tempFile.getPath();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private static Bitmap resizeBitmapImage(Bitmap bmpSource, int maxResolution) {
+        int iWidth = bmpSource.getWidth();      //비트맵이미지의 넓이
+        int iHeight = bmpSource.getHeight();     //비트맵이미지의 높이
+        int newWidth = iWidth;
+        int newHeight = iHeight;
+        float rate = 0.0f;
+
+        //이미지의 가로 세로 비율에 맞게 조절
+        if (iWidth > iHeight) {
+            if (maxResolution < iWidth) {
+                rate = maxResolution / (float) iWidth;
+                newHeight = (int) (iHeight * rate);
+                newWidth = maxResolution;
+            }
+        } else {
+            if (maxResolution < iHeight) {
+                rate = maxResolution / (float) iHeight;
+                newWidth = (int) (iWidth * rate);
+                newHeight = maxResolution;
+            }
+        }
+
+        return Bitmap.createScaledBitmap(
+                bmpSource, newWidth, newHeight, true);
     }
 
     public static String saveBitmapToJpeg(Context context, Bitmap bitmap, String name) {
