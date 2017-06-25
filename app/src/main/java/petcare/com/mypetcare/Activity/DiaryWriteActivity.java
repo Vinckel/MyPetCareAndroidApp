@@ -1,7 +1,10 @@
 package petcare.com.mypetcare.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -11,9 +14,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,9 +45,12 @@ public class DiaryWriteActivity extends BaseActivity {
     private TextView tvDone;
     private Button btDone;
     private EditText etContent;
+    private Spinner spCategory;
 
     boolean isNew = true;
     Integer no = -1;
+
+    String[] category = {"병원기록", "미용기록", "예방접종기록", "기타"};
 
     private int lastSpecialRequestsCursorPosition = 0;
     private String specialRequests = StringUtils.EMPTY;
@@ -81,6 +91,7 @@ public class DiaryWriteActivity extends BaseActivity {
         });
 
         etContent = (EditText) findViewById(R.id.et_diary_write);
+        spCategory = (Spinner) findViewById(R.id.sp_diary_write_category);
         etContent.requestFocus();
         etContent.addTextChangedListener(new TextWatcher() {
             @Override
@@ -167,6 +178,8 @@ public class DiaryWriteActivity extends BaseActivity {
             no = intent.getIntExtra("no", -1);
             tvDate.setText(intent.getStringExtra("date"));
         }
+
+//        spCategory.
     }
 
     private void callDiaryWriteApi(boolean isNew, Integer no, String contents) {
@@ -212,4 +225,61 @@ public class DiaryWriteActivity extends BaseActivity {
             finish();
         }
     }
+
+    public class DiaryCategoryArrayAdapter extends ArrayAdapter<String> {
+        public DiaryCategoryArrayAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull String[] objects) {
+            super(context, resource, objects);
+        }
+
+        @Override
+        public View getDropDownView(int position, View convertView,
+                                    ViewGroup parent) {
+            // TODO Auto-generated method stub
+            return getCustomView(position, convertView, parent);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            // TODO Auto-generated method stub
+            return getCustomView(position, convertView, parent);
+        }
+
+        public View getCustomView(int position, View convertView, ViewGroup parent) {
+            // TODO Auto-generated method stub
+            //return super.getView(position, convertView, parent);
+
+            LayoutInflater inflater = getLayoutInflater();
+            View row = inflater.inflate(R.layout.spinner_diary_category, parent, false);
+            TextView label = (TextView) row.findViewById(R.id.tv_diary_spinner);
+            label.setText(category[position]);
+
+            ImageView icon = (ImageView) row.findViewById(R.id.iv_diary_spinner);
+
+            switch (position) {
+                case 0:
+                    icon.setImageResource(R.drawable.btn_add_profile_t);
+                    break;
+                case 1:
+                    icon.setImageResource(R.drawable.btn_add_profile_t);
+                    break;
+                case 2:
+                    icon.setImageResource(R.drawable.btn_add_profile_t);
+                    break;
+                case 3:
+                    icon.setImageResource(R.drawable.btn_add_profile_t);
+                    break;
+                default:
+                    icon.setImageResource(R.drawable.btn_add_profile_t);
+                    break;
+            }
+//            if (category[position] == "Sunday") {
+//                icon.setImageResource(R.drawable.btn_add_profile_t);
+//            } else {
+//                icon.setImageResource(R.drawable.btn_add_profile_n);
+//            }
+
+            return row;
+        }
+    }
+
 }
