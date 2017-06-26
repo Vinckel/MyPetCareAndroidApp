@@ -53,7 +53,7 @@ public class DiaryWriteActivity extends BaseActivity {
     Integer no = -1;
 
     String[] category = {"병원기록", "미용기록", "예방접종기록", "기타"};
-    int[] images = {R.drawable.ic_hospital_n, R.drawable.ic_beauty_shop_n, R.drawable.ic_hospital_n, R.drawable.ic_hospital_n};
+    int[] images = {R.drawable.ic_hospital_n, R.drawable.ic_beauty_shop_n, R.drawable.ic_vaccination, R.drawable.ic_etc};
 
     private int lastSpecialRequestsCursorPosition = 0;
     private String specialRequests = StringUtils.EMPTY;

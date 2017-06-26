@@ -12,7 +12,7 @@
         android:layout_height="81dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/ic_arrow_right_r" />
+        android:src="@drawable/ic_etc" />
 
     <TextView
         android:id="@+id/tv_diary_list_content"
