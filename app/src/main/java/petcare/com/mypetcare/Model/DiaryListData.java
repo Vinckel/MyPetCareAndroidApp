@@ -15,9 +15,10 @@ public class DiaryListData {
     private Date rawDate;
     private String year;
     private String date;
-
     private String content;
     private Integer no;
+
+    private Integer categoryNo;
 
     public void setYearAndDate(Date date) {
         this.rawDate = date;
@@ -71,6 +72,14 @@ public class DiaryListData {
 
     public void setVisibleYear(Boolean visibleYear) {
         isVisibleYear = visibleYear;
+    }
+
+    public Integer getCategoryNo() {
+        return categoryNo;
+    }
+
+    public void setCategoryNo(Integer categoryNo) {
+        this.categoryNo = categoryNo;
     }
 
 

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ public class DiaryListViewAdapter extends BaseAdapter {
             holder.year = (TextView) convertView.findViewById(R.id.tv_diary_list_title_year);
             holder.date = (TextView) convertView.findViewById(R.id.tv_diary_list_title);
             holder.content = (TextView) convertView.findViewById(R.id.tv_diary_list_content);
+            holder.category = (ImageView) convertView.findViewById(R.id.iv_diary_list_category);
 
             convertView.setTag(holder);
         } else {
@@ -79,13 +81,14 @@ public class DiaryListViewAdapter extends BaseAdapter {
         list.get(position).setVisibleYear(isViewYear);
     }
 
-    public void addItem(Date date, String content, Integer no) {
+    public void addItem(Date date, String content, Integer no, Integer categoryNo) {
         DiaryListData data = new DiaryListData();
 
         data.setVisibleYear(false);
         data.setYearAndDate(date);
         data.setContent(content);
         data.setNo(no);
+        data.setCategoryNo(categoryNo);
 
         list.add(data);
     }

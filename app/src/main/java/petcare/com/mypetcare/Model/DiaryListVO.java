@@ -31,6 +31,9 @@ public class DiaryListVO {
         @SerializedName("PET_JOURNAL_SN")
         private Integer no;
 
+        @SerializedName("PET_JOURNAL_CA")
+        private Integer categoryNo;
+
         public String getCreateDate() {
             return createDate;
         }
@@ -41,6 +44,10 @@ public class DiaryListVO {
 
         public Integer getNo() {
             return no;
+        }
+
+        public Integer getCategoryNo() {
+            return categoryNo;
         }
     }
 

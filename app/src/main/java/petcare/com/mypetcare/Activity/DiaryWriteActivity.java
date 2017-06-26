@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -46,11 +47,13 @@ public class DiaryWriteActivity extends BaseActivity {
     private Button btDone;
     private EditText etContent;
     private Spinner spCategory;
+    private DiaryCategoryArrayAdapter adapter;
 
     boolean isNew = true;
     Integer no = -1;
 
     String[] category = {"병원기록", "미용기록", "예방접종기록", "기타"};
+    int[] images = {R.drawable.ic_hospital_n, R.drawable.ic_beauty_shop_n, R.drawable.ic_hospital_n, R.drawable.ic_hospital_n};
 
     private int lastSpecialRequestsCursorPosition = 0;
     private String specialRequests = StringUtils.EMPTY;
@@ -132,36 +135,7 @@ public class DiaryWriteActivity extends BaseActivity {
                     return;
                 }
 
-                callDiaryWriteApi(isNew, no, encContent);
-
-//                HttpConn diaryWriteApi = new HttpConn();
-//                diaryWriteApi.setContext(global);
-//
-//                String url = "http://220.73.175.100:8080/MPMS/mob/mobile.service";
-//                String serviceId;
-//
-//                if (isNew) {
-//                    serviceId = "MPMS_02002";
-//                } else {
-//                    serviceId = "MPMS_02003";
-//                }
-//
-//                String contentType = "application/json";
-//
-//                Map params = new HashMap<>();
-//                params.put("USER_EMAIL", global.get("email"));
-//                if (!isNew) {
-//                    params.put("PET_JOURNAL_SN", no);
-//                }
-//                params.put("PET_JOURNAL_CN", encContent);
-//                HttpResultVO httpResultVO = null;
-//                try {
-//                    httpResultVO = diaryWriteApi.execute(contentType, url, serviceId, params, global.getToken()).get();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                } catch (ExecutionException e) {
-//                    e.printStackTrace();
-//                }
+                callDiaryWriteApi(isNew, no, encContent, spCategory.getSelectedItemPosition());
 
                 finish();
             }
@@ -173,16 +147,20 @@ public class DiaryWriteActivity extends BaseActivity {
         btDone = (Button) findViewById(R.id.bt_diary_write_done);
         btDone.setOnClickListener(listener);
 
+        adapter = new DiaryCategoryArrayAdapter(this, images, category);
+        spCategory.setAdapter(adapter);
+
         if (!isNew) {
             etContent.setText(intent.getStringExtra("content"));
             no = intent.getIntExtra("no", -1);
             tvDate.setText(intent.getStringExtra("date"));
+            spCategory.setSelection(intent.getIntExtra("categoryNo", 3));
+        } else {
+            spCategory.setSelection(3);
         }
-
-//        spCategory.
     }
 
-    private void callDiaryWriteApi(boolean isNew, Integer no, String contents) {
+    private void callDiaryWriteApi(boolean isNew, Integer no, String contents, int categoryNo) {
         try {
             DiaryWriteApi diaryWriteApi = new DiaryWriteApi();
 
@@ -192,6 +170,7 @@ public class DiaryWriteActivity extends BaseActivity {
             String serviceId = null;
 
             params.put("PET_JOURNAL_CN", contents);
+            params.put("PET_JOURNAL_CA", categoryNo);
 
             if (!isNew) { // 수정
                 serviceId = "MPMS_02003";
@@ -226,26 +205,40 @@ public class DiaryWriteActivity extends BaseActivity {
         }
     }
 
-    public class DiaryCategoryArrayAdapter extends ArrayAdapter<String> {
-        public DiaryCategoryArrayAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull String[] objects) {
-            super(context, resource, objects);
+    public class DiaryCategoryArrayAdapter extends BaseAdapter {
+        Context context;
+        int[] images;
+        String[] category;
+        LayoutInflater inflater;
+
+        public DiaryCategoryArrayAdapter(Context context, int[] images, String[] category) {
+            this.context = context;
+            this.images = images;
+            this.category = category;
+            inflater = (LayoutInflater.from(context));
         }
 
         @Override
-        public View getDropDownView(int position, View convertView,
-                                    ViewGroup parent) {
-            // TODO Auto-generated method stub
-            return getCustomView(position, convertView, parent);
+        public int getCount() {
+            return category.length;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            // TODO Auto-generated method stub
             return getCustomView(position, convertView, parent);
         }
 
         public View getCustomView(int position, View convertView, ViewGroup parent) {
-            // TODO Auto-generated method stub
             //return super.getView(position, convertView, parent);
 
             LayoutInflater inflater = getLayoutInflater();
@@ -254,24 +247,8 @@ public class DiaryWriteActivity extends BaseActivity {
             label.setText(category[position]);
 
             ImageView icon = (ImageView) row.findViewById(R.id.iv_diary_spinner);
+            icon.setImageResource(images[position]);
 
-            switch (position) {
-                case 0:
-                    icon.setImageResource(R.drawable.btn_add_profile_t);
-                    break;
-                case 1:
-                    icon.setImageResource(R.drawable.btn_add_profile_t);
-                    break;
-                case 2:
-                    icon.setImageResource(R.drawable.btn_add_profile_t);
-                    break;
-                case 3:
-                    icon.setImageResource(R.drawable.btn_add_profile_t);
-                    break;
-                default:
-                    icon.setImageResource(R.drawable.btn_add_profile_t);
-                    break;
-            }
 //            if (category[position] == "Sunday") {
 //                icon.setImageResource(R.drawable.btn_add_profile_t);
 //            } else {

@@ -238,10 +238,10 @@ public class DiaryListActivity extends BaseActivity {
 
         switch (item.getItemId()) {
             case 0:
-
                 Intent intent = new Intent(DiaryListActivity.this, DiaryWriteActivity.class);
                 intent.putExtra("isNew", false);
                 intent.putExtra("content", data.getContent());
+                intent.putExtra("categoryNo", data.getCategoryNo());
                 intent.putExtra("date", SDF_INTENT.format(data.getRawDate()));
                 intent.putExtra("no", data.getNo());
 
@@ -330,6 +330,7 @@ public class DiaryListActivity extends BaseActivity {
                     diaryListData.setRawDate(SDF_DATA.parse(diaries.getCreateDate()));
                     diaryListData.setContent(URLDecoder.decode(diaries.getContents(), "UTF-8"));
                     diaryListData.setNo(diaries.getNo());
+                    diaryListData.setCategoryNo(diaries.getCategoryNo());
                     parseData.add(diaryListData);
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -344,7 +345,7 @@ public class DiaryListActivity extends BaseActivity {
             Collections.reverse(parseData);
 
             for (DiaryListData listData : parseData) {
-                adapter.addItem(listData.getRawDate(), listData.getContent(), listData.getNo());
+                adapter.addItem(listData.getRawDate(), listData.getContent(), listData.getNo(), listData.getCategoryNo());
             }
 
 //            reCalcNewYear();
