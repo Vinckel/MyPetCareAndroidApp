@@ -249,7 +249,7 @@ public class ReceiptInsureActivity extends BaseActivity {
             try {
                 final Uri imageUri = data.getData();
                 Bitmap selectedImage = PicUtil.getPicture(getApplicationContext(), imageUri);
-                String pathFromUri = PicUtil.getPathFromUri(getApplicationContext(), data.getData());
+                String pathFromUri = PicUtil.getResizedImagePathFromUri(getApplicationContext(), data.getData(), String.valueOf(requestCode));
                 switch (requestCode) {
                     case 1:
                         ivPicAttach1.setTag(pathFromUri);

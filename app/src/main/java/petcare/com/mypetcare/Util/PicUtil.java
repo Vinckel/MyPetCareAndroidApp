@@ -46,6 +46,7 @@ public class PicUtil {
         return selectedImage;
     }
 
+    @Deprecated
     public static String getPathFromUri(Context context, Uri uri) {
         String[] filePathColumn = { MediaStore.Images.Media.DATA };
         Cursor cursor = context.getContentResolver().query(uri, filePathColumn, null, null, null);
@@ -61,12 +62,13 @@ public class PicUtil {
     public static String getResizedImagePathFromUri(Context context, Uri uri, String name) {
         try {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
-            resizeBitmapImage(bitmap, MAX_IMAGE_LENGTH);
+            bitmap = resizeBitmapImage(bitmap, MAX_IMAGE_LENGTH);
+            return saveBitmapToJpeg(context, bitmap, name);
 
-            File storage = context.getCacheDir();
-            String fileName = name + ".jpg";
-            File tempFile = new File(storage, fileName);
-            return tempFile.getPath();
+//            File storage = context.getExternalCacheDir();
+//            String fileName = name + ".jpg";
+//            File tempFile = new File(storage, fileName);
+//            return tempFile.getPath();
         } catch (Exception e) {
             e.printStackTrace();
         }

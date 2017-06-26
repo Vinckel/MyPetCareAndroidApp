@@ -376,13 +376,13 @@ public class MatingRequestActivity extends BaseActivity {
                     for (int i = 0; i < count; i++) {
                             ClipData.Item item = clipData.getItemAt(i);
                             Uri uri = item.getUri();
-                            paths.put(String.valueOf(i + 1), PicUtil.getPathFromUri(getApplicationContext(), uri));
+                            paths.put(String.valueOf(i + 1), PicUtil.getResizedImagePathFromUri(getApplicationContext(), uri, String.valueOf(i + 1)));
                             bitmapPaths.add(PicUtil.getPicture(getApplicationContext(), uri));
                     }
                 } else {
                     Uri uri = data.getData();
 
-                    paths.put("1", PicUtil.getPathFromUri(getApplicationContext(), uri));
+                    paths.put("1", PicUtil.getResizedImagePathFromUri(getApplicationContext(), uri, "1"));
                     bitmapPaths.add(PicUtil.getPicture(getApplicationContext(), uri));
                 }
             } catch (FileNotFoundException e) {
