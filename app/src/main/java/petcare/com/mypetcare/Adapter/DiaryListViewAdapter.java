@@ -22,6 +22,7 @@ import petcare.com.mypetcare.R;
 public class DiaryListViewAdapter extends BaseAdapter {
     private Context context = null;
     private ArrayList<DiaryListData> list = new ArrayList<>();
+    int[] images = {R.drawable.ic_hospital_n, R.drawable.ic_beauty_shop_n, R.drawable.ic_vaccination, R.drawable.ic_etc};
 
     public DiaryListViewAdapter(Context context) {
         super();
@@ -73,6 +74,7 @@ public class DiaryListViewAdapter extends BaseAdapter {
 
         holder.date.setText(data.getDate());
         holder.content.setText(data.getContent());
+        holder.category.setImageResource(images[data.getCategoryNo()]);
 
         return convertView;
     }

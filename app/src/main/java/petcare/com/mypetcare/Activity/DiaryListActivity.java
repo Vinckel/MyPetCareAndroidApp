@@ -348,6 +348,10 @@ public class DiaryListActivity extends BaseActivity {
                 adapter.addItem(listData.getRawDate(), listData.getContent(), listData.getNo(), listData.getCategoryNo());
             }
 
+//            adapter.addItem(new Date(), "일기일기일기", 1, 0);
+//            adapter.addItem(new Date(), "test2", 2, 1);
+//            adapter.addItem(new Date(), "일12312312312323기", 3, 2);
+//            adapter.addItem(new Date(), "일기일기일기일기일기일기", 4, 3);
 //            reCalcNewYear();
             checkBeforeYear();
             adapter.notifyDataSetChanged();
